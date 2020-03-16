@@ -18,7 +18,7 @@ class Teams(object):
         self.parameters_dictionary = None
         self.URL = None
         # print('init')
-        
+
     # ===============================================================
     #   Setters
     # ===============================================================
@@ -39,27 +39,8 @@ class Teams(object):
         self.URL = BASE_URL + TEAMS_START_URL + \
                    "/" + self.parameters_dictionary["country"] + \
                    "/" + self.parameters_dictionary["league"] + \
-                   "/" + self.get_year() + \
+                   "/" + get_year(self.parameters_dictionary) + \
                    TEAMS_END_URL
-
-    # ===============================================================
-    #   Getters
-    # ===============================================================
-
-    def get_year(self):
-        """
-        Returns the year as a season
-            :return: two years pasted (ex: 20192020)
-            :rtype: str
-        """
-        if "start year" in self.parameters_dictionary.keys():
-            year = int(self.parameters_dictionary["start year"])
-            return str(year) + str(year + 1)
-        elif "end year" in self.parameters_dictionary.keys():
-            year = int(self.parameters_dictionary["end year"])
-            return str(year - 1) + str(year)
-        else:
-            return str(THIS_YEAR - 1) + str(THIS_YEAR)
 
     # ===============================================================
     #   Methods
@@ -77,9 +58,9 @@ class Teams(object):
         self.set_URL_teams()
         self.display()
 
-# ===============================================================
-#   Prints and debugs
-# ===============================================================
+    # ===============================================================
+    #   Prints and debugs
+    # ===============================================================
 
     def display(self):
         print(get_HTML(self.URL))

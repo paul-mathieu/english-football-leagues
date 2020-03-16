@@ -39,3 +39,19 @@ def is_leagues_request(parameters_dictionary):
     if "API type" not in parameters_dictionary.keys():
         return False
     return parameters_dictionary["API type"] in ["leagues", "Leagues", "LEAGUES"]
+
+
+def get_year(parameters_dictionary):
+    """
+    Returns the year as a season
+        :return: two years pasted (ex: 20192020)
+        :rtype: str
+    """
+    if "start year" in parameters_dictionary.keys():
+        year = int(parameters_dictionary["start year"])
+        return str(year) + str(year + 1)
+    elif "end year" in parameters_dictionary.keys():
+        year = int(parameters_dictionary["end year"])
+        return str(year - 1) + str(year)
+    else:
+        return str(THIS_YEAR - 1) + str(THIS_YEAR)
