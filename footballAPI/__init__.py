@@ -28,14 +28,15 @@ class FootballAPI(Players, Teams, Leagues):
 
     def set_json_data(self):
 
+        print("test 2")
         if is_players_request(self.parameters_dictionary):
-            self.json_data = self.json_players()
+            self.json_data = self.json_players(self.parameters_dictionary)
 
         elif is_teams_request(self.parameters_dictionary):
-            self.json_data = self.json_teams()
+            self.json_data = self.json_teams(self.parameters_dictionary)
 
         elif is_leagues_request(self.parameters_dictionary):
-            self.json_data = self.json_leagues()
+            self.json_data = self.json_leagues(self.parameters_dictionary)
 
 
 __copyright__ = "Copyright 2016 by [entrez vos pseudos github] paul-mathieu"
