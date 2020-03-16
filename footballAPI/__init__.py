@@ -28,7 +28,6 @@ class FootballAPI(Players, Teams, Leagues):
 
     def set_json_data(self):
 
-        print("test 2")
         if is_players_request(self.parameters_dictionary):
             self.json_data = self.json_players(self.parameters_dictionary)
 
