@@ -7,12 +7,12 @@ BASE_URL = "https://uk.soccerway.com"
 
 PLAYERS_URL = None
 
-TEAMS_START_URL = None
-TEAMS_END_URL = None
+TEAMS_START_URL = "/national"
+TEAMS_END_URL = "/regular-season/tables"
 
 LEAGUES_URL = None
 
-THIS_YEAR = int(datetime.datetime.now()[:4])
+THIS_YEAR = int(str(datetime.datetime.now())[:4])
 
 
 def get_HTML(url, convert_to_json=False):
