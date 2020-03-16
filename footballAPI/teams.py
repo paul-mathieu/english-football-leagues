@@ -2,6 +2,10 @@
 
 from .core import *
 from bs4 import BeautifulSoup
+from urllib.request import urlopen
+import xmltodict
+import json
+import pprint
 
 
 class Teams(object):
@@ -63,4 +67,25 @@ class Teams(object):
     # ===============================================================
 
     def display(self):
-        print(get_HTML(self.URL))
+        # print(get_HTML(self.URL))
+        html = urlopen(self.URL)
+        html_soup = BeautifulSoup(html, 'html.parser')
+        rows = html_soup.findAll("tr")
+        # base_dict = {"Matches played"}
+        # for row in rows:
+        #     print("~~~~~~~~~~~~~~~~~~~~~~~~")
+        #     print(row)
+
+        my_xml = str(rows[1])
+        print("~~ my xml ~~")
+        print(my_xml)
+        print("~~ my xml 2 ~~")
+        print(json.dumps(xmltodict.parse(my_xml)))
+
+
+
+
+
+
+
+
