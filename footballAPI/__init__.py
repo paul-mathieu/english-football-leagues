@@ -5,7 +5,7 @@
     ----------
     Football API for Python
 
-    :copyright: (c) 2020 by [entrez vos pseudos github] paul-mathieu
+    :copyright: (c) 2020 by [entrez vos pseudos github] paul-mathieu NoahRz
 """
 
 from .core import *
@@ -38,8 +38,8 @@ class FootballAPI(Players, Teams, Leagues):
             self.json_data = self.json_leagues(self.parameters_dictionary)
 
 
-__copyright__ = "Copyright 2016 by [entrez vos pseudos github] paul-mathieu"
-__authors__ = ["paul-mathieu", "[entrez vos pseudos github]"]
+__copyright__ = "Copyright 2016 by [entrez vos pseudos github] paul-mathieu NoahRz"
+__authors__ = ["paul-mathieu", "NoahRz", "[entrez vos pseudos github]"]
 __source__ = "https://github.com/paul-mathieu/English-football-leagues-API"
 __license__ = "MIT"
 
