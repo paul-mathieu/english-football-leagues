@@ -4,7 +4,9 @@ from .core import *
 
 
 class Players(object):
-    ""
+    """
+
+    """
 
     def __init__(self, *args):
         self.parameters_dictionary = None

@@ -7,6 +7,15 @@ import footballAPI
 #   Players
 # ===============================================================
 
+# parameters_dictionary = {"API type": "players", "country": "england", "club": "liverpool-fc"}
+#
+# client = footballAPI.FootballAPI()
+# client.set_parameters(parameters_dictionary)
+#
+# print("===============")
+# print(client.json_data)
+# print("===============")
+
 
 # ===============================================================
 #   Teams
