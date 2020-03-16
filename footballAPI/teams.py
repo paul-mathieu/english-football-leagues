@@ -31,7 +31,6 @@ class Teams(object):
                    "/" + self.get_year() + \
                    TEAMS_END_URL
 
-
     def get_year(self):
         if "start year" in self.parameters_dictionary.keys():
             year = int(self.parameters_dictionary["start year"])
