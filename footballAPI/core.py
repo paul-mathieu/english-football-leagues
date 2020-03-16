@@ -10,7 +10,8 @@ PLAYERS_URL = None
 TEAMS_START_URL = "/national"
 TEAMS_END_URL = "/regular-season/tables"
 
-LEAGUES_URL = None
+LEAGUES_START_URL = "/national"
+LEAGUES_END_URL = "/regular-season"
 
 THIS_YEAR = int(str(datetime.datetime.now())[:4])
 
