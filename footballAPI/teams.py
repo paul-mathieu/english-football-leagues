@@ -70,17 +70,20 @@ class Teams(object):
         # print(get_HTML(self.URL))
         html = urlopen(self.URL)
         html_soup = BeautifulSoup(html, 'html.parser')
-        rows = html_soup.findAll("tr")
+        rows = html_soup.findAll("table")
         # base_dict = {"Matches played"}
         # for row in rows:
         #     print("~~~~~~~~~~~~~~~~~~~~~~~~")
         #     print(row)
 
-        my_xml = str(rows[1])
+        my_xml = str(rows[0])
         print("~~ my xml ~~")
+        my_xml.replace("\n", "")
         print(my_xml)
         print("~~ my xml 2 ~~")
         print(json.dumps(xmltodict.parse(my_xml)))
+
+        print(self.URL)
 
 
 
