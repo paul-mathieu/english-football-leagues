@@ -55,13 +55,9 @@ class FootballAPI(Players, Teams, Leagues):
         The request can apply to players, teams or leagues.
         """
         if is_players_request(self.parameters_dictionary):
-
             self.json_data = self.json_players(self.parameters_dictionary)
-
         elif is_teams_request(self.parameters_dictionary):
-
             self.json_data = self.json_teams(self.parameters_dictionary)
-
         elif is_leagues_request(self.parameters_dictionary):
             self.json_data = self.json_leagues(self.parameters_dictionary)
 
@@ -70,9 +66,9 @@ class FootballAPI(Players, Teams, Leagues):
 #   Links
 # ===============================================================
 
-__copyright__ = "Copyright 2016 by VieuL paul-mathieu NoahRz"
+__copyright__ = "Copyright 2020 by VieuL paul-mathieu NoahRz"
 __authors__ = ["paul-mathieu", "NoahRz", "VieuL"]
 __source__ = "https://github.com/paul-mathieu/English-football-leagues-API"
 __license__ = "MIT"
 
-__all__ = ["Football", "API", ]
+__all__ = ["Players", "Teams", "Leagues"]
