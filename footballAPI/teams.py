@@ -45,6 +45,7 @@ class Teams(object):
                    "/" + self.parameters_dictionary["league"] + \
                    "/" + get_year(self.parameters_dictionary) + \
                    TEAMS_END_URL
+        self.URL = "https://uk.soccerway.com/national/england/premier-league/20192020/regular-season/r53145/tables/"
 
     # ===============================================================
     #   Methods
@@ -60,7 +61,9 @@ class Teams(object):
         """
         self.set_parameters_dictionary(parameters_dictionary)
         self.set_URL_teams()
-        self.display()
+        # self.display()
+        # return BeautifulSoup(urlopen(self.URL), "html.parser").findAll("form")[2]
+        return BeautifulSoup(urlopen(self.URL), "html.parser").findAll("html")
 
     # ===============================================================
     #   Prints and debugs
@@ -68,20 +71,25 @@ class Teams(object):
 
     def display(self):
         # print(get_HTML(self.URL))
-        html = urlopen(self.URL)
-        html_soup = BeautifulSoup(html, 'html.parser')
-        rows = html_soup.findAll("table")
-        # base_dict = {"Matches played"}
-        # for row in rows:
-        #     print("~~~~~~~~~~~~~~~~~~~~~~~~")
-        #     print(row)
 
+        # html = urlopen(self.URL)
+        # html_soup = BeautifulSoup(html, "html.parser")
+        # rows = html_soup.findAll("table")
+        # my_xml = str(rows[0])
+        # print("~~ my xml ~~")
+        # my_xml.replace("\n", "")
+        # print(my_xml)
+        # print("~~ my xml 2 ~~")
+        # print(json.dumps(xmltodict.parse(my_xml)))
+        print("step 1")
+        html = urlopen(self.URL)
+        print("step 2")
+        html_soup = BeautifulSoup(html, "html.parser")
+        print("step 3")
+        rows = html_soup.findAll("table")
+        print("step 4")
         my_xml = str(rows[0])
-        print("~~ my xml ~~")
-        my_xml.replace("\n", "")
-        print(my_xml)
-        print("~~ my xml 2 ~~")
-        print(json.dumps(xmltodict.parse(my_xml)))
+        # print(my_xml)
 
         print(self.URL)
 
