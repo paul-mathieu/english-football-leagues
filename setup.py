@@ -25,10 +25,11 @@ parameters_dictionary = {"API type": "teams", "country": "england", "league": "l
 
 client = footballAPI.FootballAPI()
 client.set_parameters(parameters_dictionary)
+client.tests_api_teams()
 
-print("===============")
-print(client.json_data)
-print("===============")
+# print("===============")
+# print(client.json_data)
+# print("===============")
 
 
 # ===============================================================
