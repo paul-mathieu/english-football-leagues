@@ -56,3 +56,21 @@ def get_year(parameters_dictionary):
         return str(year - 1) + str(year)
     else:
         return str(THIS_YEAR - 1) + str(THIS_YEAR)
+
+
+def keys_from_first_row(row):
+    """
+    Returns the list keys of the first row for a table
+        :param row: first row of an html table
+        :return: name list
+        :rtype: list of string
+    """
+    keys_list = []
+    for col_name in row["tr"]["th"]:
+        if "@title" in col_name.keys():
+            keys_list.append(col_name["@title"])
+        elif "#text" in col_name.keys():
+            keys_list.append(col_name["#text"])
+        elif "acronym" in col_name.keys():
+            keys_list.append(col_name["acronym"])
+    return keys_list
