@@ -13,7 +13,8 @@ class Leagues(object):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
         # self.display_leagues()
-        self.get_main_leagues()
+        # self.get_main_leagues()
+        self.get_all_leagues()
 
     def set_parameters_dictionary_leagues(self, parameters_dictionary):
         self.parameters_dictionary = parameters_dictionary
@@ -68,33 +69,31 @@ class Leagues(object):
         # REMARQUE: j'ai traite par classe car des fois les url n'ont pas de titre
 
     def get_all_leagues(self):
-        '''
+        """
         return all the english football leagues, even sub leagues
         :return: json_object
-        '''
-        print(self.URL)
+        """
         html = get_HTML(self.URL)
         html_soup = BeautifulSoup(html, 'html.parser')
         liste = html_soup.find('ul', class_='left-tree')
         data_set = {}
         for url in liste.find_all('li'):
-            if url['class'] == ['odd'] or url['class'] == ['even'] or url['class'] == ['expanded', 'odd'] or url[
-                'class'] == ['expanded', 'even']:
-                print(type(url.a['href']))
+            main_league = url.a.string
+            print(main_league)
+            if url['class'] == ['odd'] or url['class'] == ['even'] or url['class'] == ['expanded', 'odd'] or url['class'] == ['expanded', 'even']:
                 new_url = BASE_URL + url.a['href']
+                # we do that to get the sub leagues of each curent main leauges
+                # which are only available if the current main leagues is selected (clicked)
                 new_html = get_HTML(new_url)
                 new_html_soup = BeautifulSoup(new_html, 'html.parser')
-                list = new_html_soup.select('ul.left-tree > li.expanded')
-                print('list :', list)
-                for link in list[0].find_all('a'):
-                    league = link.string
-                    print(link)
-                    parent = link.find_parent('ul').find_previous_sibling()  # parent link
-                    if parent is not None:
-                        print("parent : ", parent.string)
-                        data_set[parent.string] = dict(league)
-                    else:
-                        data_set[league] = None  # it's the root
-                print("data_set :", data_set)
-                print("new html :", new_url)
-            return 0
+                data_set[main_league] = []
+                listoflink = new_html_soup.select('ul.left-tree > li.expanded')[0].find_all('a')
+                # if class = expanded, it's the current selected
+                if len(listoflink) > 2: # we start at 2 to avoid the main leagues and the year in url <a>
+                    for i in range(2, len(listoflink)):
+                        data_set[main_league].append(listoflink[i].string)
+
+        # create json object
+        json_dump = json.dumps(data_set)
+        json_object = json.loads(json_dump)
+        return json_object
