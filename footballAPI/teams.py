@@ -37,10 +37,6 @@ class Teams(object):
         self.fill_parameters_dictionary(parameters_dictionary)
         # print("test")
 
-    def fill_parameters_dictionary(self, parameters_dictionary):
-        for key in parameters_dictionary.keys():
-            self.parameters_dictionary[key] = parameters_dictionary[key]
-
     def set_URL_teams(self):
         """
         Set the URL for the request
@@ -97,6 +93,14 @@ class Teams(object):
 
         # return my_json[0]
         return output_json
+
+    def fill_parameters_dictionary(self, parameters_dictionary):
+        """
+        fill self.parameters_dictionary
+            :param parameters_dictionary: dictionary of query parameters
+        """
+        for key in parameters_dictionary.keys():
+            self.parameters_dictionary[key] = parameters_dictionary[key]
 
     # ===============================================================
     #   Prints and debugs
