@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-
+# from . import core
 from .core import *
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
@@ -33,8 +33,13 @@ class Teams(object):
             :param parameters_dictionary: dictionary of values
             :type parameters_dictionary: dict
         """
-        self.parameters_dictionary = parameters_dictionary
+        self.parameters_dictionary = {"API type": None, "country": None, "league": None, "end year": None}
+        self.fill_parameters_dictionary(parameters_dictionary)
         # print("test")
+
+    def fill_parameters_dictionary(self, parameters_dictionary):
+        for key in parameters_dictionary.keys():
+            self.parameters_dictionary[key] = parameters_dictionary[key]
 
     def set_URL_teams(self):
         """
@@ -128,8 +133,8 @@ class Teams(object):
         url = 'https://uk.soccerway.com/a/block_competition_tables?' \
               'block_id=page_competition_1_block_competition_tables_6&' \
               'callback_params=' + str(callback_params) + '&' \
-              'action=changeTable&'\
-              'params=' + str(params)
+                                                          'action=changeTable&' \
+                                                          'params=' + str(params)
         # for s in url:
         #     print("\"" if s == "'" else s, end="")
         print(url)
