@@ -59,7 +59,7 @@ class FootballAPI(Players, Teams, Leagues):
         elif is_teams_request(self.parameters_dictionary):
             self.json_data = self.json_teams(self.parameters_dictionary)
         elif is_leagues_request(self.parameters_dictionary):
-            self.json_data = self.json_leagues(self.parameters_dictionary)
+            self.json_data = self.json_leagues(self.parameters_dictionary)  # y a rien dans json_data ? pk on stocke
 
 
 # ===============================================================

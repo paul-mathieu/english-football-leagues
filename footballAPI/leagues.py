@@ -3,6 +3,7 @@
 from .core import *
 from bs4 import BeautifulSoup
 
+
 class Leagues(object):
 
     def __init__(self, *args):
@@ -11,7 +12,7 @@ class Leagues(object):
     def json_leagues(self, parameters_dictionary):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
-        #self.display_leagues()
+        # self.display_leagues()
         self.getleagues()
 
     def set_parameters_dictionary_leagues(self, parameters_dictionary):
@@ -49,3 +50,4 @@ class Leagues(object):
                 print("league_title :", title_league)
             except KeyError:
                 pass
+        
