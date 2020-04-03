@@ -4,6 +4,7 @@ from .core import *
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
+import requests
 
 
 class Players(object):
@@ -110,6 +111,7 @@ class Players(object):
             html = urlopen(self.URL)
             html_soup = BeautifulSoup(html, 'html.parser')
             rows = html_soup.findAll("tr")
+            del html, html_soup
             find = False
             for row in rows:
                 cells = row.findAll("td")
@@ -124,7 +126,40 @@ class Players(object):
             if(find != True): raise ValueError("Player name not found")
             html = urlopen(playerUrl)
             html_soup = BeautifulSoup(html, 'html.parser')
-            print(html_soup)
+            # print(html_soup)
             print(playerUrl)
+            numPlayerL = playerUrl.split("/")[-2]
+            matchs = []
+            # A mettre dans une boucle pour charger l'ensemble des pages
+            exe = 1
+            i = 0
+            while exe != 0:
+                getMeth = 'https://uk.soccerway.com/a/block_player_matches?block_id=page_player_1_block_player_matches_3&callback_params=%7B%22page%22%3A0%2C%22block_service_id%22%3A%22player_matches_block_playermatches%22%2C%22people_id%22%3A'+numPlayerL+'%2C%22type%22%3Anull%2C%22formats%22%3Anull%7D&action=changePage&params=%7B%22page%22%3A'+str(i)+'%7D'
+                listGetMeth = getMeth.split("%")
+                # print(listGetMeth)
 
+                htmlMatchs = requests.get(getMeth).json()["commands"][0]["parameters"]["content"]
+                print(htmlMatchs)
+                if len(str(htmlMatchs)) < 100:
+                    return matchs
+
+                html_soup = BeautifulSoup(htmlMatchs, 'html.parser')
+                rows = html_soup.findAll("tr")
+
+                for row in rows:
+                    cells = row.findAll("td")
+                    try:
+                        Match = {
+                            "Date": cells[1].text,
+                            "Ligue": cells[2].text,
+                            "winerTeam": cells[3].text,
+                            "Score": cells[4].text,
+                            "loserTeam": cells[5].text,
+                            }
+                        matchs.append(Match)
+                        print(Match)
+
+                    except:
+                        pass
+                i = i-1
             pass
