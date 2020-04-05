@@ -70,10 +70,15 @@ class Players(object):
     # ===============================================================
     # ============================ Core =============================
     # ===============================================================
-    def processing(self):
 
-        # If we search a team squad
+    def processing(self):
+        '''
+            this function execute the processing chosen by the user in the variable parametre_dictionaty
+        '''
+        # If we search a team squad. This part of the function return all players of team choose
+        # This part is run if : parameters_dictionary["country"] != None and self.parameters_dictionary["club"] != None
         if self.choix == 1:
+
             html = urlopen(self.URL)
             html_soup = BeautifulSoup(html, 'html.parser')
             rows = html_soup.findAll("tr")
@@ -106,8 +111,13 @@ class Players(object):
                         pass
             return players
 
+
+        # This part of the function return all matches plays by one player
         # If we search a player
-        if self.choix == 2:
+        elif self.choix == 2:
+            # For search one players we use the query option of the web site
+            # The query parameter is the last name of the player
+            # After we look for when the first name give in parameter is the same
             html = urlopen(self.URL)
             html_soup = BeautifulSoup(html, 'html.parser')
             rows = html_soup.findAll("tr")
@@ -124,22 +134,26 @@ class Players(object):
                 except:
                     pass
             if(find != True): raise ValueError("Player name not found")
+
+            # When the player was found, we recover the specific URL of this player
             html = urlopen(playerUrl)
             html_soup = BeautifulSoup(html, 'html.parser')
-            # print(html_soup)
             print(playerUrl)
             numPlayerL = playerUrl.split("/")[-2]
             matchs = []
-            # A mettre dans une boucle pour charger l'ensemble des pages
-            exe = 1
+
+
             i = 0
-            while exe != 0:
+            while True:
+                # Get method use by web site for recover all matches - We inject the player number and a page identifier
                 getMeth = 'https://uk.soccerway.com/a/block_player_matches?block_id=page_player_1_block_player_matches_3&callback_params=%7B%22page%22%3A0%2C%22block_service_id%22%3A%22player_matches_block_playermatches%22%2C%22people_id%22%3A'+numPlayerL+'%2C%22type%22%3Anull%2C%22formats%22%3Anull%7D&action=changePage&params=%7B%22page%22%3A'+str(i)+'%7D'
                 listGetMeth = getMeth.split("%")
                 # print(listGetMeth)
 
+                # recover html code
                 htmlMatchs = requests.get(getMeth).json()["commands"][0]["parameters"]["content"]
-                print(htmlMatchs)
+
+                # Processing for recover all matches
                 if len(str(htmlMatchs)) < 100:
                     return matchs
 
@@ -155,9 +169,25 @@ class Players(object):
                             "winerTeam": cells[3].text,
                             "Score": cells[4].text,
                             "loserTeam": cells[5].text,
+                            "G": 0,
+                            "C": 0
                             }
+
+                        yellowAndGoal = []
+                        index = 0
+                        for nb in cells[6]:
+
+                            try:
+                                nbr = int(nb[-1])
+
+                                yellowAndGoal[index-1][1] = nbr
+                            except:
+                                type = nb.get("src")[-5]
+                                yellowAndGoal.append([type,1])
+                            index+=1
+
+                        Match.update(dict(yellowAndGoal))
                         matchs.append(Match)
-                        print(Match)
 
                     except:
                         pass
