@@ -7,12 +7,13 @@
 
     :copyright: (c) 2020 by VieuL paul-mathieu NoahRz
 """
+import psycopg2
 
 from .core import *
 from .players import Players
 from .teams import Teams
 from .leagues import Leagues
-
+from .dataBase import dataBase
 
 class FootballAPI(Players, Teams, Leagues):
     """
@@ -33,12 +34,12 @@ class FootballAPI(Players, Teams, Leagues):
         Teams.__init__(self, *args)
         Leagues.__init__(self, *args)
         self.json_data = None
-
+        self.db = None
     # ===============================================================
     #   Setters
     # ===============================================================
 
-    def set_parameters(self, parameters_dictionary):
+    def set_parameters(self, parameters_dictionary, db = None):
         """
         Add the dictionary attribute for the values of the query and
         apply the method which adds the json attribute of the values
@@ -47,21 +48,28 @@ class FootballAPI(Players, Teams, Leagues):
             :type parameters_dictionary: dict
         """
         self.parameters_dictionary = parameters_dictionary
+        self.db = db
         self.set_json_data()
+
 
     def set_json_data(self):
         """
         Applies the query based on dictionary settings.
         The request can apply to players, teams or leagues.
         """
+        print(type(self.db))
+
+
+
         if is_players_request(self.parameters_dictionary):
             self.json_data = self.json_players(self.parameters_dictionary)
         elif is_teams_request(self.parameters_dictionary):
             self.json_data = self.json_teams(self.parameters_dictionary)
         elif is_leagues_request(self.parameters_dictionary):
-            self.json_data = self.json_leagues(self.parameters_dictionary)  # y a rien dans json_data ? pk on stocke
+            self.json_data = self.json_leagues(self.parameters_dictionary)
 
-
+        if type(self.db) is psycopg2.extensions.connection:
+            print("oui")
 # ===============================================================
 #   Links
 # ===============================================================

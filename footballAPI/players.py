@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import psycopg2 as psycopg2
 
 from .core import *
 from urllib.request import urlopen
@@ -33,6 +34,7 @@ class Players(object):
         :return:
         """
         print(self.parameters_dictionary)
+
         if self.parameters_dictionary["country"] != None and self.parameters_dictionary["club"] != None:
             self.URL = BASE_URL + "/teams/" + self.parameters_dictionary["country"] + "/" + self.parameters_dictionary["club"] + "/squad/"
             self.choix = 1
@@ -111,6 +113,7 @@ class Players(object):
                         pass
             return players
 
+        # ----------------------------------------------------------------------------------------------------------
 
         # This part of the function return all matches plays by one player
         # If we search a player
@@ -187,6 +190,8 @@ class Players(object):
                             index+=1
 
                         Match.update(dict(yellowAndGoal))
+
+                        # print(Match)
                         matchs.append(Match)
 
                     except:
