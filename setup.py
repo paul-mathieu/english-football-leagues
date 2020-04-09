@@ -27,9 +27,9 @@ print("===============")
 
 # parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
 
-# client = footballAPI.FootballAPI()
-# client.set_parameters(parameters_dictionary)
-# client.tests_api_teams()
+client = footballAPI.FootballAPI()
+client.set_parameters(parameters_dictionary)
+client.tests_api_teams()
 
 # print("===============")
 # print(client.json_data)
@@ -41,8 +41,8 @@ print("===============")
 # ===============================================================
 
 
-# noah_parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "end year": 2019}
-#
+noah_parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "end year": 2019}
+
 # client = footballAPI.FootballAPI()
 # client.set_parameters(noah_parameters_dictionary)
 # client.tests_api_teams()
@@ -50,4 +50,3 @@ print("===============")
 # print("===============")
 # print(client.json_data)
 # print("===============")
-
