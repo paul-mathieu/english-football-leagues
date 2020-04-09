@@ -42,11 +42,18 @@ client.tests_api_teams()
 
 
 noah_parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "end year": 2019}
+#test_parameters_dictionnary = {"API type": "leagues", "country": "england" } shows all the competitions in england
+#example of additionnal parameters :
+# "competitions type": True ( if we want to show the competition type)
+# "winners":True (shows all the team winners through years)
+# "tables" : True (shows the rankings)
 
-# client = footballAPI.FootballAPI()
-# client.set_parameters(noah_parameters_dictionary)
-# client.tests_api_teams()
+# il faudrait aussi avoir la liste des équipes par division
 
-# print("===============")
-# print(client.json_data)
-# print("===============")
+client = footballAPI.FootballAPI()
+client.set_parameters(noah_parameters_dictionary)
+client.tests_api_teams()
+
+print("===============")
+print(client.json_data)
+print("===============")
