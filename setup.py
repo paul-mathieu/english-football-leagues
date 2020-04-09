@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import psycopg2
 
 import footballAPI
 
@@ -7,21 +8,24 @@ import footballAPI
 #   Players
 # ===============================================================
 
-# parameters_dictionary = {"API type": "players", "country": "england", "club": "liverpool-fc"}
-#
-# client = footballAPI.FootballAPI()
-# client.set_parameters(parameters_dictionary)
-#
-# print("===============")
-# print(client.json_data)
-# print("===============")
+parameters_dictionary = {"API type": "players", "lastName": "pogba", "firstName": "paul"}
+dataBase = ""
+# dataBase = psycopg2.connect(host="localhost",database="Foot", user="postgres", password="Motsdepassesécu")
+
+client = footballAPI.FootballAPI()
+client.set_parameters(parameters_dictionary, dataBase)
+
+print("===============")
+# matches = client.json_data
+# print(matches)
+print("===============")
 
 
 # ===============================================================
 #   Teams
 # ===============================================================
 
-parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
+# parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
 
 client = footballAPI.FootballAPI()
 client.set_parameters(parameters_dictionary)
@@ -46,4 +50,3 @@ noah_parameters_dictionary = {"API type": "leagues", "country": "england", "leag
 # print("===============")
 # print(client.json_data)
 # print("===============")
-
