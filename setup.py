@@ -10,7 +10,7 @@ import footballAPI
 
 parameters_dictionary = {"API type": "players", "lastName": "Majka", "firstName": "Matej"}
 dataBase = ""
-dataBase = psycopg2.connect(host="localhost",database="Foot", user="postgres", password="lololiA9")
+# dataBase = psycopg2.connect(host="localhost",database="Foot", user="postgres", password="lololiA9")
 
 client = footballAPI.FootballAPI()
 client.set_parameters(parameters_dictionary, dataBase)
