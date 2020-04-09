@@ -69,7 +69,8 @@ class FootballAPI(Players, Teams, Leagues):
             self.json_data = self.json_leagues(self.parameters_dictionary)
 
         if type(self.db) is psycopg2.extensions.connection:
-            print("oui")
+            a = dataBase(self.db,self.json_data)
+            a.processing()
 # ===============================================================
 #   Links
 # ===============================================================

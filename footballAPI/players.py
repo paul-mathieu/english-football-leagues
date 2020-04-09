@@ -111,7 +111,7 @@ class Players(object):
                         players.append(players_entry)
                     except:
                         pass
-            return players
+            return {'TeamPlayer': players}
 
         # ----------------------------------------------------------------------------------------------------------
 
@@ -131,6 +131,7 @@ class Players(object):
                 try:
                     if str(self.parameters_dictionary["firstName"]).upper() in str(cells[0].text).upper():
                         print("Player name is ",cells[0].text)
+                        pnam = cells[0].text
                         playerUrl = BASE_URL + "/" + str(cells[0].a.get('href'))
                         find = True
                         break;
@@ -158,7 +159,7 @@ class Players(object):
 
                 # Processing for recover all matches
                 if len(str(htmlMatchs)) < 100:
-                    return matchs
+                    return {'MatchPlayer': matchs}
 
                 html_soup = BeautifulSoup(htmlMatchs, 'html.parser')
                 rows = html_soup.findAll("tr")
@@ -167,6 +168,8 @@ class Players(object):
                     cells = row.findAll("td")
                     try:
                         Match = {
+                            "PlayerID": numPlayerL,
+                            "PlayerName" : pnam,
                             "Date": cells[1].text,
                             "Ligue": cells[2].text,
                             "winerTeam": cells[3].text,
