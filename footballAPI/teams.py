@@ -62,7 +62,7 @@ class Teams(object):
         """
         self.set_parameters_dictionary(parameters_dictionary)
         self.set_URL_teams()
-        # self.display()
+        self.display()
         # return BeautifulSoup(urlopen(self.URL), "html.parser").findAll("form")[2]
 
         # Definition of variables
@@ -126,7 +126,7 @@ class Teams(object):
         rows = html_soup.findAll("table")
         print("step 4")
         my_xml = str(rows[0])
-        # print(my_xml)
+        print(my_xml)
 
         print(self.URL)
 
@@ -176,3 +176,7 @@ class Teams(object):
 #                        '@href': '/teams/england/manchester-united-fc/662/', '@title': 'Manchester United',
 #                        '#text': 'Manchester United'}}, {'@class': 'number total mp', '#text': '29'},
 #                           {'@class': 'number gd', '#text': '+14'}, {'@class': 'number points', '#text': '45'}]}}]
+
+
+
+https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id=page_competitions_1_block_competitions_index_club_domestic_4&callback_params={"level":1}&action=expandItem&params={"area_id":"68","level":2,"item_key":"area_id"}
