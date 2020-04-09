@@ -179,4 +179,4 @@ class Teams(object):
 
 
 
-https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id=page_competitions_1_block_competitions_index_club_domestic_4&callback_params={"level":1}&action=expandItem&params={"area_id":"68","level":2,"item_key":"area_id"}
+# https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id=page_competitions_1_block_competitions_index_club_domestic_4&callback_params={"level":1}&action=expandItem&params={"area_id":"68","level":2,"item_key":"area_id"}
