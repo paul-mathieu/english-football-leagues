@@ -231,6 +231,7 @@ class Leagues(object):
         data_set_names = "winner of " + self.parameters_dictionary['league']
         data_set = {data_set_names: []}
         table_content = html_soup.find(id="page_competition_1_block_competition_archive_6-wrapper").find('table')
+        # table which contains all the result
         if end_year != "all":  # we look for a winner for one season
             for row in table_content.find_all('tr')[1:]:  # we don't want the head of the table
                 new_row = []  # new_row[0] -> season,  new_row[1] -> winner,
