@@ -15,8 +15,11 @@ class Leagues(object):
         # self.display_leagues()
         # self.get_main_leagues()
         # self.get_all_leagues()
+
         # self.get_leagues_propre()
-        self.get_leagues_propres_with_type()
+        # self.get_leagues_propres_with_type()
+
+        self.get_winner(self.parameters_dictionary["end year"])
 
     def set_parameters_dictionary_leagues(self, parameters_dictionary):
         """
@@ -36,7 +39,15 @@ class Leagues(object):
         #            "/" + self.parameters_dictionary["league"] + \
         #            "/" + self.get_year() + \
         #            LEAGUES_END_URL
-        self.URL = BASE_URL + "/competitions/"
+
+        #  pour la fonction get_leagues_propres() et get_leagues_propres_with_type()
+        # self.URL = BASE_URL + "/competitions/"
+
+        # pour gagnant de la competition
+        self.URL = BASE_URL + LEAGUES_START_URL + \
+                   "/" + self.parameters_dictionary["country"] + \
+                   "/" + self.parameters_dictionary["league"] + \
+                   "/archive/"
 
     def display_leagues(self):
         print("url :", self.URL)
@@ -148,7 +159,7 @@ class Leagues(object):
             url_hidden_content = "https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id" \
                                  "=page_competitions_1_block_competitions_index_club_domestic_4&callback_params=%7B" \
                                  "%22level%22:1%7D&action=expandItem&params=%7B%22area_id%22:%22" + area_id + "%22," \
-                                 "%22level%22:2,%22item_key%22:%22area_id%22%7D "
+                                                                                                              "%22level%22:2,%22item_key%22:%22area_id%22%7D "
             #  url_hidden_content is the url of the get method used by the website
 
             html_country_leagues = requests.get(url_hidden_content).json()["commands"][0]["parameters"][
@@ -189,7 +200,7 @@ class Leagues(object):
             url_hidden_content = "https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id" \
                                  "=page_competitions_1_block_competitions_index_club_domestic_4&callback_params=%7B" \
                                  "%22level%22:1%7D&action=expandItem&params=%7B%22area_id%22:%22" + area_id + "%22," \
-                                 "%22level%22:2,%22item_key%22:%22area_id%22%7D "
+                                                                                                              "%22level%22:2,%22item_key%22:%22area_id%22%7D "
             #  url_hidden_content is the url of the get method used by the website
 
             html_country_leagues = requests.get(url_hidden_content).json()["commands"][0]["parameters"][
@@ -198,6 +209,61 @@ class Leagues(object):
             for row in country_league_soup.find_all('div', class_="row"):
                 data_set[data_set_names].append({'competition name ': row.find('a').string,
                                                  'competition type ': row.find('span', class_="type").string})
+
+        # create json object
+        json_dump = json.dumps(data_set)
+        json_object = json.loads(json_dump)
+        print(json_object)
+        return json_object
+
+        # avoir le gagnant d'une competition en ou de tou (les pr
+
+    def get_winner(self, end_year):
+        """
+        return a json object of the winner of the competition which ended in end_year or all the winner of the competition
+        through years with end_year="all"
+        :param end_year: int or string
+        :return: json object
+        """
+
+        html = get_HTML(self.URL)
+        html_soup = BeautifulSoup(html, 'html.parser')
+        data_set_names = "winner of " + self.parameters_dictionary['league']
+        data_set = {data_set_names: []}
+        table_content = html_soup.find(id="page_competition_1_block_competition_archive_6-wrapper").find('table')
+        if end_year != "all":  # we look for a winner for one season
+            for row in table_content.find_all('tr')[1:]:  # we don't want the head of the table
+                new_row = []  # new_row[0] -> season,  new_row[1] -> winner,
+                for td in row.find_all('td'):
+                    if td.find('a') is None:  # we do this way because sometimes we have <a> and sometime we don't,
+                        # so we add content of td as a string in a list
+                        element = td.string
+                    else:
+                        element = td.a.string
+                    new_row.append(element)
+                cleaned_season = (new_row[0].replace(" ", "").replace("\n", ""))  # we remove all the whitespaces
+                # and line breaks
+                cleaned_season_split = cleaned_season.split("/")
+                if end_year == int(cleaned_season_split[1]):  # compare the end_year we provided and the end of
+                    # current season if they match
+                    json_row = {'season': cleaned_season, 'winner': new_row[1]}
+                    data_set[data_set_names].append(json_row)
+                    break  # we stop here because we've found what we were looking for
+
+        else:  # we look for winners for all the season
+            for row in table_content.find_all('tr')[1:]:  # we don't want the head of the table
+                new_row = []  # new_row[0] -> season,  new_row[1] -> winner,
+                for td in row.find_all('td'):
+                    if td.find('a') is None:  # we do this way because sometimes we have and sometime we don't,
+                        # so we add content of td as a string in a list
+                        element = td.string
+                    else:
+                        element = td.a.string
+                    new_row.append(element)
+                cleaned_season = (new_row[0].replace(" ", "").replace("\n", ""))  # we remove all the whitespaces
+                # and line breaks
+                json_row = {'season': cleaned_season, 'winner': new_row[1]}
+                data_set[data_set_names].append(json_row)
 
         # create json object
         json_dump = json.dumps(data_set)

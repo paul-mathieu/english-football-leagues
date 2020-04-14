@@ -47,10 +47,18 @@ import footballAPI
 # "winners":True (shows all the team winners through years)
 # "tables" : True (shows the rankings)
 
+#pour avoir l'équipe gagnante d'une competition selon les annees
+#parameters_dictionnary = {"API type": "leagues", "country": "england", "league": "league-one", "winner":True, "end year":"all"}
+
+#pour avoir l'équipe gagnante pour une année
+#parameters_dictionnary = {"API type": "leagues", "country": "england", "league": "premier-league", "winner":True, "end year":1889}
+
+#faire fonction get id de la competition
+
 # il faudrait aussi avoir la liste des équipes par division
 
 # client = footballAPI.FootballAPI()
-# client.set_parameters(noah_parameters_dictionary)
+# client.set_parameters(parameters_dictionnary)
 # client.tests_api_teams()
 
 # print("===============")
