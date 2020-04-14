@@ -186,8 +186,9 @@ class Players(object):
                     cells = row.findAll("td")
                     try:
                         Match = {
-                            "PlayerID": numPlayerL,
-                            "PlayerName": pnam,
+                            "player": [{"PlayerID": numPlayerL,"PlayerName": pnam,}],
+                            # "PlayerID": numPlayerL,
+                            # "PlayerName": pnam,
                             "Date": cells[1].text,
                             "Ligue": cells[2].text,
                             "winerTeam": cells[3].text,
