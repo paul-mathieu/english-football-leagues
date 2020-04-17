@@ -59,8 +59,6 @@ class FootballAPI(Players, Teams, Leagues):
         """
         print(type(self.db))
 
-
-
         if is_players_request(self.parameters_dictionary):
             self.json_data = self.json_players(self.parameters_dictionary)
         elif is_teams_request(self.parameters_dictionary):
