@@ -28,7 +28,7 @@ class Players(object):
             :type parameters_dictionary: dict
         """
         self.parameters_dictionary = {"API type": None, "country": None, "league": None, "end year": None, "club": None,
-                                      "firstName": None, "lastName": None}
+                                      "firstName": None, "lastName": None, "matches": None, "dataPlayer": None, "career": None}
         self.fill_parameters_dictionary(parameters_dictionary)
 
     # ===============================================================
@@ -44,10 +44,19 @@ class Players(object):
             self.URL = BASE_URL + "/teams/" + self.parameters_dictionary["country"] + "/" + self.parameters_dictionary[
                 "club"] + "/squad/"
             self.choix = 1
-        if self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary["lastName"] is not None:
+        if self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary["lastName"] is not None and self.parameters_dictionary["matches"] is not None:
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 2
+        if self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["dataPlayer"] is not None:
+            param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
+            self.URL = BASE_URL + "/search/?q=" + param
+            self.choix = 3
+        if self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["career"] is not None:
+            param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
+            self.URL = BASE_URL + "/search/?q=" + param
+            self.choix = 4
+
         print(self.URL)
 
     # ===============================================================
@@ -94,6 +103,7 @@ class Players(object):
         """
         # If we search a team squad. This part of the function return all players of team choose
         # This part is run if : parameters_dictionary["country"] != None and self.parameters_dictionary["club"] != None
+        global type
         if self.choix == 1:
 
             html = urlopen(self.URL)
@@ -132,7 +142,7 @@ class Players(object):
 
         # This part of the function return all matches plays by one player
         # If we search a player
-        elif self.choix == 2:
+        elif self.choix == 2 or self.choix == 3 or self.choix == 4:
             # For search one players we use the query option of the web site
             # The query parameter is the last name of the player
             # After we look for when the first name give in parameter is the same
@@ -159,64 +169,116 @@ class Players(object):
             html_soup = BeautifulSoup(html, 'html.parser')
             print(playerUrl)
             numPlayerL = playerUrl.split("/")[-2]
-            matchs = []
+            if self.choix == 2:
+                matchs = []
 
-            i = 0
-            while True:
-                # Get method use by web site for recover all matches - We inject the player number and a page identifier
-                getMeth = 'https://uk.soccerway.com/a/block_player_matches?block_id' \
-                          '=page_player_1_block_player_matches_3&callback_params=%7B%22page%22%3A0%2C' \
-                          '%22block_service_id%22%3A%22player_matches_block_playermatches%22%2C%22people_id%22%3A' + \
-                          numPlayerL + '%2C%22type%22%3Anull%2C%22formats%22%3Anull%7D&action=changePage&params=%7B' \
-                          '%22page%22%3A' + str(i) + '%7D'
-                listGetMeth = getMeth.split("%")
-                # print(listGetMeth)
 
-                # recover html code
-                htmlMatchs = requests.get(getMeth).json()["commands"][0]["parameters"]["content"]
+                i = 0
+                while True:
+                    # Get method use by web site for recover all matches - We inject the player number and a page identifier
+                    getMeth = 'https://uk.soccerway.com/a/block_player_matches?block_id' \
+                              '=page_player_1_block_player_matches_3&callback_params=%7B%22page%22%3A0%2C' \
+                              '%22block_service_id%22%3A%22player_matches_block_playermatches%22%2C%22people_id%22%3A' + \
+                              numPlayerL + '%2C%22type%22%3Anull%2C%22formats%22%3Anull%7D&action=changePage&params=%7B' \
+                              '%22page%22%3A' + str(i) + '%7D'
+                    listGetMeth = getMeth.split("%")
+                    # print(listGetMeth)
 
-                # Processing for recover all matches
-                if len(str(htmlMatchs)) < 100:
-                    return {'MatchPlayer': matchs}
+                    # recover html code
+                    htmlMatchs = requests.get(getMeth).json()["commands"][0]["parameters"]["content"]
 
-                html_soup = BeautifulSoup(htmlMatchs, 'html.parser')
-                rows = html_soup.findAll("tr")
+                    # Processing for recover all matches
+                    if len(str(htmlMatchs)) < 100:
+                        return {'MatchPlayer': matchs}
 
+                    html_soup = BeautifulSoup(htmlMatchs, 'html.parser')
+                    rows = html_soup.findAll("tr")
+
+                    for row in rows:
+                        cells = row.findAll("td")
+                        try:
+                            Match = {
+                                "player": [{"PlayerID": numPlayerL,"PlayerName": pnam,}],
+                                # "PlayerID": numPlayerL,
+                                # "PlayerName": pnam,
+                                "Date": cells[1].text,
+                                "Ligue": cells[2].text,
+                                "winerTeam": cells[3].text,
+                                "Score": cells[4].text,
+                                "loserTeam": cells[5].text,
+                                "G": 0,
+                                "C": 0
+                            }
+
+                            yellowAndGoal = []
+                            index = 0
+                            for nb in cells[6]:
+
+                                try:
+                                    nbr = int(nb[-1])
+
+                                    yellowAndGoal[index - 1][1] = nbr
+                                except:
+                                    type = nb.get("src")[-5]
+                                    yellowAndGoal.append([type, 1])
+                                index += 1
+
+                            Match.update(dict(yellowAndGoal))
+
+                            # print(Match)
+                            matchs.append(Match)
+
+                        except:
+                            pass
+                    i = i - 1
+            if self.choix == 3:
+                returns = []
+                rows = html_soup.findAll("dl")
                 for row in rows:
-                    cells = row.findAll("td")
+                    cells = row.findAll("dd")
                     try:
-                        Match = {
-                            "player": [{"PlayerID": numPlayerL,"PlayerName": pnam,}],
-                            # "PlayerID": numPlayerL,
-                            # "PlayerName": pnam,
-                            "Date": cells[1].text,
-                            "Ligue": cells[2].text,
-                            "winerTeam": cells[3].text,
-                            "Score": cells[4].text,
-                            "loserTeam": cells[5].text,
-                            "G": 0,
-                            "C": 0
-                        }
-
-                        yellowAndGoal = []
-                        index = 0
-                        for nb in cells[6]:
-
-                            try:
-                                nbr = int(nb[-1])
-
-                                yellowAndGoal[index - 1][1] = nbr
-                            except:
-                                type = nb.get("src")[-5]
-                                yellowAndGoal.append([type, 1])
-                            index += 1
-
-                        Match.update(dict(yellowAndGoal))
-
-                        # print(Match)
-                        matchs.append(Match)
-
+                        data = {  "firstName":cells[0].text,
+                        "lastName":cells[1].text,
+                        "Nationality":cells[2].text,
+                        "DateOfBirth":cells[3].text,
+                        "Age":cells[4].text,
+                        "CountryOfbirth":cells[5].text,
+                        "position":cells[6].text,
+                        "height":cells[7].text,
+                        "weight":cells[8].text,
+                        "foot":cells[9].text}
+                        returns.append(data)
                     except:
-                        pass
-                i = i - 1
-            pass
+                        data = {"firstName": cells[0].text,
+                                "lastName": cells[1].text,
+                                "Nationality": cells[2].text,
+                                "DateOfBirth": cells[3].text,
+                                "Age": cells[4].text}
+                        returns.append(data)
+                return returns
+            if self.choix == 4:
+                    rows = html_soup.findAll("table",{"class" : 'playerstats career sortable table'})
+                    retrourner = []
+                    for row in rows:
+                        cellss = row.findAll("tr")
+                        for a in cellss:
+                            cells = a.findAll("td")
+                            try:
+                                data = {
+                                    "player": [{"PlayerID": numPlayerL, "PlayerName": pnam, }],
+                                    "competition": cells[0].text,
+                                    "game-minutes ":cells[1].text,
+                                    "appearances ":cells[2].text,
+                                    "lineups ":cells[3].text,
+                                    "subs-in":cells[4].text,
+                                    "subs-out":cells[5].text,
+                                    "subs-on-bench":cells[6].text,
+                                    "goals ":cells[7].text,
+                                    "yellow-cards":cells[8].text,
+                                    "2nd-yellow-cards":cells[9].text,
+                                    "red-cards":cells[10].text
+                                }
+                                retrourner.append(data)
+                            except:
+                                pass
+                    return retrourner
