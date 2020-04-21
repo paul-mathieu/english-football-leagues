@@ -28,7 +28,7 @@ class Players(object):
             :type parameters_dictionary: dict
         """
         self.parameters_dictionary = {"API type": None, "country": None, "league": None, "end year": None, "club": None,
-                                      "firstName": None, "lastName": None, "matches": None, "dataPlayer": None, "career": None}
+                                      "firstName": None, "lastName": None, "matches": None, "dataPlayer": None, "career": None, "all": None}
         self.fill_parameters_dictionary(parameters_dictionary)
 
     # ===============================================================
@@ -44,19 +44,24 @@ class Players(object):
             self.URL = BASE_URL + "/teams/" + self.parameters_dictionary["country"] + "/" + self.parameters_dictionary[
                 "club"] + "/squad/"
             self.choix = 1
-        if self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary["lastName"] is not None and self.parameters_dictionary["matches"] is not None:
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary["lastName"] is not None and self.parameters_dictionary["matches"] is not None:
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 2
-        if self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["dataPlayer"] is not None:
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["dataPlayer"] is not None:
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 3
-        if self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["career"] is not None:
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["career"] is not None:
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 4
-
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["all"] is not None:
+            param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
+            self.URL = BASE_URL + "/search/?q=" + param
+            self.choix = 5
+        else:
+            raise ValueError("Parameter's configuration not found")
         print(self.URL)
 
     # ===============================================================
@@ -101,9 +106,10 @@ class Players(object):
             :return json_data: json data
             :rtype json_data: dict
         """
+
         # If we search a team squad. This part of the function return all players of team choose
         # This part is run if : parameters_dictionary["country"] != None and self.parameters_dictionary["club"] != None
-        global type
+        finalreturn = []
         if self.choix == 1:
 
             html = urlopen(self.URL)
@@ -136,13 +142,15 @@ class Players(object):
                         players.append(players_entry)
                     except:
                         pass
-            return {'TeamPlayer': players}
+
+            finalreturn.append({'TeamPlayer': players})
 
         # ----------------------------------------------------------------------------------------------------------
 
         # This part of the function return all matches plays by one player
         # If we search a player
-        elif self.choix == 2 or self.choix == 3 or self.choix == 4:
+        elif self.choix == 2 or self.choix == 3 or self.choix == 4 or self.choix == 5:
+            print("Point de passage 1")
             # For search one players we use the query option of the web site
             # The query parameter is the last name of the player
             # After we look for when the first name give in parameter is the same
@@ -169,7 +177,8 @@ class Players(object):
             html_soup = BeautifulSoup(html, 'html.parser')
             print(playerUrl)
             numPlayerL = playerUrl.split("/")[-2]
-            if self.choix == 2:
+            if self.choix == 2 or self.choix == 5:
+                print("Point de passage 2")
                 matchs = []
 
 
@@ -189,10 +198,10 @@ class Players(object):
 
                     # Processing for recover all matches
                     if len(str(htmlMatchs)) < 100:
-                        return {'MatchPlayer': matchs}
-
-                    html_soup = BeautifulSoup(htmlMatchs, 'html.parser')
-                    rows = html_soup.findAll("tr")
+                        finalreturn.append({'MatchPlayer': matchs})
+                        break
+                    html_soup1 = BeautifulSoup(htmlMatchs, 'html.parser')
+                    rows = html_soup1.findAll("tr")
 
                     for row in rows:
                         cells = row.findAll("td")
@@ -203,9 +212,9 @@ class Players(object):
                                 # "PlayerName": pnam,
                                 "Date": cells[1].text,
                                 "Ligue": cells[2].text,
-                                "winerTeam": cells[3].text,
+                                "winerTeam": str(cells[3].text).replace('\'',''),
                                 "Score": cells[4].text,
-                                "loserTeam": cells[5].text,
+                                "loserTeam": str(cells[5].text).replace('\'',''),
                                 "G": 0,
                                 "C": 0
                             }
@@ -231,7 +240,8 @@ class Players(object):
                         except:
                             pass
                     i = i - 1
-            if self.choix == 3:
+            if self.choix == 3 or self.choix == 5:
+                print("Point de passage 3")
                 returns = []
                 rows = html_soup.findAll("dl")
                 for row in rows:
@@ -253,10 +263,17 @@ class Players(object):
                                 "lastName": cells[1].text,
                                 "Nationality": cells[2].text,
                                 "DateOfBirth": cells[3].text,
-                                "Age": cells[4].text}
+                                "Age": cells[4].text,
+                                "CountryOfbirth": '',
+                                "position": '',
+                                "height": '',
+                                "weight": '',
+                                "foot": ''
+                        }
                         returns.append(data)
-                return returns
-            if self.choix == 4:
+                    finalreturn.append({"passport": returns})
+            if self.choix == 4 or self.choix == 5:
+                    print("Point de passage 4")
                     rows = html_soup.findAll("table",{"class" : 'playerstats career sortable table'})
                     retrourner = []
                     for row in rows:
@@ -267,18 +284,21 @@ class Players(object):
                                 data = {
                                     "player": [{"PlayerID": numPlayerL, "PlayerName": pnam, }],
                                     "competition": cells[0].text,
-                                    "game-minutes ":cells[1].text,
+                                    "game_minutes ":cells[1].text,
                                     "appearances ":cells[2].text,
                                     "lineups ":cells[3].text,
-                                    "subs-in":cells[4].text,
-                                    "subs-out":cells[5].text,
-                                    "subs-on-bench":cells[6].text,
+                                    "subs_in":cells[4].text,
+                                    "subs_out":cells[5].text,
+                                    "subs_on_bench":cells[6].text,
                                     "goals ":cells[7].text,
-                                    "yellow-cards":cells[8].text,
-                                    "2nd-yellow-cards":cells[9].text,
-                                    "red-cards":cells[10].text
+                                    "yellow_cards":cells[8].text,
+                                    "nd_yellow_cards":cells[9].text,
+                                    "red_cards":cells[10].text
                                 }
                                 retrourner.append(data)
                             except:
                                 pass
-                    return retrourner
+                    # print(retrourner)
+                    finalreturn.append({"career":retrourner})
+        print("Point de passage 5")
+        return finalreturn
