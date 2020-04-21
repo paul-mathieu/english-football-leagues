@@ -16,7 +16,6 @@ class dataBase(object):
         else:
             dataValue = self.ordered
         firstP = 1
-
         # Loop for processing all data
         for i in list(dataValue.values())[0]:
             index = 0
@@ -44,6 +43,7 @@ class dataBase(object):
 
             # Loop for data insert with data in
             for data in i.values():
+
                 if type(data) is list:
                     k = list(i.keys())[index]
                     val = {k : data}
@@ -55,6 +55,7 @@ class dataBase(object):
                     instert= instert + req + ' ,'
 
                 else:
+                    print(data)
                     instert= instert +'\'' +str(data) +'\''+ ' ,'
 
                 index += 1
