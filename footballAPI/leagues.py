@@ -19,6 +19,7 @@ class Leagues(object):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
         self.process()
+        self.get_html_page_of_a_team("burnley")
 
     # ===============================================================
     #   Setters
@@ -136,7 +137,7 @@ class Leagues(object):
             url_hidden_content = "https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id" \
                                  "=page_competitions_1_block_competitions_index_club_domestic_4&callback_params=%7B" \
                                  "%22level%22:1%7D&action=expandItem&params=%7B%22area_id%22:%22" + area_id + "%22," \
-                                 "%22level%22:2,%22item_key%22:%22area_id%22%7D "
+                                                                                                              "%22level%22:2,%22item_key%22:%22area_id%22%7D "
             #  url_hidden_content is the url of the get method used by the website
 
             html_country_leagues = requests.get(url_hidden_content).json()["commands"][0]["parameters"][
@@ -177,7 +178,7 @@ class Leagues(object):
             url_hidden_content = "https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id" \
                                  "=page_competitions_1_block_competitions_index_club_domestic_4&callback_params=%7B" \
                                  "%22level%22:1%7D&action=expandItem&params=%7B%22area_id%22:%22" + area_id + "%22," \
-                                 "%22level%22:2,%22item_key%22:%22area_id%22%7D "
+                                                                                                              "%22level%22:2,%22item_key%22:%22area_id%22%7D "
             #  url_hidden_content is the url of the get method used by the website
 
             html_country_leagues = requests.get(url_hidden_content).json()["commands"][0]["parameters"][
@@ -248,3 +249,45 @@ class Leagues(object):
         print(json_object)
         return json_object
 
+    # ===============================================================
+    #   Transfermarkt
+    # ===============================================================
+
+    def get_link_of_a_team_page(self, team):
+        """
+        return the page link of a premier league team page
+        :param team : string, team name
+        :return string
+        """
+        # return example : /fc-burnley/startseite/verein/1132
+
+        url = "https://www.transfermarkt.co.uk/schnellsuche/ergebnis/schnellsuche?query={}&x=0&y=0".format(team)
+
+        headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
+                                 'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
+
+        # we set a header so that the website will know we are a real user otherwise it will block the program
+
+        html = requests.get(url, headers=headers)
+        html_soup = BeautifulSoup(html.text, 'html.parser')
+        team = html_soup.find("table", {"class": "items"})
+
+        for row in team.find_all("table", {"class": "inline-table"}):
+            hrefs = row.find_all("a")
+            # hrefs is a list of <a>, the first element is the team name and the secon element (if it s exist is the
+            # team division
+            if len(hrefs) == 2:
+                print(hrefs[1]['title'])
+                if hrefs[1]['title'] == "Premier League":  # check if the division is Premier league
+                    print(hrefs[0]['href'])
+                    return hrefs[0]['href']
+                    # we return the first team we find because in Premier league all team names are unique
+        return None
+
+    def get_player_with_market_value_of_a_team(self, team):
+        """
+        return a json object of player of team given with the market value of each player
+        :param team: String, team name
+        :return: json object
+        """
+        pass
