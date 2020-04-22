@@ -6,59 +6,80 @@ from bs4 import BeautifulSoup
 
 class Leagues(object):
 
+    # ===============================================================
+    #   Initialisation
+    # ===============================================================
+
     def __init__(self, *args):
-        pass
+        self.parameters_dictionary = None
+        self.URL = None
+        self.request = None
 
     def json_leagues(self, parameters_dictionary):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
+        self.process()
+
+    # ===============================================================
+    #   Setters
+    # ===============================================================
 
     def set_parameters_dictionary_leagues(self, parameters_dictionary):
         """
         Set the query option dictionary
-            :param parameters_dictionary: dictionary of values
-            :type parameters_dictionary: dict
+        :param parameters_dictionary: dictionary of values
+        :type parameters_dictionary: dict
         """
         self.parameters_dictionary = parameters_dictionary
-        list_key = parameters_dictionary.keys()
-        if "country" in list_key:
-            if "league" in list_key:
-                if "winner" in list_key and "end year" in list_key:
-                    self.URL = BASE_URL + LEAGUES_START_URL + \
-                               "/" + self.parameters_dictionary["country"] + \
-                               "/" + self.parameters_dictionary["league"] + \
-                               "/archive/"
-                    self.get_winner()
-            elif "all" in list_key:
-                self.URL = BASE_URL + LEAGUES_START_URL + \
-                           "/" + self.parameters_dictionary["country"] + \
-                           "/premier-league/"
-                self.get_all_leagues()
-            elif "type" in list_key:
-                self.URL = BASE_URL + "/competitions/"
-                self.get_leagues_propres_with_type()
-            else:
-                self.URL = BASE_URL + "/competitions/"
-                self.get_leagues_propre()
 
     def set_URL_leagues(self):
         """
         Add the attribute URL
         """
-        # self.URL = BASE_URL + LEAGUES_START_URL + \
-        #            "/" + self.parameters_dictionary["country"] + \
-        #            "/" + self.parameters_dictionary["league"] + \
-        #            "/"
-        #
-        #            self.get_year() + \ # ne sert à rien les deux
-        #            LEAGUES_END_URL
-        pass
+        list_parameter_key = self.parameters_dictionary.keys()
+        if "country" in list_parameter_key:
+            if "league" in list_parameter_key:
+                if "winner" in list_parameter_key and "end year" in list_parameter_key:
+                    self.URL = BASE_URL + LEAGUES_START_URL + \
+                               "/" + self.parameters_dictionary["country"] + \
+                               "/" + self.parameters_dictionary["league"] + \
+                               "/archive/"
+                    self.request = 1
+            elif "all" in list_parameter_key:
+                self.URL = BASE_URL + LEAGUES_START_URL + \
+                           "/" + self.parameters_dictionary["country"] + \
+                           "/premier-league/"
+                self.request = 2
+            elif "type" in list_parameter_key:
+                self.URL = BASE_URL + "/competitions/"
+                self.request = 3
+            else:
+                self.URL = BASE_URL + "/competitions/"
+                self.request = 4
+
+    # ===============================================================
+    #   Methods
+    # ===============================================================
+
+    def process(self):
+        """
+        run the right request depending on the request number stored in self.request
+        """
+        request = self.request
+        if request == 1:
+            self.get_winner()
+        elif request == 2:
+            self.get_all_leagues()
+        elif request == 3:
+            self.get_leagues_propres_with_type()
+        elif request == 4:
+            self.get_leagues_propre()
 
     def get_all_leagues(self):
         """
         Return all the english football leagues, even sub leagues
-            :return json_object: data about leagues
-            :rtype json_object: json
+        :return json_object: data about leagues
+        :rtype json_object: json
         """
         html = get_HTML(self.URL)
         html_soup = BeautifulSoup(html, 'html.parser')
@@ -69,7 +90,7 @@ class Leagues(object):
             if url['class'] == ['odd'] or url['class'] == ['even'] or url['class'] == ['expanded', 'odd'] or url[
                 'class'] == ['expanded', 'even']:
                 new_url = BASE_URL + url.a['href']
-                # we do that to get the sub leagues of each curent main leauges
+                # we do that to get the sub leagues of each current main leagues
                 # which are only available if the current main leagues is selected (clicked)
                 new_html = get_HTML(new_url)
                 new_html_soup = BeautifulSoup(new_html, 'html.parser')
@@ -89,8 +110,8 @@ class Leagues(object):
     def get_leagues_propre(self):
         """
         return a json object of the main english football leagues
-            :return json_object: data about leagues
-            :rtype json_object: json
+        :return json_object: data about leagues
+        :rtype json_object: json
         """
         # ex of result : {'leagues in england': [{'league name ': 'Premier League'}, {'league name ':
         # 'Championship'},{'league name ': 'League Cup'}]}
@@ -102,12 +123,12 @@ class Leagues(object):
         country_soup = None
         data_set_names = "leagues in " + country
         data_set = {data_set_names: []}
-        for list in html_soup.find_all('li', class_='expandable'):
+        for list_element in html_soup.find_all('li', class_='expandable'):
             # print(list.find('a')['href'])
-            link = list.find('a')['href']
+            link = list_element.find('a')['href']
             link1 = link.split('/')
             if country in link1:
-                country_soup = list
+                country_soup = list_element
                 break  # we stop here
 
         if country_soup is not None:
@@ -115,7 +136,7 @@ class Leagues(object):
             url_hidden_content = "https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id" \
                                  "=page_competitions_1_block_competitions_index_club_domestic_4&callback_params=%7B" \
                                  "%22level%22:1%7D&action=expandItem&params=%7B%22area_id%22:%22" + area_id + "%22," \
-                                                                                                              "%22level%22:2,%22item_key%22:%22area_id%22%7D "
+                                 "%22level%22:2,%22item_key%22:%22area_id%22%7D "
             #  url_hidden_content is the url of the get method used by the website
 
             html_country_leagues = requests.get(url_hidden_content).json()["commands"][0]["parameters"][
@@ -134,9 +155,9 @@ class Leagues(object):
 
     def get_leagues_propres_with_type(self):
         """
-        Return a json object of the main english football competitions with their type (ex: Domestic league, Domestic cup)
-            :return json_object: data about leagues
-            :rtype json_object: json
+        Return a json object of the main english football competitions with their type (ex: Domestic league,
+        Domestic cup) :return json_object: data about leagues
+        :rtype json_object: json
         """
         country = self.parameters_dictionary["country"]
         html = get_HTML(self.URL)
@@ -144,11 +165,11 @@ class Leagues(object):
         country_soup = None
         data_set_names = "leagues in " + country
         data_set = {data_set_names: []}
-        for list in html_soup.find_all('li', class_='expandable'):
-            link = list.find('a')['href']
+        for list_element in html_soup.find_all('li', class_='expandable'):
+            link = list_element.find('a')['href']
             link1 = link.split('/')
             if country in link1:
-                country_soup = list
+                country_soup = list_element
                 break  # we stop here
 
         if country_soup is not None:
@@ -156,7 +177,7 @@ class Leagues(object):
             url_hidden_content = "https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id" \
                                  "=page_competitions_1_block_competitions_index_club_domestic_4&callback_params=%7B" \
                                  "%22level%22:1%7D&action=expandItem&params=%7B%22area_id%22:%22" + area_id + "%22," \
-                                                                                                              "%22level%22:2,%22item_key%22:%22area_id%22%7D "
+                                 "%22level%22:2,%22item_key%22:%22area_id%22%7D "
             #  url_hidden_content is the url of the get method used by the website
 
             html_country_leagues = requests.get(url_hidden_content).json()["commands"][0]["parameters"][
@@ -176,8 +197,8 @@ class Leagues(object):
 
     def get_winner(self):
         """
-        return a json object of the winner of the competition which ended in end_year or all the winner of the competition
-        through years with end_year="all"
+        return a json object of the winner of the competition which ended in end_year or all the winner of the
+        competition through years with end_year="all"
         :return: json object
         """
         end_year = self.parameters_dictionary['end year']
@@ -226,3 +247,4 @@ class Leagues(object):
         json_object = json.loads(json_dump)
         print(json_object)
         return json_object
+
