@@ -19,7 +19,7 @@ class Leagues(object):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
         self.process()
-        self.get_html_page_of_a_team("burnley")
+        self.get_player_with_market_value_of_a_team("manchester united", 2019)
 
     # ===============================================================
     #   Setters
@@ -253,15 +253,71 @@ class Leagues(object):
     #   Transfermarkt
     # ===============================================================
 
-    def get_link_of_a_team_page(self, team):
+    def get_team_info(self, team):
+        # WARNING : works only for premier league club for the moment
+        # we do this way because we don't know how transfermarkt spells club name so we look for it by using the
+        # search bar, and among the result we look for the one which best fits with the team we are looking for ( it
+        # has to be in Premier league) NB : we can't have two teams with the same name in Premier League
+
+        # NB: when we use the search bar, we might have different type of result like result table of manager, club,
+        # players, etc. So we have to make sure we take the club result table.
+
+        # NB: there are two manchester on Premier league, so the user has to type the whole name like manchester
+        # united or manchester city
+
         """
         return the page link of a premier league team page
         :param team : string, team name
-        :return string
+        :return dict: {"url_team_name ": ..., "team_id":...}
         """
         # return example : /fc-burnley/startseite/verein/1132
+        # maintenant on return : {"url_team_name ": fc-burnley, "team_id":1132}
+        url = "https://www.transfermarkt.com/schnellsuche/ergebnis/schnellsuche?query={}&x=0&y=0".format(team)
+        headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
+                                 'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
 
-        url = "https://www.transfermarkt.co.uk/schnellsuche/ergebnis/schnellsuche?query={}&x=0&y=0".format(team)
+        # we set a header so that the website will know we are a real user otherwise it will block the program
+
+        html = requests.get(url, headers=headers)
+        html_soup = BeautifulSoup(html.text, 'html.parser')
+        clubs = html_soup.select("div.large-12 > div.box > div.table-header")
+        club = None
+        result = []
+        for c in clubs:
+            if "Clubs" in c.text.split(" "):  # we take the table result of club
+                club = c.find_next("div")  # we take the next div because it's this one which contains all the info
+        for row in club.find_all("table", {"class": "inline-table"}):
+            hrefs = row.find_all("a")
+            # hrefs is a list of <a>, the first element is the team name and the second element (if it s exist it's the
+            # team division )
+            if len(hrefs) == 2:
+                if hrefs[1]['title'] == "Premier League":  # check if the division is Premier league
+                    result.append(hrefs)
+                    # return {"url_team_name": hrefs[0]['href'].split("/")[1], "team_id": hrefs[0]['id']}
+                    # we return the first team we find because in Premier league all team names are unique
+
+        if len(result) > 1:
+            # if there is several clubs in Premier league which corresponds to the name the user entered (ex:
+            # "manchester", they will be "manchester city" and "manchester united", we don't which one of them the
+            # user is looking for
+            print("please be more specific on your research")
+            return None
+        elif len(result) == 1:
+            return {"url_team_name": result[0][0]['href'].split("/")[1], "team_id": result[0][0]['id']}
+        else:
+            return None
+
+    def get_player_with_market_value_of_a_team(self, team, season):
+        """
+        return a json object of player of team given with the market value of each player
+        :param team: String, team name
+        :param season: int, the beginning year of the season
+        :return: json object
+        """
+        team_info = self.get_team_info(team)
+
+        url = "https://www.transfermarkt.com/" + team_info["url_team_name"] + "/kader/verein/" + team_info[
+            "team_id"] + "/plus/1/galerie/0?saison_id=" + str(season)
 
         headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
                                  'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
@@ -270,24 +326,28 @@ class Leagues(object):
 
         html = requests.get(url, headers=headers)
         html_soup = BeautifulSoup(html.text, 'html.parser')
-        team = html_soup.find("table", {"class": "items"})
 
-        for row in team.find_all("table", {"class": "inline-table"}):
-            hrefs = row.find_all("a")
-            # hrefs is a list of <a>, the first element is the team name and the secon element (if it s exist is the
-            # team division
-            if len(hrefs) == 2:
-                print(hrefs[1]['title'])
-                if hrefs[1]['title'] == "Premier League":  # check if the division is Premier league
-                    print(hrefs[0]['href'])
-                    return hrefs[0]['href']
-                    # we return the first team we find because in Premier league all team names are unique
-        return None
+        data_set_name = "player market value of " + team
+        data_set = {data_set_name: []}
 
-    def get_player_with_market_value_of_a_team(self, team):
-        """
-        return a json object of player of team given with the market value of each player
-        :param team: String, team name
-        :return: json object
-        """
-        pass
+        players = html_soup.find("table", {"class": "items"}).tbody
+        for row in players.find_all("tr", recursive=False):  # recursive=False means we see direct children not the
+            # descendants
+            player_id = row.find("a", {"class": "spielprofil_tooltip"})['id']
+            player_name = row.find("a", {"class": "spielprofil_tooltip"}).string
+            player_contract_expires = row.find_all("td", {"class": "zentriert"}, recursive=False)[7].string
+            # we have to do this way because there are others tds with class "zentriert" but with no id or anything else
+            # so we use the index
+            player_market_value = row.find("td", {"class": "rechts hauptlink"}).text.replace("\xa0", "")
+            # we got "\xa0" code in the td so we replace by ""
+
+            data_set[data_set_name].append({"player_id": player_id,
+                                            "player_name": player_name,
+                                            "player_contract_expires": player_contract_expires,
+                                            "player_market_value": player_market_value})
+
+        # create json object
+        json_dump = json.dumps(data_set)
+        json_object = json.loads(json_dump)
+        print(json_object)
+        return json_object
