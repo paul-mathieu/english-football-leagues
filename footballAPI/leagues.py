@@ -327,7 +327,7 @@ class Leagues(object):
         html = requests.get(url, headers=headers)
         html_soup = BeautifulSoup(html.text, 'html.parser')
 
-        data_set_name = "player market value of " + team + " in " + str(season)
+        data_set_name = "player_market_value_of_" + team + "_in_" + str(season)
         data_set = {data_set_name: []}
 
         players = html_soup.find("table", {"class": "items"}).tbody
