@@ -21,6 +21,9 @@ class Players(object):
         self.URL = None
         self.choix = 0
 
+
+
+
     def set_parameters_dictionary(self, parameters_dictionary):
         """
         Set the query option dictionary
@@ -34,6 +37,10 @@ class Players(object):
     # ===============================================================
     #   Setters
     # ===============================================================
+
+
+
+
     def set_URL_Players(self):
         """
         Add the attribute URL
@@ -41,8 +48,8 @@ class Players(object):
         print(self.parameters_dictionary)
 
         if self.parameters_dictionary["country"] is not None and self.parameters_dictionary["club"] is not None:
-            self.URL = BASE_URL + "/teams/" + self.parameters_dictionary["country"] + "/" + self.parameters_dictionary[
-                "club"] + "/squad/"
+            param = str(self.parameters_dictionary["club"]).replace(" ", "+")
+            self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 1
         elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary["lastName"] is not None and self.parameters_dictionary["matches"] is not None:
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
@@ -67,6 +74,10 @@ class Players(object):
     # ===============================================================
     #   Methods
     # ===============================================================
+
+
+
+
     def fill_parameters_dictionary(self, parameters_dictionary):
         """
         Fill the attribute parameters_dictionary
@@ -76,12 +87,18 @@ class Players(object):
         for key in parameters_dictionary.keys():
                 self.parameters_dictionary[key] = parameters_dictionary[key]
 
+
+
+
     def display(self):
         """
         Display some information about players
         """
         print(get_HTML(self.URL))
         print("\n\n\n" + self.URL)
+
+
+
 
     def json_players(self, parameters_dictionary):
         """
@@ -96,63 +113,13 @@ class Players(object):
         return self.processing()
         # self.display()
 
+
     # ===============================================================
     #   Core
     # ===============================================================
 
-    def processing(self):
-        """
-        This function execute the processing chosen by the user in the variable parametre_dictionaty
-            :return json_data: json data
-            :rtype json_data: dict
-        """
 
-        # If we search a team squad. This part of the function return all players of team choose
-        # This part is run if : parameters_dictionary["country"] != None and self.parameters_dictionary["club"] != None
-        finalreturn = []
-        if self.choix == 1:
-            finalreturn.append(self.functionProcessing1())
-        # ----------------------------------------------------------------------------------------------------------
 
-        # This part of the function return all matches plays by one player
-        # If we search a player
-        if self.choix == 2 or self.choix == 3 or self.choix == 4 or self.choix == 5:
-            finalreturn = finalreturn + self.functionProcessing2()
-
-        return finalreturn
-
-    def functionProcessing1(self):
-        html = urlopen(self.URL)
-        html_soup = BeautifulSoup(html, 'html.parser')
-        rows = html_soup.findAll("tr")
-        players = []
-        for row in rows:
-            cells = row.findAll("td")
-            # print(cells)
-            # print("\n\n")
-            if len(cells) == 17:
-                try:
-                    players_entry = {
-                            "shirtnumber": cells[0].text,
-                            "name": cells[2].text,
-                            "age": cells[4].text,
-                            "position": cells[5].text,
-                            "game-minutes": cells[6].text,
-                            "appearances": cells[7].text,
-                            "lineups": cells[8].text,
-                            "subs-in": cells[9].text,
-                            "subs-out": cells[10].text,
-                            "subs-on-bench": cells[11].text,
-                            "number statistic goals": cells[12].text,
-                            "number statistic assists": cells[13].text,
-                            "yellow - cards": cells[14].text,
-                            "2nd-yellow-cards": cells[15].text,
-                            "red-cards": cells[16].text
-                    }
-                    players.append(players_entry)
-                except:
-                    pass
-        return {'TeamPlayer': players}
 
     def functionProcessing2(self, firstName = '', lastName = ''):
         if firstName != '' and lastName != '':
@@ -169,6 +136,7 @@ class Players(object):
         rows = html_soup.findAll("tr")
         del html, html_soup
         find = False
+
         for row in rows:
             cells = row.findAll("td")
             try:
@@ -180,6 +148,7 @@ class Players(object):
                     break;
             except:
                 pass
+
         if not find: raise ValueError("Player name not found")
 
         # When the player was found, we recover the specific URL of this player
@@ -187,11 +156,13 @@ class Players(object):
         html_soup = BeautifulSoup(html, 'html.parser')
         print(playerUrl)
         numPlayerL = playerUrl.split("/")[-2]
+
         if self.choix == 2 or self.choix == 5:
             print("Point de passage 2")
             matchs = []
 
             i = 0
+
             while True:
                 # Get method use by web site for recover all matches - We inject the player number and a page identifier
                 getMeth = 'https://uk.soccerway.com/a/block_player_matches?block_id' \
@@ -249,12 +220,15 @@ class Players(object):
                     except:
                         pass
                 i = i - 1
+
         if self.choix == 3 or self.choix == 5:
             print("Point de passage 3")
             returns = []
             rows = html_soup.findAll("dl")
+
             for row in rows:
                 cells = row.findAll("dd")
+
                 try:
                     data = {"firstName": cells[0].text,
                             "lastName": cells[1].text,
@@ -267,6 +241,7 @@ class Players(object):
                             "weight": cells[8].text,
                             "foot": cells[9].text}
                     returns.append(data)
+
                 except:
                     data = {"firstName": cells[0].text,
                             "lastName": cells[1].text,
@@ -281,12 +256,15 @@ class Players(object):
                             }
                     returns.append(data)
                 finalreturn.append({"passport": returns})
+
         if self.choix == 4 or self.choix == 5:
             print("Point de passage 4")
             rows = html_soup.findAll("table", {"class": 'playerstats career sortable table'})
             retrourner = []
+
             for row in rows:
                 cellss = row.findAll("tr")
+
                 for a in cellss:
                     cells = a.findAll("td")
                     try:
@@ -305,8 +283,159 @@ class Players(object):
                             "red_cards": cells[10].text
                         }
                         retrourner.append(data)
+
                     except:
                         pass
             # print(retrourner)
             finalreturn.append({"career": retrourner})
+
         return finalreturn
+
+
+
+
+    def functionProcessing1(self):
+        html = urlopen(self.URL)
+        html_soup = BeautifulSoup(html, 'html.parser')
+        rows = html_soup.findAll("div", {"class":"block_search_results_teams real-content clearfix"})
+
+        for row in rows:
+            row = row.findAll("li")
+
+            for i in row:
+                if (str(self.parameters_dictionary["country"]).upper() in str(i.text).upper()):
+                    self.URL = BASE_URL + "/" + str(i.a.get('href')) + "/squad/"
+                    break
+
+        html = urlopen(self.URL)
+        html_soup = BeautifulSoup(html, 'html.parser')
+        rows = html_soup.findAll("tr")
+        players = []
+
+        for row in rows:
+            cells = row.findAll("td")
+            # print(cells)
+            # print("\n\n")
+            if len(cells) == 17:
+                try:
+                    players_entry = {
+                            "shirtnumber": cells[0].text,
+                            "name": cells[2].text,
+                            "age": cells[4].text,
+                            "position": cells[5].text,
+                            "game_minutes": cells[6].text,
+                            "appearances": cells[7].text,
+                            "lineups": cells[8].text,
+                            "subs_in": cells[9].text,
+                            "subs_out": cells[10].text,
+                            "subs_on_bench": cells[11].text,
+                            "number_statistic_goals": cells[12].text,
+                            "number_statistic_assists": cells[13].text,
+                            "yellow_cards": cells[14].text,
+                            "nd_yellow_cards": cells[15].text,
+                            "red_cards": cells[16].text
+                    }
+                    players.append(players_entry)
+
+                except:
+                    pass
+
+        return {'TeamPlayer': players}
+
+
+
+
+    def processing(self):
+        """
+        This function execute the processing chosen by the user in the variable parametre_dictionaty
+            :return json_data: json data
+            :rtype json_data: dict
+        """
+
+        # If we search a team squad. This part of the function return all players of team choose
+        # This part is run if : parameters_dictionary["country"] != None and self.parameters_dictionary["club"] != None
+        finalreturn = []
+        if self.choix == 1:
+            finalreturn.append(self.functionProcessing1())
+        # ----------------------------------------------------------------------------------------------------------
+
+        # This part of the function return all matches plays by one player
+        # If we search a player
+        if self.choix == 2 or self.choix == 3 or self.choix == 4 or self.choix == 5:
+            finalreturn = finalreturn + self.functionProcessing2()
+
+        return finalreturn
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # def functionProcessing1(self):
+        #     html = urlopen(self.URL)
+        #     html_soup = BeautifulSoup(html, 'html.parser')
+        #     rows = html_soup.findAll("tr")
+        #     players = []
+        #     for row in rows:
+        #         cells = row.findAll("td")
+        #         # print(cells)
+        #         # print("\n\n")
+        #         if len(cells) == 17:
+        #             try:
+        #                 players_entry = {
+        #                     "shirtnumber": cells[0].text,
+        #                     "name": cells[2].text,
+        #                     "age": cells[4].text,
+        #                     "position": cells[5].text,
+        #                     "game_minutes": cells[6].text,
+        #                     "appearances": cells[7].text,
+        #                     "lineups": cells[8].text,
+        #                     "subs_in": cells[9].text,
+        #                     "subs_out": cells[10].text,
+        #                     "subs_on_bench": cells[11].text,
+        #                     "number_statistic_goals": cells[12].text,
+        #                     "number_statistic_assists": cells[13].text,
+        #                     "yellow_cards": cells[14].text,
+        #                     "nd_yellow_cards": cells[15].text,
+        #                     "red_cards": cells[16].text
+        #                 }
+        #                 players.append(players_entry)
+        #             except:
+        #                 pass
+        #     return {'TeamPlayer': players}
