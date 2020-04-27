@@ -20,7 +20,8 @@ class Leagues(object):
     def json_leagues(self, parameters_dictionary):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
-        data_visualization_general(self.process())
+        self.process()
+        #data_visualization_general(self.process())
         # self.get_player_with_market_value_of_a_team("manchester united", 2019)
         # self.data_visualization_transfermarkt(self.get_player_with_market_value_of_a_team("arsenal", 2019))
 
@@ -273,8 +274,7 @@ class Leagues(object):
         :param team : string, team name
         :return dict: {"url_team_name ": ..., "team_id":...}
         """
-        # return example : /fc-burnley/startseite/verein/1132
-        # maintenant on return : {"url_team_name ": fc-burnley, "team_id":1132}
+        # return : {"url_team_name ": fc-burnley, "team_id":1132}
         url = "https://www.transfermarkt.com/schnellsuche/ergebnis/schnellsuche?query={}&x=0&y=0".format(team)
         headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
                                  'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
@@ -366,12 +366,16 @@ class Leagues(object):
         """
         key = list(data.keys())[0]  # we do this way because keys() return a dict-keys which is not subscriptable
         df = pd.DataFrame(data[key])
+
+        # curating data
         df["player_market_value_€"] = df["player_market_value"].apply(self.without_money_unit)
         del df["player_market_value"]
         df.to_csv("player_market_value.csv")
         craftcans = pd.read_csv("player_market_value.csv", index_col=[0], sep=',', encoding="utf-8")
         #  index_col=[0] to get rid of the unnamed column
-        print(craftcans.head(5))
+        print(craftcans.head(5))  # print 5 first row
+
+        # analysing data
         player_market_value_E = craftcans["player_market_value_€"]
         print("min : ", min(player_market_value_E))
         print("max : ", max(player_market_value_E))

@@ -91,7 +91,7 @@ def data_visualization_general(data):
     df.to_csv(key + ".csv")
     craftcans = pd.read_csv(key + ".csv", sep=',', encoding="utf-8")
     col_list = ["id"]
-    for col in df.columns:
+    for col in df.columns:  # we set the table col name
         col_list.append(col)
     craftcans.columns = col_list
-    print(craftcans.head(5))
+    print(craftcans.head(5))  # print 5 first row
