@@ -24,11 +24,11 @@ import footballAPI
 #   Teams
 # ===============================================================
 
-# parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
+parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
 
-# client = footballAPI.FootballAPI()
-# client.set_parameters(parameters_dictionary)
-# client.tests_api_teams()
+client = footballAPI.FootballAPI()
+client.set_parameters(parameters_dictionary)
+client.tests_api_teams()
 
 # print("===============")
 # print(client.json_data)
@@ -39,36 +39,37 @@ import footballAPI
 #   Leagues
 # ===============================================================
 
-#parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "end year": 2019} # cette année ne sert pas
+# parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "end year": 2019} # cette année ne sert pas
 
-parameters_dictionnary = {"API type": "leagues", "country": "england"}  # shows all the competitions in england
+# parameters_dictionnary = {"API type": "leagues", "country": "england"}  # shows all the competitions in england
+
 # example of additionnal parameters :
 # "competitions type": True ( if we want to show the competition type) FAIT
 # "winners":True (shows all the team winners through years) FAIT
 # "tables" : True (shows the rankings) PAUL va le faire
 
-#pour avoir l'équipe gagnante d'une competition selon les annees
-#parameters_dictionnary = {"API type": "leagues", "country": "england", "league": "league-one", "winner":True, "end year":"all"}
+# pour avoir l'équipe gagnante d'une competition selon les annees
+# parameters_dictionnary = {"API type": "leagues", "country": "england", "league": "league-one", "winner":True, "end year":"all"}
 
-#pour avoir l'équipe gagnante pour une année
-#parameters_dictionnary = {"API type": "leagues", "country": "england", "league": "u21-premier-league-division-2", "winner":True, "end year":"all"}
+# pour avoir l'équipe gagnante pour une année
+# parameters_dictionnary = {"API type": "leagues", "country": "england", "league": "u21-premier-league-division-2", "winner":True, "end year":"all"}
 
-#test gagnant avec la france
-#parameters_dictionnary = {"API type": "leagues", "country": "france", "league": "ligue-2", "winner":True, "end year":"all"}
+# test gagnant avec la france
+# parameters_dictionnary = {"API type": "leagues", "country": "france", "league": "ligue-2", "winner":True, "end year":"all"}
 
-#test gagnat en autriche
-#parameters_dictionnary = {"API type": "leagues", "country": "austria", "league": "bundesliga", "winner":True, "end year":"all"}
+# test gagnat en autriche
+# parameters_dictionnary = {"API type": "leagues", "country": "austria", "league": "bundesliga", "winner":True, "end year":"all"}
 
-#dans certains pays ca marche pas pour la recherche selon une saison particulière car c'est' pas le même format de season Annee/Annee ( des fois juste Annee et des fois les deux)
-#par exemple au burkina faso
-#y aussi le cas bizarre de el salvador
-#faire fonction get id de la competition
+# dans certains pays ca marche pas pour la recherche selon une saison particulière car c'est' pas le même format de season Annee/Annee ( des fois juste Annee et des fois les deux)
+# par exemple au burkina faso
+# y aussi le cas bizarre de el salvador
+# faire fonction get id de la competition
 
-parameters_dictionnary = {"API type": "leagues", "country": "england", "type": True}
-parameters_dictionnary = {"API type": "leagues", "country": "england", "all": True}
-parameters_dictionnary = {"API type": "leagues", "country": "england"}
+# parameters_dictionnary = {"API type": "leagues", "country": "england", "type": True}
+# parameters_dictionnary = {"API type": "leagues", "country": "england", "all": True}
+# parameters_dictionnary = {"API type": "leagues", "country": "england"}
 
-#tous les parametres
+# tous les parametres
 # API type mini
 # country mini
 # league
@@ -77,7 +78,7 @@ parameters_dictionnary = {"API type": "leagues", "country": "england"}
 # winner
 # endyear
 
-#User
+# User
 # to get the winner of league : API type, country, league, winner, end year OK
 # to get all the competitions of a country with their types : API type, country, league, type OK
 # to get all leagues with sub divisions : API type, country, all OK
@@ -86,9 +87,9 @@ parameters_dictionnary = {"API type": "leagues", "country": "england"}
 
 # il faudrait aussi avoir la liste des équipes par division
 
-client = footballAPI.FootballAPI()
-client.set_parameters(parameters_dictionnary)
-client.tests_api_teams()
+# client = footballAPI.FootballAPI()
+# client.set_parameters(parameters_dictionnary)
+# client.tests_api_teams()
 
 # print("===============")
 # print(client.json_data)
