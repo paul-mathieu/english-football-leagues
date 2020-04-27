@@ -43,9 +43,8 @@ class Players(object):
 
     def set_URL_Players(self):
         """
-        Add the attribute URL
+        Add the attribute URL - We use site search system
         """
-        print(self.parameters_dictionary)
 
         if self.parameters_dictionary["country"] is not None and self.parameters_dictionary["club"] is not None:
             param = str(self.parameters_dictionary["club"]).replace(" ", "+")
@@ -69,7 +68,7 @@ class Players(object):
             self.choix = 5
         else:
             raise ValueError("Parameter's configuration not found")
-        print(self.URL)
+        # print(self.URL)
 
     # ===============================================================
     #   Methods
@@ -122,12 +121,17 @@ class Players(object):
 
 
     def functionProcessing2(self, firstName = '', lastName = ''):
+        '''
+        This function search the data for one players gived in parameters_dicitonary or in param.
+        :param firstName: Not compulsory, used for a player different than the starter
+        :param lastName: Not compulsory, used for a player different than the starter
+        :return: liste of dict
+        '''
         if firstName != '' and lastName != '':
             param = str(lastName).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.parameters_dictionary["firstName"] = str(firstName)
         finalreturn = []
-        print("Point de passage 1")
         # For search one players we use the query option of the web site
         # The query parameter is the last name of the player
         # After we look for when the first name give in parameter is the same
@@ -154,11 +158,10 @@ class Players(object):
         # When the player was found, we recover the specific URL of this player
         html = urlopen(playerUrl)
         html_soup = BeautifulSoup(html, 'html.parser')
-        print(playerUrl)
+        # print(playerUrl)
         numPlayerL = playerUrl.split("/")[-2]
 
         if self.choix == 2 or self.choix == 5:
-            print("Point de passage 2")
             matchs = []
 
             i = 0
@@ -222,7 +225,6 @@ class Players(object):
                 i = i - 1
 
         if self.choix == 3 or self.choix == 5:
-            print("Point de passage 3")
             returns = []
             rows = html_soup.findAll("dl")
 
@@ -258,7 +260,6 @@ class Players(object):
                 finalreturn.append({"passport": returns})
 
         if self.choix == 4 or self.choix == 5:
-            print("Point de passage 4")
             rows = html_soup.findAll("table", {"class": 'playerstats career sortable table'})
             retrourner = []
 
@@ -295,6 +296,9 @@ class Players(object):
 
 
     def functionProcessing1(self):
+        '''
+        Function used for serch all players (and players data) of a team
+        '''
         html = urlopen(self.URL)
         html_soup = BeautifulSoup(html, 'html.parser')
         rows = html_soup.findAll("div", {"class":"block_search_results_teams real-content clearfix"})
@@ -349,7 +353,7 @@ class Players(object):
         """
         This function execute the processing chosen by the user in the variable parametre_dictionaty
             :return json_data: json data
-            :rtype json_data: dict
+            :rtype json_data: liste[dict]
         """
 
         # If we search a team squad. This part of the function return all players of team choose
