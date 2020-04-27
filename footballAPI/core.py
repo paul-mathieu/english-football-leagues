@@ -41,6 +41,10 @@ def is_leagues_request(parameters_dictionary):
         return False
     return parameters_dictionary["API type"] in ["leagues", "Leagues", "LEAGUES"]
 
+def is_match_request(parameters_dictionary):
+    if "API type" not in parameters_dictionary.keys():
+        return False
+    return parameters_dictionary["API type"] in ["match", "Match", "MATCH"]
 
 def get_year(parameters_dictionary):
     """
