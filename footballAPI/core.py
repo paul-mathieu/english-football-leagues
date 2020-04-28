@@ -80,6 +80,7 @@ def keys_from_first_row(row):
             keys_list.append(col_name["acronym"])
     return keys_list
 
+
 def data_visualization_general(data):
     """
     transform the data (json object) to csv file

@@ -302,7 +302,6 @@ class Players(object):
         html = urlopen(self.URL)
         html_soup = BeautifulSoup(html, 'html.parser')
         rows = html_soup.findAll("div", {"class":"block_search_results_teams real-content clearfix"})
-
         for row in rows:
             row = row.findAll("li")
 
@@ -313,36 +312,74 @@ class Players(object):
 
         html = urlopen(self.URL)
         html_soup = BeautifulSoup(html, 'html.parser')
-        rows = html_soup.findAll("tr")
+        rows = html_soup.findAll("table",{"class":"table squad sortable"})
         players = []
 
         for row in rows:
-            cells = row.findAll("td")
-            # print(cells)
-            # print("\n\n")
-            if len(cells) == 17:
-                try:
-                    players_entry = {
-                            "shirtnumber": cells[0].text,
-                            "name": cells[2].text,
-                            "age": cells[4].text,
-                            "position": cells[5].text,
-                            "game_minutes": cells[6].text,
-                            "appearances": cells[7].text,
-                            "lineups": cells[8].text,
-                            "subs_in": cells[9].text,
-                            "subs_out": cells[10].text,
-                            "subs_on_bench": cells[11].text,
-                            "number_statistic_goals": cells[12].text,
-                            "number_statistic_assists": cells[13].text,
-                            "yellow_cards": cells[14].text,
-                            "nd_yellow_cards": cells[15].text,
-                            "red_cards": cells[16].text
-                    }
-                    players.append(players_entry)
+            cellss = row.findAll("tr")
+            for a in cellss:
+                cells = a.findAll("td")
+                print(len(cells))
+                if len(cells) == 17:
+                    try:
+                        players_entry = {
+                                "shirtnumber": cells[0].text,
+                                "name": cells[2].text,
+                                "age": cells[4].text,
+                                "position": cells[5].text,
+                                "game_minutes": cells[6].text,
+                                "appearances": cells[7].text,
+                                "lineups": cells[8].text,
+                                "subs_in": cells[9].text,
+                                "subs_out": cells[10].text,
+                                "subs_on_bench": cells[11].text,
+                                "number_statistic_goals": cells[12].text,
+                                "number_statistic_assists": cells[13].text,
+                                "yellow_cards": cells[14].text,
+                                "nd_yellow_cards": cells[15].text,
+                                "red_cards": cells[16].text
+                        }
+                        players.append(players_entry)
 
-                except:
-                    pass
+                    except:
+                        pass
+                elif len(cells) == 14:
+                    try:
+                        players_entry = {
+                            "age": cells[3].text,
+                            "game_minutes": cells[5].text,
+                            "number_statistic_goals": cells[11].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[12].text,
+                            "red_cards": cells[14].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+                elif len(cells) == 15:
+                    try:
+                        players_entry = {
+                            "age": cells[3].text,
+                            "game_minutes": cells[5].text,
+                            "number_statistic_goals": cells[11].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[12].text,
+                            "red_cards": cells[14].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+                elif len(cells) == 16:
+                    try:
+                        players_entry = {
+                            "age": cells[4].text,
+                            "game_minutes": cells[6].text,
+                            "number_statistic_goals": cells[12].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[13].text,
+                            "red_cards": cells[15].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+
 
         return {'TeamPlayer': players}
 
@@ -374,72 +411,75 @@ class Players(object):
 
 
 
+    def functionProcessing1b(self, u):
+        html = urlopen(u)
+        html_soup = BeautifulSoup(html, 'html.parser')
+        rows = html_soup.findAll("table",{"class":"table squad sortable"})
+        players = []
+
+        for row in rows:
+            cellss = row.findAll("tr")
+            for a in cellss:
+                cells = a.findAll("td")
+                if len(cells) == 17:
+                    try:
+                        players_entry = {
+                                "shirtnumber": cells[0].text,
+                                "name": cells[2].text,
+                                "age": cells[4].text,
+                                "position": cells[5].text,
+                                "game_minutes": cells[6].text,
+                                "appearances": cells[7].text,
+                                "lineups": cells[8].text,
+                                "subs_in": cells[9].text,
+                                "subs_out": cells[10].text,
+                                "subs_on_bench": cells[11].text,
+                                "number_statistic_goals": cells[12].text,
+                                "number_statistic_assists": cells[13].text,
+                                "yellow_cards": cells[14].text,
+                                "nd_yellow_cards": cells[15].text,
+                                "red_cards": cells[16].text
+                        }
+                        players.append(players_entry)
+
+                    except:
+                        pass
+                elif len(cells) == 14:
+                    try:
+                        players_entry = {
+                            "age": cells[3].text,
+                            "game_minutes": cells[5].text,
+                            "number_statistic_goals": cells[11].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[12].text,
+                            "red_cards": cells[14].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+                elif len(cells) == 15:
+                    try:
+                        players_entry = {
+                            "age": cells[3].text,
+                            "game_minutes": cells[5].text,
+                            "number_statistic_goals": cells[11].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[12].text,
+                            "red_cards": cells[14].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+                elif len(cells) == 16:
+                    try:
+                        players_entry = {
+                            "age": cells[4].text,
+                            "game_minutes": cells[6].text,
+                            "number_statistic_goals": cells[12].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[13].text,
+                            "red_cards": cells[15].text}
+                        players.append(players_entry)
+                    except:
+                        pass
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        # def functionProcessing1(self):
-        #     html = urlopen(self.URL)
-        #     html_soup = BeautifulSoup(html, 'html.parser')
-        #     rows = html_soup.findAll("tr")
-        #     players = []
-        #     for row in rows:
-        #         cells = row.findAll("td")
-        #         # print(cells)
-        #         # print("\n\n")
-        #         if len(cells) == 17:
-        #             try:
-        #                 players_entry = {
-        #                     "shirtnumber": cells[0].text,
-        #                     "name": cells[2].text,
-        #                     "age": cells[4].text,
-        #                     "position": cells[5].text,
-        #                     "game_minutes": cells[6].text,
-        #                     "appearances": cells[7].text,
-        #                     "lineups": cells[8].text,
-        #                     "subs_in": cells[9].text,
-        #                     "subs_out": cells[10].text,
-        #                     "subs_on_bench": cells[11].text,
-        #                     "number_statistic_goals": cells[12].text,
-        #                     "number_statistic_assists": cells[13].text,
-        #                     "yellow_cards": cells[14].text,
-        #                     "nd_yellow_cards": cells[15].text,
-        #                     "red_cards": cells[16].text
-        #                 }
-        #                 players.append(players_entry)
-        #             except:
-        #                 pass
-        #     return {'TeamPlayer': players}
+        return [{'TeamPlayer': players}]
