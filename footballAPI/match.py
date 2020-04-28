@@ -64,8 +64,8 @@ class Match(object):
 
 
 
-    def proc(self, team1 = '', team2 = ''):
-        if team1 == '' and team2 == '':
+    def proc(self, team1 = '', team2 = '', n1 = '', n2 = ''):
+        if team1 == '' and team2 == '' and n1 == '' and n2 == '':
             a = Players()
             a.set_parameters_dictionary({"API type": "players", "country": self.parameters_dictionary["countryA"], "club": self.parameters_dictionary["clubA"]})
             clubA = a.parameters_dictionary["club"]
@@ -81,9 +81,11 @@ class Match(object):
 
         else:
             teamA = Players().functionProcessing1b(team1)
+            clubA = n1
+
             teamB = Players().functionProcessing1b(team2)
-            clubB = "b"
-            clubA = "a"
+            clubB = n2
+
             # print("L'équipe a est : ", teamA)
 
         totalGM_teamA = 0
@@ -163,7 +165,6 @@ class Match(object):
             'Date': str(time.localtime().tm_mon) + '/' + str(time.localtime().tm_mday) + '/' + str(time.localtime().tm_year)
 
         }
-        print("===================================================================================")
         return {"match": [dataTeamA, dataTeamB]}
 
 
@@ -203,9 +204,7 @@ class Match(object):
                                try:
                                    teamAurl = BASE_URL+cells[1].a.get('href')+'squad/'
                                    teamBurl = BASE_URL+cells[3].a.get('href')+'squad/'
-                                   print(teamAurl, teamBurl)
-                                   aRetourner.append(self.proc(teamAurl,teamBurl))
-                                   print("===================================================================================")
+                                   aRetourner.append(self.proc(teamAurl,teamBurl, cells[1].text, cells[3].text))
                                except:
                                    pass
                except:
