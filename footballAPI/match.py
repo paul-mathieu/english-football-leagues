@@ -55,10 +55,12 @@ class Match(object):
             :rtype json_data: dict
         """
         self.set_parameters_dictionary(parameters_dictionary)
-        self.matchWeek()
-        # return self.proc()
-
-
+        if self.parameters_dictionary["all"] is not None:
+            return self.matchWeek()
+        elif self.parameters_dictionary["clubA"] is not None and self.parameters_dictionary["clubB"] is not None and self.parameters_dictionary["countryB"] is not None and self.parameters_dictionary["countryA"] is not None:
+            return self.proc()
+        else:
+            return -1
 
 
 
