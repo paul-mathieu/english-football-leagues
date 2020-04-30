@@ -14,8 +14,8 @@ from .players import Players
 from .teams import Teams
 from .leagues import Leagues
 from .dataBase import dataBase
-
-class FootballAPI(Players, Teams, Leagues):
+from .match import Match
+class FootballAPI(Players, Teams, Leagues, Match):
     """
     The queries in this FootballAPI class are used to obtain or 
     extract a json file according to user-defined parameters.
@@ -33,6 +33,7 @@ class FootballAPI(Players, Teams, Leagues):
         Players.__init__(self, *args)
         Teams.__init__(self, *args)
         Leagues.__init__(self, *args)
+        Match.__init__(self,*args)
         self.json_data = None
         self.db = None
     # ===============================================================
@@ -44,6 +45,7 @@ class FootballAPI(Players, Teams, Leagues):
         Add the dictionary attribute for the values of the query and
         apply the method which adds the json attribute of the values
         obtained after the query.
+            :param db:
             :param parameters_dictionary: dictionary of values
             :type parameters_dictionary: dict
         """
@@ -57,14 +59,14 @@ class FootballAPI(Players, Teams, Leagues):
         Applies the query based on dictionary settings.
         The request can apply to players, teams or leagues.
         """
-        print(type(self.db))
-
         if is_players_request(self.parameters_dictionary):
             self.json_data = self.json_players(self.parameters_dictionary)
         elif is_teams_request(self.parameters_dictionary):
             self.json_data = self.json_teams(self.parameters_dictionary)
         elif is_leagues_request(self.parameters_dictionary):
             self.json_data = self.json_leagues(self.parameters_dictionary)
+        elif is_match_request(self.parameters_dictionary):
+            self.json_data = self.json_match(self.parameters_dictionary)
 
         if type(self.db) is psycopg2.extensions.connection:
             if type(self.json_data) is list:

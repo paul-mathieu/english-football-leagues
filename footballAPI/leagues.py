@@ -2,6 +2,8 @@
 
 from .core import *
 from bs4 import BeautifulSoup
+import pandas as pd
+import statistics
 
 
 class Leagues(object):
@@ -19,7 +21,9 @@ class Leagues(object):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
         self.process()
-        self.get_player_with_market_value_of_a_team("manchester united", 2019)
+        #data_visualization_general(self.process())
+        # self.get_player_with_market_value_of_a_team("manchester united", 2019)
+        # self.data_visualization_transfermarkt(self.get_player_with_market_value_of_a_team("arsenal", 2019))
 
     # ===============================================================
     #   Setters
@@ -68,13 +72,13 @@ class Leagues(object):
         """
         request = self.request
         if request == 1:
-            self.get_winner()
+            return self.get_winner()
         elif request == 2:
-            self.get_all_leagues()
+            return self.get_all_leagues()
         elif request == 3:
-            self.get_leagues_propres_with_type()
+            return self.get_leagues_propres_with_type()
         elif request == 4:
-            self.get_leagues_propre()
+            return self.get_leagues_propre()
 
     def get_all_leagues(self):
         """
@@ -270,8 +274,7 @@ class Leagues(object):
         :param team : string, team name
         :return dict: {"url_team_name ": ..., "team_id":...}
         """
-        # return example : /fc-burnley/startseite/verein/1132
-        # maintenant on return : {"url_team_name ": fc-burnley, "team_id":1132}
+        # return : {"url_team_name ": fc-burnley, "team_id":1132}
         url = "https://www.transfermarkt.com/schnellsuche/ergebnis/schnellsuche?query={}&x=0&y=0".format(team)
         headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
                                  'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
@@ -351,3 +354,44 @@ class Leagues(object):
         json_object = json.loads(json_dump)
         print(json_object)
         return json_object
+
+    # ===============================================================
+    #   CSV and data visualisation
+    # ===============================================================
+
+    def data_visualization_transfermarkt(self, data):
+        """
+        transform the data (json object) to csv file
+        :return:
+        """
+        key = list(data.keys())[0]  # we do this way because keys() return a dict-keys which is not subscriptable
+        df = pd.DataFrame(data[key])
+
+        # curating data
+        df["player_market_value_€"] = df["player_market_value"].apply(self.without_money_unit)
+        del df["player_market_value"]
+        df.to_csv("player_market_value.csv")
+        craftcans = pd.read_csv("player_market_value.csv", index_col=[0], sep=',', encoding="utf-8")
+        #  index_col=[0] to get rid of the unnamed column
+        print(craftcans.head(5))  # print 5 first row
+
+        # analysing data
+        player_market_value_E = craftcans["player_market_value_€"]
+        print("min : ", min(player_market_value_E))
+        print("max : ", max(player_market_value_E))
+        print("mean : ", statistics.mean(player_market_value_E))
+
+    def without_money_unit(self, entry):
+        """
+        remove the € symbol and m (for million) or k (for kilo)
+        :param entry: string, player market value
+        :return: float, the corresponding float of the entry
+        """
+        try:
+            return float(entry)
+        except ValueError:
+            if (entry[len(entry) - 1]) == "m":
+                return float(entry[1:len(entry) - 1]) * 10 ** 6
+            if (entry[len(entry) - 1]) == "k":
+                return float(entry[1:len(entry) - 1]) * 10 ** 3
+

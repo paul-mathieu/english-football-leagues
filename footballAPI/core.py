@@ -2,6 +2,7 @@
 import json
 import requests
 import datetime
+import pandas as pd
 
 BASE_URL = "https://uk.soccerway.com"
 
@@ -41,6 +42,10 @@ def is_leagues_request(parameters_dictionary):
         return False
     return parameters_dictionary["API type"] in ["leagues", "Leagues", "LEAGUES"]
 
+def is_match_request(parameters_dictionary):
+    if "API type" not in parameters_dictionary.keys():
+        return False
+    return parameters_dictionary["API type"] in ["match", "Match", "MATCH"]
 
 def get_year(parameters_dictionary):
     """
@@ -74,3 +79,20 @@ def keys_from_first_row(row):
         elif "acronym" in col_name.keys():
             keys_list.append(col_name["acronym"])
     return keys_list
+
+
+def data_visualization_general(data):
+    """
+    transform the data (json object) to csv file
+    :param data:
+    :return:
+    """
+    key = list(data.keys())[0]  # we do this way because keys() return a dict-keys which is not subscriptable
+    df = pd.DataFrame(data[key])
+    df.to_csv(key + ".csv")
+    craftcans = pd.read_csv(key + ".csv", sep=',', encoding="utf-8")
+    col_list = ["id"]
+    for col in df.columns:  # we set the table col name
+        col_list.append(col)
+    craftcans.columns = col_list
+    print(craftcans.head(5))  # print 5 first row

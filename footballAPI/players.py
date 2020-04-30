@@ -43,9 +43,8 @@ class Players(object):
 
     def set_URL_Players(self):
         """
-        Add the attribute URL
+        Add the attribute URL - We use site search system
         """
-        print(self.parameters_dictionary)
 
         if self.parameters_dictionary["country"] is not None and self.parameters_dictionary["club"] is not None:
             param = str(self.parameters_dictionary["club"]).replace(" ", "+")
@@ -69,7 +68,7 @@ class Players(object):
             self.choix = 5
         else:
             raise ValueError("Parameter's configuration not found")
-        print(self.URL)
+        # print(self.URL)
 
     # ===============================================================
     #   Methods
@@ -122,12 +121,17 @@ class Players(object):
 
 
     def functionProcessing2(self, firstName = '', lastName = ''):
+        '''
+        This function search the data for one players gived in parameters_dicitonary or in param.
+        :param firstName: Not compulsory, used for a player different than the starter
+        :param lastName: Not compulsory, used for a player different than the starter
+        :return: liste of dict
+        '''
         if firstName != '' and lastName != '':
             param = str(lastName).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.parameters_dictionary["firstName"] = str(firstName)
         finalreturn = []
-        print("Point de passage 1")
         # For search one players we use the query option of the web site
         # The query parameter is the last name of the player
         # After we look for when the first name give in parameter is the same
@@ -154,11 +158,10 @@ class Players(object):
         # When the player was found, we recover the specific URL of this player
         html = urlopen(playerUrl)
         html_soup = BeautifulSoup(html, 'html.parser')
-        print(playerUrl)
+        # print(playerUrl)
         numPlayerL = playerUrl.split("/")[-2]
 
         if self.choix == 2 or self.choix == 5:
-            print("Point de passage 2")
             matchs = []
 
             i = 0
@@ -222,7 +225,6 @@ class Players(object):
                 i = i - 1
 
         if self.choix == 3 or self.choix == 5:
-            print("Point de passage 3")
             returns = []
             rows = html_soup.findAll("dl")
 
@@ -258,7 +260,6 @@ class Players(object):
                 finalreturn.append({"passport": returns})
 
         if self.choix == 4 or self.choix == 5:
-            print("Point de passage 4")
             rows = html_soup.findAll("table", {"class": 'playerstats career sortable table'})
             retrourner = []
 
@@ -295,10 +296,12 @@ class Players(object):
 
 
     def functionProcessing1(self):
+        '''
+        Function used for serch all players (and players data) of a team
+        '''
         html = urlopen(self.URL)
         html_soup = BeautifulSoup(html, 'html.parser')
         rows = html_soup.findAll("div", {"class":"block_search_results_teams real-content clearfix"})
-
         for row in rows:
             row = row.findAll("li")
 
@@ -309,36 +312,74 @@ class Players(object):
 
         html = urlopen(self.URL)
         html_soup = BeautifulSoup(html, 'html.parser')
-        rows = html_soup.findAll("tr")
+        rows = html_soup.findAll("table",{"class":"table squad sortable"})
         players = []
 
         for row in rows:
-            cells = row.findAll("td")
-            # print(cells)
-            # print("\n\n")
-            if len(cells) == 17:
-                try:
-                    players_entry = {
-                            "shirtnumber": cells[0].text,
-                            "name": cells[2].text,
-                            "age": cells[4].text,
-                            "position": cells[5].text,
-                            "game_minutes": cells[6].text,
-                            "appearances": cells[7].text,
-                            "lineups": cells[8].text,
-                            "subs_in": cells[9].text,
-                            "subs_out": cells[10].text,
-                            "subs_on_bench": cells[11].text,
-                            "number_statistic_goals": cells[12].text,
-                            "number_statistic_assists": cells[13].text,
-                            "yellow_cards": cells[14].text,
-                            "nd_yellow_cards": cells[15].text,
-                            "red_cards": cells[16].text
-                    }
-                    players.append(players_entry)
+            cellss = row.findAll("tr")
+            for a in cellss:
+                cells = a.findAll("td")
+                print(len(cells))
+                if len(cells) == 17:
+                    try:
+                        players_entry = {
+                                "shirtnumber": cells[0].text,
+                                "name": cells[2].text,
+                                "age": cells[4].text,
+                                "position": cells[5].text,
+                                "game_minutes": cells[6].text,
+                                "appearances": cells[7].text,
+                                "lineups": cells[8].text,
+                                "subs_in": cells[9].text,
+                                "subs_out": cells[10].text,
+                                "subs_on_bench": cells[11].text,
+                                "number_statistic_goals": cells[12].text,
+                                "number_statistic_assists": cells[13].text,
+                                "yellow_cards": cells[14].text,
+                                "nd_yellow_cards": cells[15].text,
+                                "red_cards": cells[16].text
+                        }
+                        players.append(players_entry)
 
-                except:
-                    pass
+                    except:
+                        pass
+                elif len(cells) == 14:
+                    try:
+                        players_entry = {
+                            "age": cells[3].text,
+                            "game_minutes": cells[5].text,
+                            "number_statistic_goals": cells[11].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[12].text,
+                            "red_cards": cells[14].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+                elif len(cells) == 15:
+                    try:
+                        players_entry = {
+                            "age": cells[3].text,
+                            "game_minutes": cells[5].text,
+                            "number_statistic_goals": cells[11].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[12].text,
+                            "red_cards": cells[14].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+                elif len(cells) == 16:
+                    try:
+                        players_entry = {
+                            "age": cells[4].text,
+                            "game_minutes": cells[6].text,
+                            "number_statistic_goals": cells[12].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[13].text,
+                            "red_cards": cells[15].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+
 
         return {'TeamPlayer': players}
 
@@ -349,7 +390,7 @@ class Players(object):
         """
         This function execute the processing chosen by the user in the variable parametre_dictionaty
             :return json_data: json data
-            :rtype json_data: dict
+            :rtype json_data: liste[dict]
         """
 
         # If we search a team squad. This part of the function return all players of team choose
@@ -370,72 +411,75 @@ class Players(object):
 
 
 
+    def functionProcessing1b(self, u):
+        html = urlopen(u)
+        html_soup = BeautifulSoup(html, 'html.parser')
+        rows = html_soup.findAll("table",{"class":"table squad sortable"})
+        players = []
+
+        for row in rows:
+            cellss = row.findAll("tr")
+            for a in cellss:
+                cells = a.findAll("td")
+                if len(cells) == 17:
+                    try:
+                        players_entry = {
+                                "shirtnumber": cells[0].text,
+                                "name": cells[2].text,
+                                "age": cells[4].text,
+                                "position": cells[5].text,
+                                "game_minutes": cells[6].text,
+                                "appearances": cells[7].text,
+                                "lineups": cells[8].text,
+                                "subs_in": cells[9].text,
+                                "subs_out": cells[10].text,
+                                "subs_on_bench": cells[11].text,
+                                "number_statistic_goals": cells[12].text,
+                                "number_statistic_assists": cells[13].text,
+                                "yellow_cards": cells[14].text,
+                                "nd_yellow_cards": cells[15].text,
+                                "red_cards": cells[16].text
+                        }
+                        players.append(players_entry)
+
+                    except:
+                        pass
+                elif len(cells) == 14:
+                    try:
+                        players_entry = {
+                            "age": cells[3].text,
+                            "game_minutes": cells[5].text,
+                            "number_statistic_goals": cells[11].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[12].text,
+                            "red_cards": cells[14].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+                elif len(cells) == 15:
+                    try:
+                        players_entry = {
+                            "age": cells[3].text,
+                            "game_minutes": cells[5].text,
+                            "number_statistic_goals": cells[11].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[12].text,
+                            "red_cards": cells[14].text}
+                        players.append(players_entry)
+                    except:
+                        pass
+                elif len(cells) == 16:
+                    try:
+                        players_entry = {
+                            "age": cells[4].text,
+                            "game_minutes": cells[6].text,
+                            "number_statistic_goals": cells[12].text,
+                            "number_statistic_assists": 0,
+                            "yellow_cards": cells[13].text,
+                            "red_cards": cells[15].text}
+                        players.append(players_entry)
+                    except:
+                        pass
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        # def functionProcessing1(self):
-        #     html = urlopen(self.URL)
-        #     html_soup = BeautifulSoup(html, 'html.parser')
-        #     rows = html_soup.findAll("tr")
-        #     players = []
-        #     for row in rows:
-        #         cells = row.findAll("td")
-        #         # print(cells)
-        #         # print("\n\n")
-        #         if len(cells) == 17:
-        #             try:
-        #                 players_entry = {
-        #                     "shirtnumber": cells[0].text,
-        #                     "name": cells[2].text,
-        #                     "age": cells[4].text,
-        #                     "position": cells[5].text,
-        #                     "game_minutes": cells[6].text,
-        #                     "appearances": cells[7].text,
-        #                     "lineups": cells[8].text,
-        #                     "subs_in": cells[9].text,
-        #                     "subs_out": cells[10].text,
-        #                     "subs_on_bench": cells[11].text,
-        #                     "number_statistic_goals": cells[12].text,
-        #                     "number_statistic_assists": cells[13].text,
-        #                     "yellow_cards": cells[14].text,
-        #                     "nd_yellow_cards": cells[15].text,
-        #                     "red_cards": cells[16].text
-        #                 }
-        #                 players.append(players_entry)
-        #             except:
-        #                 pass
-        #     return {'TeamPlayer': players}
+        return [{'TeamPlayer': players}]
