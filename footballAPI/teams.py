@@ -35,9 +35,10 @@ class Teams(object):
         """
         self.parameters_dictionary = {"API type": None, "country": None, "league": None, "end year": None}
         self.fill_parameters_dictionary(parameters_dictionary)
+        self.set_url_teams()
         # print("test")
 
-    def set_URL_teams(self):
+    def set_url_teams(self):
         """
         Set the URL for the request
         """
@@ -47,6 +48,16 @@ class Teams(object):
                    "/" + get_year(self.parameters_dictionary) + \
                    TEAMS_END_URL
         # self.URL = "https://uk.soccerway.com/national/england/premier-league/20192020/regular-season/r53145/tables/"
+
+    # ===============================================================
+    #   Getters
+    # ===============================================================
+
+    def get_table_teams(self):
+        my_html = BeautifulSoup(urlopen(self.URL), "html.parser").findAll("form")
+        # my_html = BeautifulSoup(str(my_html[2]), "html.parser").findAll("tr")
+        return my_html
+
 
     # ===============================================================
     #   Methods
@@ -61,8 +72,6 @@ class Teams(object):
             :rtype json_data: dict
         """
         self.set_parameters_dictionary(parameters_dictionary)
-        self.set_URL_teams()
-        self.display()
         # return BeautifulSoup(urlopen(self.URL), "html.parser").findAll("form")[2]
 
         # Definition of variables
@@ -106,29 +115,16 @@ class Teams(object):
     #   Prints and debugs
     # ===============================================================
 
-    def display(self):
-        # print(get_HTML(self.URL))
+    def display_teams(self):
+        print("URL: ", self.URL, sep="")
 
-        # html = urlopen(self.URL)
-        # html_soup = BeautifulSoup(html, "html.parser")
-        # rows = html_soup.findAll("table")
+        rows = self.get_table_teams()
+        print(rows[0])
+
         # my_xml = str(rows[0])
-        # print("~~ my xml ~~")
-        # my_xml.replace("\n", "")
         # print(my_xml)
-        # print("~~ my xml 2 ~~")
-        # print(json.dumps(xmltodict.parse(my_xml)))
-        print("step 1")
-        html = urlopen(self.URL)
-        print("step 2")
-        html_soup = BeautifulSoup(html, "html.parser")
-        print("step 3")
-        rows = html_soup.findAll("table")
-        print("step 4")
-        my_xml = str(rows[0])
-        print(my_xml)
+        # print("my_xml: ", my_xml, sep="")
 
-        print(self.URL)
 
     def tests_api_teams(self):
         callback_params = {"season_id": "17429", "round_id": "53145", "outgroup": "", "competition_id": "8",
@@ -142,6 +138,10 @@ class Teams(object):
         # for s in url:
         #     print("\"" if s == "'" else s, end="")
         print(url)
+
+    def tests(self, parameters_dictionary):
+        self.set_parameters_dictionary(parameters_dictionary)
+        self.display_teams()
 
 # data = [{'tr': {'@class': 'sub-head', 'th': [{'@class': 'sortasc sortdefaultasc', '@title': 'Rank', '#text': '#'},
 #                                              {'@class': 'text team sortdefaultasc', '#text': 'Team'},
@@ -176,7 +176,6 @@ class Teams(object):
 #                        '@href': '/teams/england/manchester-united-fc/662/', '@title': 'Manchester United',
 #                        '#text': 'Manchester United'}}, {'@class': 'number total mp', '#text': '29'},
 #                           {'@class': 'number gd', '#text': '+14'}, {'@class': 'number points', '#text': '45'}]}}]
-
 
 
 # https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id=page_competitions_1_block_competitions_index_club_domestic_4&callback_params={"level":1}&action=expandItem&params={"area_id":"68","level":2,"item_key":"area_id"}
