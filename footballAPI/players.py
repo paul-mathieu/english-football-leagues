@@ -2,11 +2,11 @@
 import psycopg2 as psycopg2
 
 from .core import *
-from urllib.request import urlopen
+from urllib.request import *
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
-
+import urllib3
 
 class Players(object):
     """
@@ -20,6 +20,8 @@ class Players(object):
         self.parameters_dictionary = None
         self.URL = None
         self.choix = 0
+        self.request_headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
+                                 'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
 
 
 
@@ -68,7 +70,7 @@ class Players(object):
             self.choix = 5
         else:
             raise ValueError("Parameter's configuration not found")
-        # print(self.URL)
+        print(self.URL)
 
     # ===============================================================
     #   Methods
@@ -135,8 +137,10 @@ class Players(object):
         # For search one players we use the query option of the web site
         # The query parameter is the last name of the player
         # After we look for when the first name give in parameter is the same
-        html = urlopen(self.URL)
-        html_soup = BeautifulSoup(html, 'html.parser')
+
+        html = requests.get(self.URL, headers=self.request_headers)
+        # html = urlopen(request)
+        html_soup = BeautifulSoup(html.text, 'html.parser')
         rows = html_soup.findAll("tr")
         del html, html_soup
         find = False
@@ -156,9 +160,10 @@ class Players(object):
         if not find: raise ValueError("Player name not found")
 
         # When the player was found, we recover the specific URL of this player
-        html = urlopen(playerUrl)
-        html_soup = BeautifulSoup(html, 'html.parser')
-        # print(playerUrl)
+
+        html = requests.get(playerUrl, headers=self.request_headers)
+        html_soup = BeautifulSoup(html.text, 'html.parser')
+
         numPlayerL = playerUrl.split("/")[-2]
 
         if self.choix == 2 or self.choix == 5:
@@ -177,7 +182,7 @@ class Players(object):
                 # print(listGetMeth)
 
                 # recover html code
-                htmlMatchs = requests.get(getMeth).json()["commands"][0]["parameters"]["content"]
+                htmlMatchs = requests.get(getMeth,headers = self.request_headers).json()["commands"][0]["parameters"]["content"]
 
                 # Processing for recover all matches
                 if len(str(htmlMatchs)) < 100:
@@ -299,8 +304,9 @@ class Players(object):
         '''
         Function used for serch all players (and players data) of a team
         '''
-        html = urlopen(self.URL)
-        html_soup = BeautifulSoup(html, 'html.parser')
+
+        html = requests.get(self.URL, headers=self.request_headers)
+        html_soup = BeautifulSoup(html.text, 'html.parser')
         rows = html_soup.findAll("div", {"class":"block_search_results_teams real-content clearfix"})
         for row in rows:
             row = row.findAll("li")
@@ -310,8 +316,10 @@ class Players(object):
                     self.URL = BASE_URL + "/" + str(i.a.get('href')) + "/squad/"
                     break
 
-        html = urlopen(self.URL)
-        html_soup = BeautifulSoup(html, 'html.parser')
+        html = requests.get(self.URL, headers=self.request_headers)
+        # html = urlopen(request)
+        html_soup = BeautifulSoup(html.text, 'html.parser')
+
         rows = html_soup.findAll("table",{"class":"table squad sortable"})
         players = []
 
@@ -319,7 +327,6 @@ class Players(object):
             cellss = row.findAll("tr")
             for a in cellss:
                 cells = a.findAll("td")
-                print(len(cells))
                 if len(cells) == 17:
                     try:
                         players_entry = {
@@ -412,8 +419,10 @@ class Players(object):
 
 
     def functionProcessing1b(self, u):
-        html = urlopen(u)
-        html_soup = BeautifulSoup(html, 'html.parser')
+
+        html = requests.get(u, headers=self.request_headers)
+        html_soup = BeautifulSoup(html.text, 'html.parser')
+
         rows = html_soup.findAll("table",{"class":"table squad sortable"})
         players = []
 

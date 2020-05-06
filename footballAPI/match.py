@@ -7,6 +7,7 @@ import pandas as pd
 import requests
 import datetime
 from .players import *
+
 class Match(object):
     # ===============================================================
     #   Initialisation
@@ -15,6 +16,9 @@ class Match(object):
         self.parameters_dictionary = None
         self.URL = None
         self.choix = 0
+        self.request_headers = {
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
+                          'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
 
 
 
@@ -72,7 +76,6 @@ class Match(object):
             teamA = a.json_players(a.parameters_dictionary)
             # print(teamA)
 
-            print("\n\n ------------------------- \n\n")
 
             b = Players()
             b.set_parameters_dictionary({"API type": "players", "country": self.parameters_dictionary["countryB"], "club": self.parameters_dictionary["clubB"]})
@@ -183,8 +186,8 @@ class Match(object):
             j = "0"+j
 
         URL = BASE_URL+"/matches/"+a+"/"+m+"/"+j
-        html = urlopen(URL)
-        html_soup = BeautifulSoup(html, 'html.parser')
+        html = requests.get(URL, headers=self.request_headers)
+        html_soup = BeautifulSoup(html.text, 'html.parser')
         rows = html_soup.find_all('table', {"class":"matches date_matches grouped"})
         for row in rows:
             a = row.find_all("tr")
@@ -196,7 +199,7 @@ class Match(object):
                            id = id[-i+1:]
                            getM = "https://uk.soccerway.com/a/block_date_matches?block_id=page_matches_1_block_date_matches_1&callback_params={%22block_service_id%22%3A%22matches_index_block_datematches%22%2C%22date%22%3A%222020-04-28%22%2C%22stage-value%22%3A%" \
                                   "221%22}&action=showMatches&params={%22competition_id%22%3A"+id+"}"
-                           req = requests.get(getM).json()["commands"][0]["parameters"]["content"]
+                           req = requests.get(getM, headers = self.request_headers).json()["commands"][0]["parameters"]["content"]
                            html_soup1 = BeautifulSoup(req, 'html.parser')
                            rows = html_soup1.findAll("tr")
                            for row in rows:
@@ -210,3 +213,4 @@ class Match(object):
                except:
                    pass
         return aRetourner
+
