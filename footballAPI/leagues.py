@@ -21,7 +21,7 @@ class Leagues(object):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
         self.process()
-        #data_visualization_general(self.process())
+        data_visualization_general(self.process())
         # self.get_player_with_market_value_of_a_team("manchester united", 2019)
         # self.data_visualization_transfermarkt(self.get_player_with_market_value_of_a_team("arsenal", 2019))
 
@@ -127,10 +127,9 @@ class Leagues(object):
         # create json object
         json_dump = json.dumps(data_set)
         json_object = json.loads(json_dump)
-        print(json_object)
         return json_object
 
-    def get_all_leagues(self):
+    def get_all_leagues(self): # marche la conversion json vers csv mais la colonne des ous leagues est mal representée
         """
         Return all the english football leagues, even sub leagues
         :return json_object: data about leagues
@@ -141,7 +140,6 @@ class Leagues(object):
                                  'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
 
         # we set a header so that the website will know we are a real user otherwise it will block the program
-        print(self.URL)
         html = requests.get(self.URL, headers=headers)
         html_soup = BeautifulSoup(html.text, 'html.parser')
         liste = html_soup.find('ul', class_='left-tree')
@@ -156,18 +154,17 @@ class Leagues(object):
                 # which are only available if the current main leagues is selected (clicked)
                 new_html = requests.get(new_url, headers=headers)
                 new_html_soup = BeautifulSoup(new_html.text, 'html.parser')
-                data_dict = {main_league: []}
+                data_dict = {"league_name": main_league, "sub leagues": []}
                 listoflink = new_html_soup.select('ul.left-tree > li.expanded')[0].find_all('a')
                 # if class = expanded, it's the current selected
                 if len(listoflink) > 2:  # we start at 2 to avoid the main leagues and the year in url <a>
                     for i in range(2, len(listoflink)):
-                        data_dict[main_league].append(listoflink[i].string)
+                        data_dict["sub leagues"].append(listoflink[i].string)
                 data_set[data_set_name].append(data_dict)
 
         # create json object
         json_dump = json.dumps(data_set)
         json_object = json.loads(json_dump)
-        print(json_object)
         return json_object
 
 
@@ -188,7 +185,7 @@ class Leagues(object):
 
         html_soup = BeautifulSoup(html.text, 'html.parser')
         country_soup = None
-        data_set_names = "leagues in " + country
+        data_set_names = "leagues in " + country + " plus type"
         data_set = {data_set_names: []}
         for list_element in html_soup.find_all('li', class_='expandable'):
             link = list_element.find('a')['href']
@@ -215,7 +212,6 @@ class Leagues(object):
         # create json object
         json_dump = json.dumps(data_set)
         json_object = json.loads(json_dump)
-        print(json_object)
         return json_object
 
         # avoir le gagnant d'une competition en ou de tou (les pr
@@ -277,7 +273,6 @@ class Leagues(object):
         # create json object
         json_dump = json.dumps(data_set)
         json_object = json.loads(json_dump)
-        print(json_object)
         return json_object
 
     # ===============================================================
@@ -379,7 +374,6 @@ class Leagues(object):
         # create json object
         json_dump = json.dumps(data_set)
         json_object = json.loads(json_dump)
-        print(json_object)
         return json_object
 
     # ===============================================================

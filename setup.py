@@ -39,15 +39,13 @@ import footballAPI
 # ===============================================================
 #   Leagues
 # ===============================================================
-parameters_dictionary = {"API type": "leagues", "country": "england"}  # shows all the competitions in england
-
 # example of additionnal parameters :
 # "competitions type": True ( if we want to show the competition type) FAIT
 # "winners":True (shows all the team winners through years) FAIT
 # "tables" : True (shows the rankings) PAUL va le faire
 
-# pour avoir l'équipe gagnante d'une competition selon les annees
-#parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "winner":True, "end year":"all"}
+# pour avoir l'équipe gagnante d'une competition sur plusieurs annees
+parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "winner":True, "end year":"all"}
 
 # pour avoir l'équipe gagnante pour une année
 # parameters_dictionary = {"API type": "leagues", "country": "england", "league": "u21-premier-league-division-2", "winner":True, "end year":"all"}
@@ -56,16 +54,24 @@ parameters_dictionary = {"API type": "leagues", "country": "england"}  # shows a
 # parameters_dictionary = {"API type": "leagues", "country": "france", "league": "ligue-2", "winner":True, "end year":"all"}
 
 # test gagnant en autriche
-# parameters_dictionary = {"API type": "leagues", "country": "austria", "league": "bundesliga", "winner":True, "end year":"all"}
+#parameters_dictionary = {"API type": "leagues", "country": "austria", "league": "bundesliga", "winner":True, "end year":"all"}
 
 # dans certains pays ca marche pas pour la recherche selon une saison particulière car c'est' pas le même format de season Annee/Annee ( des fois juste Annee et des fois les deux)
 # par exemple au burkina faso
 # y aussi le cas bizarre de el salvador
 # faire fonction get id de la competition
 
-# parameters_dictionary = {"API type": "leagues", "country": "england", "type": True}
-#parameters_dictionary = {"API type": "leagues", "country": "england", "all": True}
+
+#pour avoir les competitions
 #parameters_dictionary = {"API type": "leagues", "country": "england"}
+
+#pour avoir les competitions et leurs types
+#parameters_dictionary = {"API type": "leagues", "country": "england", "type": True}
+
+#pour avoir les competitions et leurs sous-competitions (ex: phase de poule ou autre)
+#parameters_dictionary = {"API type": "leagues", "country": "england", "all": True}
+
+
 
 # tous les parametres
 # API type (parameter required)

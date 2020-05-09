@@ -1,8 +1,12 @@
 # -*- coding: UTF-8 -*-
 import json
+import os
+
 import requests
 import datetime
 import pandas as pd
+from pathlib import Path
+
 
 BASE_URL = "https://uk.soccerway.com"
 
@@ -83,16 +87,12 @@ def keys_from_first_row(row):
 
 def data_visualization_general(data):
     """
-    transform the data (json object) to csv file
-    :param data:
-    :return:
+    transform the data (json object) to csv file and save it in the jupyter_notebook folder
+    :param data: json object
     """
+    path_to_save = str(Path(__file__).parent.parent) + '/jupyter_notebook/'
     key = list(data.keys())[0]  # we do this way because keys() return a dict-keys which is not subscriptable
     df = pd.DataFrame(data[key])
-    df.to_csv(key + ".csv")
-    craftcans = pd.read_csv(key + ".csv", sep=',', encoding="utf-8")
-    col_list = ["id"]
-    for col in df.columns:  # we set the table col name
-        col_list.append(col)
-    craftcans.columns = col_list
-    print(craftcans.head(5))  # print 5 first row
+    file_name = key+".csv"
+    df.to_csv(os.path.join(path_to_save, file_name))
+    # we save it in the jupyter_notebook folder so that it will be easier to show data on jupyter notebook
