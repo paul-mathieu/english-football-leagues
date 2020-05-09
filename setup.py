@@ -39,7 +39,7 @@ import footballAPI
 # ===============================================================
 #   Leagues
 # ===============================================================
-#parameters_dictionary = {"API type": "leagues", "country": "england"}  # shows all the competitions in england
+parameters_dictionary = {"API type": "leagues", "country": "england"}  # shows all the competitions in england
 
 # example of additionnal parameters :
 # "competitions type": True ( if we want to show the competition type) FAIT
@@ -64,8 +64,8 @@ import footballAPI
 # faire fonction get id de la competition
 
 # parameters_dictionary = {"API type": "leagues", "country": "england", "type": True}
-parameters_dictionary = {"API type": "leagues", "country": "england", "all": True}
-# parameters_dictionary = {"API type": "leagues", "country": "england"}
+#parameters_dictionary = {"API type": "leagues", "country": "england", "all": True}
+#parameters_dictionary = {"API type": "leagues", "country": "england"}
 
 # tous les parametres
 # API type (parameter required)

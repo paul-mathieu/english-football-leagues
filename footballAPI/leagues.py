@@ -76,9 +76,59 @@ class Leagues(object):
         elif request == 2:
             return self.get_all_leagues()
         elif request == 3:
-            return self.get_leagues_propres_with_type()
+            return self.get_leagues_with_type()
         elif request == 4:
-            return self.get_leagues_propre()
+            return self.get_leagues()
+
+    def get_leagues(self):
+        """
+        return a json object of the main english football leagues
+        :return json_object: data about leagues
+        :rtype json_object: json
+        """
+        # ex of result : {'leagues in england': [{'league name ': 'Premier League'}, {'league name ':
+        # 'Championship'},{'league name ': 'League Cup'}]}
+
+        # https://int.soccerway.com/competitions/
+        country = "england"
+
+        headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
+                                 'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
+
+        # we set a header so that the website will know we are a real user otherwise it will block the program
+
+        html = requests.get(self.URL, headers=headers)
+
+        html_soup = BeautifulSoup(html.text, 'html.parser')
+        country_soup = None
+        data_set_names = "leagues in " + country
+        data_set = {data_set_names: []}
+        for list_element in html_soup.find_all('li', class_='expandable'):
+            link = list_element.find('a')['href']
+            link1 = link.split('/')
+            if country in link1:
+                country_soup = list_element
+                break  # we stop here
+
+        if country_soup is not None:
+            area_id = country_soup['data-area_id']
+            url_hidden_content = "https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id" \
+                                 "=page_competitions_1_block_competitions_index_club_domestic_4&callback_params=%7B" \
+                                 "%22level%22:1%7D&action=expandItem&params=%7B%22area_id%22:%22" + area_id + "%22," \
+                                                                                                              "%22level%22:2,%22item_key%22:%22area_id%22%7D "
+            #  url_hidden_content is the url of the get method used by the website
+            html_country_leagues = requests.get(url_hidden_content, headers=headers).json()["commands"][0]["parameters"][
+                "content"]  # convert the result into json
+            country_league_soup = BeautifulSoup(html_country_leagues, 'html.parser')
+            for link in country_league_soup.find_all('a'):
+                data_set[data_set_names].append({'league name ': link.string})
+
+
+        # create json object
+        json_dump = json.dumps(data_set)
+        json_object = json.loads(json_dump)
+        print(json_object)
+        return json_object
 
     def get_all_leagues(self):
         """
@@ -120,60 +170,9 @@ class Leagues(object):
         print(json_object)
         return json_object
 
-    def get_leagues_propre(self):
-        """
-        return a json object of the main english football leagues
-        :return json_object: data about leagues
-        :rtype json_object: json
-        """
-        # ex of result : {'leagues in england': [{'league name ': 'Premier League'}, {'league name ':
-        # 'Championship'},{'league name ': 'League Cup'}]}
 
-        # https://int.soccerway.com/competitions/
-        country = "england"
 
-        headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
-                                 'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
-
-        # we set a header so that the website will know we are a real user otherwise it will block the program
-
-        html = requests.get(self.URL, headers=headers)
-
-        #html = get_HTML(self.URL)
-        html_soup = BeautifulSoup(html.text, 'html.parser')
-        country_soup = None
-        data_set_names = "leagues in " + country
-        data_set = {data_set_names: []}
-        for list_element in html_soup.find_all('li', class_='expandable'):
-            # print(list.find('a')['href'])
-            link = list_element.find('a')['href']
-            link1 = link.split('/')
-            if country in link1:
-                country_soup = list_element
-                break  # we stop here
-
-        if country_soup is not None:
-            area_id = country_soup['data-area_id']
-            url_hidden_content = "https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id" \
-                                 "=page_competitions_1_block_competitions_index_club_domestic_4&callback_params=%7B" \
-                                 "%22level%22:1%7D&action=expandItem&params=%7B%22area_id%22:%22" + area_id + "%22," \
-                                                                                                              "%22level%22:2,%22item_key%22:%22area_id%22%7D "
-            #  url_hidden_content is the url of the get method used by the website
-            html_country_leagues = requests.get(url_hidden_content, headers=headers).json()["commands"][0]["parameters"][
-                "content"]  # convert the result into json
-            country_league_soup = BeautifulSoup(html_country_leagues, 'html.parser')
-            for link in country_league_soup.find_all('a'):
-                data_set[data_set_names].append({'league name ': link.string})
-                # print(link.string)
-            # print(country_league_soup)
-
-        # create json object
-        json_dump = json.dumps(data_set)
-        json_object = json.loads(json_dump)
-        print(json_object)
-        return json_object
-
-    def get_leagues_propres_with_type(self):
+    def get_leagues_with_type(self):
         """
         Return a json object of the main english football competitions with their type (ex: Domestic league,
         Domestic cup) :return json_object: data about leagues
@@ -187,7 +186,6 @@ class Leagues(object):
 
         html = requests.get(self.URL, headers=headers)
 
-        #html = get_HTML(self.URL)
         html_soup = BeautifulSoup(html.text, 'html.parser')
         country_soup = None
         data_set_names = "leagues in " + country
@@ -237,7 +235,6 @@ class Leagues(object):
 
         html = requests.get(self.URL, headers=headers)
 
-        #html = get_HTML(self.URL)
         html_soup = BeautifulSoup(html.text, 'html.parser')
         data_set_names = "winner of " + self.parameters_dictionary['league']
         data_set = {data_set_names: []}
