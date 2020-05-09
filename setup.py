@@ -24,10 +24,10 @@ import footballAPI
 #   Teams
 # ===============================================================
 
-parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
-
-client = footballAPI.FootballAPI()
-client.tests(parameters_dictionary)
+# parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
+#
+# client = footballAPI.FootballAPI()
+# client.tests(parameters_dictionary)
 # client.set_parameters(parameters_dictionary)
 # client.tests_api_teams()
 
@@ -39,7 +39,7 @@ client.tests(parameters_dictionary)
 # ===============================================================
 #   Leagues
 # ===============================================================
-# parameters_dictionary = {"API type": "leagues", "country": "england"}  # shows all the competitions in england
+#parameters_dictionary = {"API type": "leagues", "country": "england"}  # shows all the competitions in england
 
 # example of additionnal parameters :
 # "competitions type": True ( if we want to show the competition type) FAIT
@@ -55,7 +55,7 @@ client.tests(parameters_dictionary)
 # test gagnant avec la france
 # parameters_dictionary = {"API type": "leagues", "country": "france", "league": "ligue-2", "winner":True, "end year":"all"}
 
-# test gagnat en autriche
+# test gagnant en autriche
 # parameters_dictionary = {"API type": "leagues", "country": "austria", "league": "bundesliga", "winner":True, "end year":"all"}
 
 # dans certains pays ca marche pas pour la recherche selon une saison particulière car c'est' pas le même format de season Annee/Annee ( des fois juste Annee et des fois les deux)
@@ -64,7 +64,7 @@ client.tests(parameters_dictionary)
 # faire fonction get id de la competition
 
 # parameters_dictionary = {"API type": "leagues", "country": "england", "type": True}
-# parameters_dictionary = {"API type": "leagues", "country": "england", "all": True}
+parameters_dictionary = {"API type": "leagues", "country": "england", "all": True}
 # parameters_dictionary = {"API type": "leagues", "country": "england"}
 
 # tous les parametres
@@ -87,10 +87,10 @@ client.tests(parameters_dictionary)
 
 # il faudrait aussi avoir la liste des équipes par division
 
-# client = footballAPI.FootballAPI()
-# client.set_parameters(parameters_dictionary)
-# client.tests_api_teams()
+client = footballAPI.FootballAPI()
+client.set_parameters(parameters_dictionary)
+client.tests_api_teams()
 
-# print("===============")
-# print(client.json_data)
-# print("===============")
+print("===============")
+print(client.json_data)
+print("===============")
