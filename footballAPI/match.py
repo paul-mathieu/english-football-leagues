@@ -174,6 +174,10 @@ class Match(object):
 
 
     def matchWeek(self):
+        '''
+        This function searches for the matches of the day
+        :return: list[dict]
+        '''
         aRetourner = []
         a= str(time.localtime().tm_year)
 

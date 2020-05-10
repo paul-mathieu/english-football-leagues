@@ -8,6 +8,7 @@ import pandas as pd
 import requests
 import urllib3
 
+
 class Players(object):
     """
 
@@ -133,7 +134,7 @@ class Players(object):
             param = str(lastName).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.parameters_dictionary["firstName"] = str(firstName)
-        finalreturn = []
+        finalreturn = {}
         # For search one players we use the query option of the web site
         # The query parameter is the last name of the player
         # After we look for when the first name give in parameter is the same
@@ -186,7 +187,7 @@ class Players(object):
 
                 # Processing for recover all matches
                 if len(str(htmlMatchs)) < 100:
-                    finalreturn.append({'MatchPlayer': matchs})
+                    finalreturn['MatchPlayer'] = matchs
                     break
                 html_soup1 = BeautifulSoup(htmlMatchs, 'html.parser')
                 rows = html_soup1.findAll("tr")
@@ -262,7 +263,7 @@ class Players(object):
                             "foot": ''
                             }
                     returns.append(data)
-                finalreturn.append({"passport": returns})
+                finalreturn["passport"] = returns
 
         if self.choix == 4 or self.choix == 5:
             rows = html_soup.findAll("table", {"class": 'playerstats career sortable table'})
@@ -293,7 +294,7 @@ class Players(object):
                     except:
                         pass
             # print(retrourner)
-            finalreturn.append({"career": retrourner})
+            finalreturn["career"] = retrourner
 
         return finalreturn
 
@@ -410,7 +411,7 @@ class Players(object):
         # This part of the function return all matches plays by one player
         # If we search a player
         if self.choix == 2 or self.choix == 3 or self.choix == 4 or self.choix == 5:
-            finalreturn = finalreturn + self.functionProcessing2()
+            finalreturn = self.functionProcessing2()
 
         return finalreturn
 
@@ -419,7 +420,11 @@ class Players(object):
 
 
     def functionProcessing1b(self, u):
-
+        '''
+        This function is used in match.py
+        :param u: Team URL
+        :return: Dict
+        '''
         html = requests.get(u, headers=self.request_headers)
         html_soup = BeautifulSoup(html.text, 'html.parser')
 
