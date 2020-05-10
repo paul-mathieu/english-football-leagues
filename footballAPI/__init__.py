@@ -77,6 +77,17 @@ class FootballAPI(Players, Teams, Leagues, Match):
             if type(self.json_data) is dict:
                 a = dataBase(self.db, self.json_data)
                 a.processing()
+
+
+    def jsonExit(self, µ):
+        if type(self.json_data) is dict:
+            with open (µ,'w') as fp:
+                json.dump(self.json_data,fp)
+        elif type(self.json_data) is list:
+            with open(µ, 'w') as fp:
+                json.dump(self.json_data, fp)
+        else:
+            raise ValueError("Json_data type not found")
 # ===============================================================
 #   Links
 # ===============================================================
