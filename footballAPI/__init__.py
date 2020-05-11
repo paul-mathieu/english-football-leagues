@@ -16,6 +16,7 @@ from .leagues import Leagues
 from .dataBase import dataBase
 from .match import Match
 
+
 class FootballAPI(Players, Teams, Leagues, Match):
     """
     The queries in this FootballAPI class are used to obtain or 
@@ -34,14 +35,15 @@ class FootballAPI(Players, Teams, Leagues, Match):
         Players.__init__(self, *args)
         Teams.__init__(self, *args)
         Leagues.__init__(self, *args)
-        Match.__init__(self,*args)
+        Match.__init__(self, *args)
         self.json_data = None
         self.db = None
+
     # ===============================================================
     #   Setters
     # ===============================================================
 
-    def set_parameters(self, parameters_dictionary, db = None):
+    def set_parameters(self, parameters_dictionary, db=None):
         """
         Add the dictionary attribute for the values of the query and
         apply the method which adds the json attribute of the values
@@ -53,7 +55,6 @@ class FootballAPI(Players, Teams, Leagues, Match):
         self.parameters_dictionary = parameters_dictionary
         self.db = db
         self.set_json_data()
-
 
     def set_json_data(self):
         """
@@ -72,22 +73,23 @@ class FootballAPI(Players, Teams, Leagues, Match):
         if type(self.db) is psycopg2.extensions.connection:
             if type(self.json_data) is list:
                 for i in range(len(self.json_data)):
-                    a = dataBase(self.db,self.json_data[i])
+                    a = dataBase(self.db, self.json_data[i])
                     a.processing()
             if type(self.json_data) is dict:
                 a = dataBase(self.db, self.json_data)
                 a.processing()
 
-
-    def jsonExit(self, µ):
+    def jsonExit(self, e):
         if type(self.json_data) is dict:
-            with open (µ,'w') as fp:
-                json.dump(self.json_data,fp)
+            with open(e, 'w') as fp:
+                json.dump(self.json_data, fp)
         elif type(self.json_data) is list:
-            with open(µ, 'w') as fp:
+            with open(e, 'w') as fp:
                 json.dump(self.json_data, fp)
         else:
             raise ValueError("Json_data type not found")
+
+
 # ===============================================================
 #   Links
 # ===============================================================
