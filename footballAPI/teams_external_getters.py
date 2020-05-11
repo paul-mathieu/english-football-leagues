@@ -69,6 +69,11 @@ def get_team_data(team_id):
     transfers_data = get_team_data_transfers(team_id, transfers_url)
     output_dictionary["squad"] = transfers_data
 
+    # === TRANSFERS ===
+    statistics_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/statistics/"
+    statistics_data = get_team_data_statistics(team_id, statistics_url)
+    output_dictionary["statistics"] = statistics_data
+
     # === FAN SITES ===
     fan_sites_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
     fan_sites_data = get_team_data_fan_sites(team_id, fan_sites_url)
@@ -80,7 +85,12 @@ def get_team_data(team_id):
 def get_team_data_info(team_id, info_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
- 
+        - date of foundation of the club
+        - club address
+        - club country
+        - club telephone
+        - club fax
+        - E-mail adress
         :param team_id: id of the team
         :type team_id: str
         :param info_url: url for get info
@@ -98,7 +108,13 @@ def get_team_data_info(team_id, info_url):
 def get_team_data_venue(team_id, venue_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
- 
+        - address
+        - zip code of the stadium
+        - stadium city
+        - stadium phone
+        - stadium capacity
+        - type of stadium area
+        - map and location of the stadium on google maps
         :param team_id: id of the team
         :type team_id: str
         :param venue_url: url for get venue
@@ -116,7 +132,8 @@ def get_team_data_venue(team_id, venue_url):
 def get_team_data_trophies(team_id, trophies_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
- 
+        - all club trophies since its creation at national level, classified by leagues
+        - all club trophies since its creation at the international level, classified by leagues
         :param team_id: id of the team
         :type team_id: str
         :param trophies_url: url for get trophies
@@ -134,7 +151,15 @@ def get_team_data_trophies(team_id, trophies_url):
 def get_team_data_matches(team_id, matches_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
- 
+        - all the matches available with:
+            the day,
+            the date,
+            the code of the league,
+            the name of the league,
+            the team 1,
+            the team 2,
+            the score,
+            the link to have additional information on the match
         :param team_id: id of the team
         :type team_id: str
         :param matches_url: url for get matches
@@ -152,7 +177,14 @@ def get_team_data_matches(team_id, matches_url):
 def get_team_data_squad(team_id, squad_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
- 
+        - all the current team with:
+            player number,
+            player name,
+            player id,
+            player place currently
+        - the coach:
+            the name,
+            the id
         :param team_id: id of the team
         :type team_id: str
         :param squad_url: url for get squad
@@ -181,6 +213,24 @@ def get_team_data_transfers(team_id, transfers_url):
     # variables
     output_dictionary = dict()
     bf_html_content = get_beautiful_soup(transfers_url)
+
+    return output_dictionary if len(output_dictionary.keys()) > 0 else None
+
+
+def get_team_data_statistics(team_id, statistics_url):
+    """
+    Getter which allows to obtain a dictionary with the information of a team:
+ 
+        :param team_id: id of the team
+        :type team_id: str
+        :param statistics_url: url for get statistics
+        :type statistics_url: str
+        :return output_dictionary: dictionary data with all statistics of the team
+        :rtype output_dictionary: dict or None
+    """
+    # variables
+    output_dictionary = dict()
+    bf_html_content = get_beautiful_soup(statistics_url)
 
     return output_dictionary if len(output_dictionary.keys()) > 0 else None
 
