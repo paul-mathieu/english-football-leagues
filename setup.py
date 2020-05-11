@@ -98,3 +98,17 @@ client.set_parameters(parameters_dictionary)
 # print("===============")
 # print(client.json_data)
 # print("===============")
+
+# ===============================================================
+#   TransferMarkt
+# ===============================================================
+
+parameters_dictionary = {"API type": "transfer"}
+
+client = footballAPI.FootballAPI()
+client.set_parameters(parameters_dictionary)
+client.tests_api_teams()
+
+print("===============")
+print(client.json_data)
+print("===============")

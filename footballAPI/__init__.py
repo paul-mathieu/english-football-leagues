@@ -15,11 +15,12 @@ from .teams import Teams
 from .leagues import Leagues
 from .dataBase import dataBase
 from .match import Match
+from .transferMarkt import TransferMarkt
 
 
-class FootballAPI(Players, Teams, Leagues, Match):
+class FootballAPI(Players, Teams, Leagues, Match, TransferMarkt):
     """
-    The queries in this FootballAPI class are used to obtain or 
+    The queries in this FootballAPI class are used to obtain or
     extract a json file according to user-defined parameters.
     """
 
@@ -36,6 +37,7 @@ class FootballAPI(Players, Teams, Leagues, Match):
         Teams.__init__(self, *args)
         Leagues.__init__(self, *args)
         Match.__init__(self, *args)
+        TransferMarkt.__init__(self, *args)
         self.json_data = None
         self.db = None
 
@@ -69,15 +71,22 @@ class FootballAPI(Players, Teams, Leagues, Match):
             self.json_data = self.json_leagues(self.parameters_dictionary)
         elif is_match_request(self.parameters_dictionary):
             self.json_data = self.json_match(self.parameters_dictionary)
+        elif is_transferMarkt_request(self.parameters_dictionary):
+            self.json_data = self.json_transferMarkt(self.parameters_dictionary)
 
         if type(self.db) is psycopg2.extensions.connection:
             if type(self.json_data) is list:
                 for i in range(len(self.json_data)):
-                    a = dataBase(self.db, self.json_data[i])
+                    print(self.json_data[i])
+                    print("-------------------------------------")
+                    a = dataBase(self.db,self.json_data[i])
                     a.processing()
             if type(self.json_data) is dict:
-                a = dataBase(self.db, self.json_data)
-                a.processing()
+                for µ in self.json_data:
+                    data = self.json_data[µ]
+                    data = {µ : data}
+                    a = dataBase(self.db, data)
+                    a.processing()
 
     def jsonExit(self, e):
         if type(self.json_data) is dict:

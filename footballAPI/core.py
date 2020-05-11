@@ -54,6 +54,12 @@ def is_match_request(parameters_dictionary):
         return False
     return parameters_dictionary["API type"] in ["match", "Match", "MATCH"]
 
+def is_transferMarkt_request(parameters_dictionary):
+    if "API type" not in parameters_dictionary.keys():
+        return False
+    return parameters_dictionary["API type"] in ["transfer", "Transfer", "TRANSFER"]
+
+
 def get_year(parameters_dictionary):
     """
     Returns the year as a season
