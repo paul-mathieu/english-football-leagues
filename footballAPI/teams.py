@@ -52,8 +52,6 @@ class Teams(object):
         # my_html = BeautifulSoup(str(my_html[2]), "html.parser").findAll("tr")
         return my_html
 
-
-
     # ===============================================================
     #   Methods
     # ===============================================================
