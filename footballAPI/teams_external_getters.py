@@ -181,6 +181,36 @@ def get_team_data_venue(venue_url):
     output_dictionary = dict()
     bf_html_content = get_beautiful_soup(venue_url)
 
+    # tbl_map = bf_html_content.find_all("a", {"class": "google-maps-link"})
+    tbl_map = bf_html_content.find_all("div", {"class": "block_venue_map"})
+    if len(tbl_map) > 0:
+        link = tbl_map[0].find("iframe")["src"]
+        coordinates = link[link.index("&center=") + 8: link.index("&key=")].replace(" ", "")
+        output_dictionary["coordinates"] = coordinates
+        output_dictionary["map_link"] = "https://www.google.com/maps/@" + coordinates + ",15z"
+
+    # tbl_content = bf_html_content.find_all("div", {"class": "block_venue_info"})
+    tbl_content = bf_html_content.find_all("div", {"class": "block_venue_info"})
+    if len(tbl_content) > 0:
+        dl = tbl_content[0]
+
+        # keys of the dict
+        dt_list = dl.find_all("dt")
+        dt_content_list = [str(e)[4:-5] for e in dt_list]
+        # values of the dict
+        dd_list = dl.find_all("dd")
+        dd_content_list = [str(e)[4:-5] for e in dd_list]
+
+        # replace unexpected characters
+        for content_list in [dd_content_list, dt_content_list]:
+            for index in range(len(content_list)):
+                content_list[index] = content_list[index].replace("  ", "")
+                content_list[index] = content_list[index].replace("\n", "")
+                content_list[index] = content_list[index].replace("<br/>", ", ")
+
+        for index in range(len(dd_content_list)):
+            output_dictionary[dt_content_list[index]] = dd_content_list[index]
+
     return output_dictionary if len(output_dictionary.keys()) > 0 else None
 
 
@@ -197,6 +227,17 @@ def get_team_data_trophies(trophies_url):
     # variables
     output_dictionary = dict()
     bf_html_content = get_beautiful_soup(trophies_url)
+    tbl = bf_html_content.find_all("table", {"class": "trophies-table"})
+    if len(tbl) > 0:
+        # column name
+        column_name = ""
+        tbl = tbl[0].find_all("tr")
+        for row in tbl:
+            if "class" in row:
+                column_name = row.find("th").text
+            elif column_name != "":
+                output_dictionary[column_name] = row.find("th")
+
 
     return output_dictionary if len(output_dictionary.keys()) > 0 else None
 
