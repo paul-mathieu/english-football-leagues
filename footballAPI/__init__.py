@@ -15,8 +15,10 @@ from .teams import Teams
 from .leagues import Leagues
 from .dataBase import dataBase
 from .match import Match
+from .transferMarkt import TransferMarkt
 
-class FootballAPI(Players, Teams, Leagues, Match):
+
+class FootballAPI(Players, Teams, Leagues, Match, TransferMarkt):
     """
     The queries in this FootballAPI class are used to obtain or 
     extract a json file according to user-defined parameters.
@@ -34,7 +36,8 @@ class FootballAPI(Players, Teams, Leagues, Match):
         Players.__init__(self, *args)
         Teams.__init__(self, *args)
         Leagues.__init__(self, *args)
-        Match.__init__(self,*args)
+        Match.__init__(self, *args)
+        TransferMarkt.__init__(self, *args)
         self.json_data = None
         self.db = None
     # ===============================================================
@@ -68,6 +71,8 @@ class FootballAPI(Players, Teams, Leagues, Match):
             self.json_data = self.json_leagues(self.parameters_dictionary)
         elif is_match_request(self.parameters_dictionary):
             self.json_data = self.json_match(self.parameters_dictionary)
+        elif is_transferMarkt_request(self.parameters_dictionary):
+            self.json_data = self.json_transferMarkt(self.parameters_dictionary)
 
         if type(self.db) is psycopg2.extensions.connection:
             if type(self.json_data) is list:
