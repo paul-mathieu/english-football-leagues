@@ -24,10 +24,10 @@ import footballAPI
 #   Teams
 # ===============================================================
 
-parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
-
-client = footballAPI.FootballAPI()
-client.set_parameters(parameters_dictionary)
+# parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
+#
+# client = footballAPI.FootballAPI()
+# client.set_parameters(parameters_dictionary)
 
 # print("===============")
 # print(client.json_data)
@@ -103,7 +103,8 @@ client.set_parameters(parameters_dictionary)
 #   TransferMarkt
 # ===============================================================
 
-parameters_dictionary = {"API type": "transfer"}
+#pour avoir la valeur marchande des joueurs d'une équipe dans une année
+parameters_dictionary = {"API type": "transfer", "team": "arsenal", "year": 2019}
 
 client = footballAPI.FootballAPI()
 client.set_parameters(parameters_dictionary)
