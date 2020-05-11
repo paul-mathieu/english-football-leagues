@@ -58,9 +58,20 @@ class Teams(object):
         # my_html = BeautifulSoup(str(my_html[2]), "html.parser").findAll("tr")
         return my_html
 
-
     # ===============================================================
     #   Methods
+    # ===============================================================
+
+    def fill_parameters_dictionary(self, parameters_dictionary):
+        """
+        fill self.parameters_dictionary
+            :param parameters_dictionary: dictionary of query parameters
+        """
+        for key in parameters_dictionary.keys():
+            self.parameters_dictionary[key] = parameters_dictionary[key]
+
+    # ===============================================================
+    #   Output
     # ===============================================================
 
     def json_teams(self, parameters_dictionary):
@@ -73,43 +84,7 @@ class Teams(object):
         """
         self.set_parameters_dictionary(parameters_dictionary)
         # return BeautifulSoup(urlopen(self.URL), "html.parser").findAll("form")[2]
-
-        # Definition of variables
-        output_json = []
-        keys = []
-        is_first = True
-
-        # Html extraction
-        my_html = BeautifulSoup(urlopen(self.URL), "html.parser").findAll("form")
-        my_html = BeautifulSoup(str(my_html[2]), "html.parser").findAll("tr")
-
-        # Converting extraction to dictionary
-        my_json = [json.dumps(xmltodict.parse(str(e))) for e in my_html]
-        my_json = [json.loads(e) for e in my_json]
-
-        # Filling the output JSON file
-        for row in my_json[1:]:
-            # print(row)
-            json_row_temp = dict()
-            json_row_temp["id"] = row["tr"]["@data-team_id"]
-            json_row_temp["team-name"] = row["tr"]["td"][1]['a']["#text"]
-            json_row_temp["team-link"] = row["tr"]["td"][1]['a']["@href"]
-            json_row_temp["rank"] = ""
-            # json_row_temp["matches-played"] =
-            # json_row_temp["goal-difference"] =
-            # json_row_temp["points"] =
-            output_json.append(json_row_temp)
-
-        # return my_json[0]
-        return output_json
-
-    def fill_parameters_dictionary(self, parameters_dictionary):
-        """
-        fill self.parameters_dictionary
-            :param parameters_dictionary: dictionary of query parameters
-        """
-        for key in parameters_dictionary.keys():
-            self.parameters_dictionary[key] = parameters_dictionary[key]
+        get_team_id("liverpool FC")
 
     # ===============================================================
     #   Prints and debugs
@@ -124,7 +99,6 @@ class Teams(object):
         # my_xml = str(rows[0])
         # print(my_xml)
         # print("my_xml: ", my_xml, sep="")
-
 
     def tests_api_teams(self):
         callback_params = {"season_id": "17429", "round_id": "53145", "outgroup": "", "competition_id": "8",
@@ -142,6 +116,7 @@ class Teams(object):
     def tests(self, parameters_dictionary):
         self.set_parameters_dictionary(parameters_dictionary)
         self.display_teams()
+
 
 # data = [{'tr': {'@class': 'sub-head', 'th': [{'@class': 'sortasc sortdefaultasc', '@title': 'Rank', '#text': '#'},
 #                                              {'@class': 'text team sortdefaultasc', '#text': 'Team'},
@@ -179,3 +154,22 @@ class Teams(object):
 
 
 # https://int.soccerway.com/a/block_competitions_index_club_domestic?block_id=page_competitions_1_block_competitions_index_club_domestic_4&callback_params={"level":1}&action=expandItem&params={"area_id":"68","level":2,"item_key":"area_id"}
+
+def get_team_id(team_name):
+    team_name.replace(" ", "%20")
+    url_search = "https://int.soccerway.com/search/teams/?q=" + team_name
+    html_search = requests.get(url_search, headers=HEADERS).text
+    soup_search = BeautifulSoup(html_search)
+    # soup_search.find("ul", attrs={"class": u"tree search-results"})
+    # print(soup_search)
+
+    tbl = soup_search.find_all('ul')
+    for e in tbl:
+        if e.has_attr('class') and e['class'][0] == 'tree search-results':
+            print(e)
+            break
+
+
+
+def get_team_data(team_id):
+    pass
