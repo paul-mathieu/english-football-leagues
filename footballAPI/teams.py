@@ -81,7 +81,7 @@ class Teams(object):
         self.set_url_teams()
         # return BeautifulSoup(urlopen(self.URL), "html.parser").findAll("form")[2]
         print("team name: " + get_team_id("liverpool FC"))
-        print("team data: " + get_team_data('663', self.URL))
+        print("team data: " + str(get_team_data('663')))
 
     # ===============================================================
     #   Prints and debugs
