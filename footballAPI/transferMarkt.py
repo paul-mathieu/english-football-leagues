@@ -4,6 +4,8 @@ from .core import *
 from bs4 import BeautifulSoup
 import pandas as pd
 import statistics
+from pathlib import Path
+import os
 
 
 class TransferMarkt(object):
@@ -22,8 +24,8 @@ class TransferMarkt(object):
         # self.set_URL_leagues()
         # self.process()
 #        data_visualization_general(self.process())
-        return self.get_player_with_market_value_of_a_team("manchester united", 2019)
-        #self.data_visualization_transfermarkt(self.get_player_with_market_value_of_a_team("arsenal", 2019))
+        #return self.get_player_with_market_value_of_a_team("manchester united", 2019)
+        self.data_visualization_transfermarkt(self.get_player_with_market_value_of_a_team("arsenal", 2019))
 
     # ===============================================================
     #   Setters
@@ -153,16 +155,11 @@ class TransferMarkt(object):
         # curating data
         df["player_market_value_€"] = df["player_market_value"].apply(self.without_money_unit)
         del df["player_market_value"]
-        df.to_csv("player_market_value.csv")
-        craftcans = pd.read_csv("player_market_value.csv", index_col=[0], sep=',', encoding="utf-8")
-        #  index_col=[0] to get rid of the unnamed column
-        print(craftcans.head(5))  # print 5 first row
 
-        # analysing data
-        player_market_value_E = craftcans["player_market_value_€"]
-        print("min : ", min(player_market_value_E))
-        print("max : ", max(player_market_value_E))
-        print("mean : ", statistics.mean(player_market_value_E))
+        # saving data to csv in the jupyter_notebook directory
+        file_name = key + ".csv"
+        path_to_save = str(Path(__file__).parent.parent) + '/jupyter_notebook/'
+        df.to_csv(os.path.join(path_to_save, file_name))
 
     def without_money_unit(self, entry):
         """
@@ -177,3 +174,30 @@ class TransferMarkt(object):
                 return float(entry[1:len(entry) - 1]) * 10 ** 6
             if (entry[len(entry) - 1]) == "k":
                 return float(entry[1:len(entry) - 1]) * 10 ** 3
+
+
+    # def data_visualization_transfermarkt(self, data):
+    #     """
+    #     transform the data (json object) to csv file
+    #     :return:
+    #     """
+    #     key = list(data.keys())[0]  # we do this way because keys() return a dict-keys which is not subscriptable
+    #     df = pd.DataFrame(data[key])
+    #
+    #     # curating data
+    #     df["player_market_value_€"] = df["player_market_value"].apply(self.without_money_unit)
+    #     del df["player_market_value"]
+    #
+    #     file_name = key + ".csv"
+    #     path_to_save = str(Path(__file__).parent.parent) + '/jupyter_notebook/'
+    #     df.to_csv(path_to_save, file_name)
+    #
+    #     craftcans = pd.read_csv("player_market_value.csv", index_col=[0], sep=',', encoding="utf-8")
+    #     #  index_col=[0] to get rid of the unnamed column
+    #     print(craftcans.head(5))  # print 5 first row
+    #
+    #     # analysing data
+    #     player_market_value_E = craftcans["player_market_value_€"]
+    #     print("min : ", min(player_market_value_E))
+    #     print("max : ", max(player_market_value_E))
+    #     print("mean : ", statistics.mean(player_market_value_E))
