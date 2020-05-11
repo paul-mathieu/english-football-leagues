@@ -24,12 +24,10 @@ import footballAPI
 #   Teams
 # ===============================================================
 
-# parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
-#
-# client = footballAPI.FootballAPI()
-# client.tests(parameters_dictionary)
-# client.set_parameters(parameters_dictionary)
-# client.tests_api_teams()
+parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
+
+client = footballAPI.FootballAPI()
+client.set_parameters(parameters_dictionary)
 
 # print("===============")
 # print(client.json_data)
@@ -45,7 +43,7 @@ import footballAPI
 # "tables" : True (shows the rankings) PAUL va le faire
 
 # pour avoir l'équipe gagnante d'une competition sur plusieurs annees
-parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "winner":True, "end year":"all"}
+# parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "winner":True, "end year":"all"}
 
 # pour avoir l'équipe gagnante pour une année
 # parameters_dictionary = {"API type": "leagues", "country": "england", "league": "u21-premier-league-division-2", "winner":True, "end year":"all"}
@@ -93,10 +91,10 @@ parameters_dictionary = {"API type": "leagues", "country": "england", "league": 
 
 # il faudrait aussi avoir la liste des équipes par division
 
-client = footballAPI.FootballAPI()
-client.set_parameters(parameters_dictionary)
-client.tests_api_teams()
-
-print("===============")
-print(client.json_data)
-print("===============")
+# client = footballAPI.FootballAPI()
+# client.set_parameters(parameters_dictionary)
+# client.tests_api_teams()
+#
+# print("===============")
+# print(client.json_data)
+# print("===============")
