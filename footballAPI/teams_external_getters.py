@@ -2,6 +2,9 @@
 from .core import *
 from bs4 import BeautifulSoup
 
+# ===============================================================
+#   Main functions
+# ===============================================================
 
 def get_team_id(team_name):
     """
@@ -29,9 +32,27 @@ def get_team_id(team_name):
     return result
 
 
-def get_team_data(team_id):
+def get_team_data(team_id,
+                  info=True, venue=True,
+                  trophies=True, matches=True,
+                  squad=True, statistics=True,
+                  fan_sites=True):
     """
-    get data for a team
+    Get wanted data for a team
+        :param info: can be specify
+        :type info: bool
+        :param venue: can be specify
+        :type venue: bool
+        :param trophies: can be specify
+        :type trophies: bool
+        :param matches: can be specify
+        :type matches: bool
+        :param squad: can be specify
+        :type squad: bool
+        :param statistics: can be specify
+        :type statistics: bool
+        :param fan_sites: can be specify
+        :type fan_sites: bool
         :param team_id: id of a team on the site soccerway.com
         :type team_id: str
         :return output_dictionary: dictionnary with all infos of a team
@@ -40,49 +61,55 @@ def get_team_data(team_id):
     output_dictionary = dict()
 
     # === INFO ===
-    info_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
-    info_data = get_team_data_info(team_id, info_url)
-    output_dictionary["info"] = info_data
+    if info:
+        info_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
+        info_data = get_team_data_info(info_url)
+        output_dictionary["info"] = info_data
 
     # === VENUE ===
-    venue_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/venue/"
-    venue_data = get_team_data_venue(team_id, venue_url)
-    output_dictionary["venue"] = venue_data
+    if venue:
+        venue_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/venue/"
+        venue_data = get_team_data_venue(venue_url)
+        output_dictionary["venue"] = venue_data
 
     # === TROPHIES ===
-    trophies_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/trophies/"
-    trophies_data = get_team_data_trophies(team_id, trophies_url)
-    output_dictionary["trophies"] = trophies_data
+    if trophies:
+        trophies_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/trophies/"
+        trophies_data = get_team_data_trophies(trophies_url)
+        output_dictionary["trophies"] = trophies_data
 
     # === MATCHES ===
-    matches_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/matches/"
-    matches_data = get_team_data_matches(team_id, matches_url)
-    output_dictionary["matches"] = matches_data
+    if matches:
+        matches_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/matches/"
+        matches_data = get_team_data_matches(matches_url)
+        output_dictionary["matches"] = matches_data
 
     # === SQUAD ===
-    squad_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/squad/"
-    squad_data = get_team_data_squad(team_id, squad_url)
-    output_dictionary["squad"] = squad_data
+    if squad:
+        squad_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/squad/"
+        squad_data = get_team_data_squad(team_id, squad_url)
+        output_dictionary["squad"] = squad_data
 
-    # === TRANSFERS ===
-    transfers_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/transfers/"
-    transfers_data = get_team_data_transfers(team_id, transfers_url)
-    output_dictionary["squad"] = transfers_data
-
-    # === TRANSFERS ===
-    statistics_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/statistics/"
-    statistics_data = get_team_data_statistics(team_id, statistics_url)
-    output_dictionary["statistics"] = statistics_data
+    # === STATISTICS ===
+    if statistics:
+        statistics_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/statistics/"
+        statistics_data = get_team_data_statistics(team_id, statistics_url)
+        output_dictionary["statistics"] = statistics_data
 
     # === FAN SITES ===
-    fan_sites_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
-    fan_sites_data = get_team_data_fan_sites(team_id, fan_sites_url)
-    output_dictionary["fan_sites"] = fan_sites_data
+    if fan_sites:
+        fan_sites_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
+        fan_sites_data = get_team_data_fan_sites(team_id, fan_sites_url)
+        output_dictionary["fan_sites"] = fan_sites_data
 
     return output_dictionary
 
 
-def get_team_data_info(team_id, info_url):
+# ===============================================================
+#   Functions to recover different types of data
+# ===============================================================
+
+def get_team_data_info(info_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
         - date of foundation of the club
@@ -91,8 +118,6 @@ def get_team_data_info(team_id, info_url):
         - club telephone
         - club fax
         - E-mail adress
-        :param team_id: id of the team
-        :type team_id: str
         :param info_url: url for get info
         :type info_url: str
         :return output_dictionary: dictionary data with all info of the team
@@ -102,10 +127,42 @@ def get_team_data_info(team_id, info_url):
     output_dictionary = dict()
     bf_html_content = get_beautiful_soup(info_url)
 
+    tbl = bf_html_content.find_all("div", {"class": "block_team_info"})
+    if len(tbl) == 0:
+        return None
+    tbl = tbl[0]
+
+    # part logo of the club
+    tbl_img = tbl.find_all("img")
+    if len(tbl_img) > 0:
+        output_dictionary["logo"] = tbl_img[0]["src"]
+
+    # part info club
+    tbl_info = tbl.find_all("dl")
+    if len(tbl_info) > 0:
+        dl = tbl_info[0]
+
+        # keys of the dict
+        dt_list = dl.find_all("dt")
+        dt_content_list = [str(e)[4:-5] for e in dt_list]
+        # values of the dict
+        dd_list = dl.find_all("dd")
+        dd_content_list = [str(e)[4:-5] for e in dd_list]
+
+        # replace unexpected characters
+        for content_list in [dd_content_list, dt_content_list]:
+            for index in range(len(content_list)):
+                content_list[index] = content_list[index].replace("  ", "")
+                content_list[index] = content_list[index].replace("\n", "")
+                content_list[index] = content_list[index].replace("<br/>", ", ")
+
+        for index in range(len(dd_content_list)):
+            output_dictionary[dt_content_list[index]] = dd_content_list[index]
+
     return output_dictionary if len(output_dictionary.keys()) > 0 else None
 
 
-def get_team_data_venue(team_id, venue_url):
+def get_team_data_venue(venue_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
         - address
@@ -115,8 +172,6 @@ def get_team_data_venue(team_id, venue_url):
         - stadium capacity
         - type of stadium area
         - map and location of the stadium on google maps
-        :param team_id: id of the team
-        :type team_id: str
         :param venue_url: url for get venue
         :type venue_url: str
         :return output_dictionary: dictionary data with all venue of the team
@@ -129,13 +184,11 @@ def get_team_data_venue(team_id, venue_url):
     return output_dictionary if len(output_dictionary.keys()) > 0 else None
 
 
-def get_team_data_trophies(team_id, trophies_url):
+def get_team_data_trophies(trophies_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
         - all club trophies since its creation at national level, classified by leagues
         - all club trophies since its creation at the international level, classified by leagues
-        :param team_id: id of the team
-        :type team_id: str
         :param trophies_url: url for get trophies
         :type trophies_url: str
         :return output_dictionary: dictionary data with all trophies of the team
@@ -148,7 +201,7 @@ def get_team_data_trophies(team_id, trophies_url):
     return output_dictionary if len(output_dictionary.keys()) > 0 else None
 
 
-def get_team_data_matches(team_id, matches_url):
+def get_team_data_matches(matches_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
         - all the matches available with:
@@ -160,8 +213,6 @@ def get_team_data_matches(team_id, matches_url):
             the team 2,
             the score,
             the link to have additional information on the match
-        :param team_id: id of the team
-        :type team_id: str
         :param matches_url: url for get matches
         :type matches_url: str
         :return output_dictionary: dictionary data with all matches of the team
@@ -199,24 +250,6 @@ def get_team_data_squad(team_id, squad_url):
     return output_dictionary if len(output_dictionary.keys()) > 0 else None
 
 
-def get_team_data_transfers(team_id, transfers_url):
-    """
-    Getter which allows to obtain a dictionary with the information of a team:
- 
-        :param team_id: id of the team
-        :type team_id: str
-        :param transfers_url: url for get transfers
-        :type transfers_url: str
-        :return output_dictionary: dictionary data with all transfers of the team
-        :rtype output_dictionary: dict or None
-    """
-    # variables
-    output_dictionary = dict()
-    bf_html_content = get_beautiful_soup(transfers_url)
-
-    return output_dictionary if len(output_dictionary.keys()) > 0 else None
-
-
 def get_team_data_statistics(team_id, statistics_url):
     """
     Getter which allows to obtain a dictionary with the information of a team:
@@ -243,17 +276,39 @@ def get_team_data_fan_sites(team_id, fan_sites_url):
         :type team_id: str
         :param fan_sites_url: url for get fan sites
         :type fan_sites_url: str
-        :return output_dictionary: dictionary data with all fan sites of the team
-        :rtype output_dictionary: dict or None
+        :return output_list: list data with all fan sites of the team
+        :rtype output_list: dict or None
     """
     # variables
-    output_dictionary = dict()
+    output_list = []
+    temp_dictionary = dict()
+
     bf_html_content = get_beautiful_soup(fan_sites_url)
 
-    return output_dictionary if len(output_dictionary.keys()) > 0 else None
+    tbl = bf_html_content.find_all("div", {"class": "block_team_fansites"})
+    if len(tbl) == 0:
+        return None
+    tbl = tbl[0]
 
+    # part logo of the club
+    tbl_img = tbl.find_all("a")
+
+    if len(tbl_img) > 0:
+        for row in tbl_img:
+            temp_dictionary["link"] = row["href"]
+            temp_dictionary["name_site"] = row.text
+            output_list.append(temp_dictionary)
+            temp_dictionary = {}
+
+    return output_list if len(output_list) > 0 else None
+
+
+# ===============================================================
+#   Other functions
+# ===============================================================
 
 def get_beautiful_soup(base_url):
     html_search = requests.get(base_url, headers=HEADERS).text
     soup_search = BeautifulSoup(html_search, features="lxml")
     return soup_search
+
