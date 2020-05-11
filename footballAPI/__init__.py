@@ -98,6 +98,19 @@ class FootballAPI(Players, Teams, Leagues, Match, TransferMarkt):
         else:
             raise ValueError("Json_data type not found")
 
+    def csvExit(self):
+        """
+        transform the data (json object) to csv file and save it in the jupyter_notebook folder
+        :param data: json object
+        """
+        for µ in self.json_data:
+            data = self.json_data[µ]
+            data = {µ: data}
+            path_to_save = str(Path(__file__).parent.parent) + '/jupyter_notebook/'
+            key = list(data.keys())[0]  # we do this way because keys() return a dict-keys which is not subscriptable
+            df = pd.DataFrame(data[key])
+            file_name = key + ".csv"
+            df.to_csv(os.path.join(path_to_save, file_name))
 
 # ===============================================================
 #   Links
