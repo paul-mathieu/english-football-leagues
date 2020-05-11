@@ -24,7 +24,7 @@ import footballAPI
 #   Teams
 # ===============================================================
 
-parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
+parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one"}
 
 client = footballAPI.FootballAPI()
 client.set_parameters(parameters_dictionary)
