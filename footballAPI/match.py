@@ -23,13 +23,13 @@ class Match(object):
 
 
 
-    def set_parameters_dictionary(self, parameters_dictionary):
+    def set_parameters_dictionaryM(self, parameters_dictionary):
         """
         Set the query option dictionary
             :param parameters_dictionary: dictionary of values
             :type parameters_dictionary: dict
         """
-        self.parameters_dictionary = {"API type": None, "clubA": None, "countryA":None, "clubB": None, "countryB": None, "all":None}
+        self.parameters_dictionary = {"API type": None, "clubA": None, "countryA":None, "clubB": None, "countryB": None, "all": None, "y": None, "m": None, "d": None}
         self.fill_parameters_dictionary(parameters_dictionary)
 
 
@@ -58,13 +58,18 @@ class Match(object):
             :return json_data: json data
             :rtype json_data: dict
         """
-        self.set_parameters_dictionary(parameters_dictionary)
-        if self.parameters_dictionary["all"] is not None:
+        self.set_parameters_dictionaryM(parameters_dictionary)
+        if self.parameters_dictionary["all"] is not None and self.parameters_dictionary["d"] is None and self.parameters_dictionary["y"] is None and self.parameters_dictionary["m"] is None:
+            print("a")
             return self.matchWeek()
+        elif self.parameters_dictionary["all"] is not None and self.parameters_dictionary["d"] is not None and self.parameters_dictionary["y"] is not None and self.parameters_dictionary["m"] is not None:
+            return self.matchWeek(self.parameters_dictionary["m"],self.parameters_dictionary["d"],self.parameters_dictionary["y"])
         elif self.parameters_dictionary["clubA"] is not None and self.parameters_dictionary["clubB"] is not None and self.parameters_dictionary["countryB"] is not None and self.parameters_dictionary["countryA"] is not None:
+            print("b")
             return self.proc()
+
         else:
-            return -1
+            raise ValueError("Parameter's configuration not found")
 
 
 
@@ -173,23 +178,25 @@ class Match(object):
 
 
 
-    def matchWeek(self):
+    def matchWeek(self, m ='',j='',a=''):
         '''
         This function searches for the matches of the day
         :return: list[dict]
         '''
         aRetourner = []
-        a= str(time.localtime().tm_year)
+        if m== '' and j == '' and a == '':
+            a= str(time.localtime().tm_year)
 
-        m= str(time.localtime().tm_mon)
-        if len(m) == 1:
-            m = "0"+m
+            m= str(time.localtime().tm_mon)
+            if len(m) == 1:
+                m = "0"+m
 
-        j= str(time.localtime().tm_mday)
-        if len(j) == 1:
-            j = "0"+j
+            j= str(time.localtime().tm_mday)
+            if len(j) == 1:
+                j = "0"+j
 
         URL = BASE_URL+"/matches/"+a+"/"+m+"/"+j
+        print(URL)
         html = requests.get(URL, headers=self.request_headers)
         html_soup = BeautifulSoup(html.text, 'html.parser')
         rows = html_soup.find_all('table', {"class":"matches date_matches grouped"})
@@ -199,6 +206,8 @@ class Match(object):
                id = b.get('id')
                try:
                    for i in range(len(id)):
+
+
                        if id[-i] == "-":
                            id = id[-i+1:]
                            getM = "https://uk.soccerway.com/a/block_date_matches?block_id=page_matches_1_block_date_matches_1&callback_params={%22block_service_id%22%3A%22matches_index_block_datematches%22%2C%22date%22%3A%222020-04-28%22%2C%22stage-value%22%3A%" \
@@ -216,5 +225,5 @@ class Match(object):
                                    pass
                except:
                    pass
-        return aRetourner
+        return {"Match":aRetourner}
 
