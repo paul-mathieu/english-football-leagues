@@ -77,11 +77,16 @@ class FootballAPI(Players, Teams, Leagues, Match, TransferMarkt):
         if type(self.db) is psycopg2.extensions.connection:
             if type(self.json_data) is list:
                 for i in range(len(self.json_data)):
+                    print(self.json_data[i])
+                    print("-------------------------------------")
                     a = dataBase(self.db,self.json_data[i])
                     a.processing()
             if type(self.json_data) is dict:
-                a = dataBase(self.db, self.json_data)
-                a.processing()
+                for µ in self.json_data:
+                    data = self.json_data[µ]
+                    data = {µ : data}
+                    a = dataBase(self.db, data)
+                    a.processing()
 
 
     def jsonExit(self, µ):

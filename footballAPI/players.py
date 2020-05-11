@@ -249,7 +249,6 @@ class Players(object):
                             "weight": cells[8].text,
                             "foot": cells[9].text}
                     returns.append(data)
-
                 except:
                     data = {"firstName": cells[0].text,
                             "lastName": cells[1].text,
@@ -263,7 +262,8 @@ class Players(object):
                             "foot": ''
                             }
                     returns.append(data)
-                finalreturn["passport"] = returns
+            # finalreturn["passport"] = returns
+            finalreturn['passport'] = returns
 
         if self.choix == 4 or self.choix == 5:
             rows = html_soup.findAll("table", {"class": 'playerstats career sortable table'})

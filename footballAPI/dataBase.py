@@ -55,7 +55,7 @@ class dataBase(object):
                     instert= instert + req + ' ,'
 
                 else:
-                    print(data)
+                    # print(data)
                     instert= instert +'\'' +str(data) +'\''+ ' ,'
 
                 index += 1
