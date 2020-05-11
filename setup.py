@@ -103,7 +103,8 @@ client.set_parameters(parameters_dictionary)
 #   TransferMarkt
 # ===============================================================
 
-parameters_dictionary = {"API type": "transfer"}
+#pour avoir la valeur marchande des joueurs d'une équipe dans une année
+parameters_dictionary = {"API type": "transfer", "team": "arsenal", "year": 2019}
 
 client = footballAPI.FootballAPI()
 client.set_parameters(parameters_dictionary)
