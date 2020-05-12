@@ -231,11 +231,9 @@ def get_team_data_trophies(trophies_url):
     temp_dict = dict()
     league_dict = dict()
     league_node = None
-    win_type = ""
     season_dict = dict()
     season_name = ""
     season_link = ""
-
 
     bf_html_content = get_beautiful_soup(trophies_url)
     tbl = bf_html_content.find_all("table", {"class": "trophies-table"})
@@ -269,8 +267,26 @@ def get_team_data_trophies(trophies_url):
                         league_dict["is_national"] = is_national
                         temp_dict["league"] = league_dict
 
-                    # statut
+                # win type
+                try:
+                    win_type_node = row.find_all("td", {"class": "label"})[0] if len(
+                        row.find_all("td", {"class": "label"})) > 0 else None
+                    if win_type_node is not None:
+                        win_type_dict = dict()
+                        win_type = win_type_node.text.lower()
+                        win_type_dict["total"] = row.find_all("td", {"class": "total"})[0].text[:-1]
+                        win_type_dict["seasons"] = []
+                        try:
+                            for season in row.find_all("td", {"class": "seasons"})[0].find_all("a"):
+                                win_type_dict["seasons"].append(season.text)
+                        except: pass
+                        try:
+                            for season in row.find_all("td", {"class": "seasons"})[0].find_all("span"):
+                                win_type_dict["seasons"].append(season.text)
+                        except: pass
 
+                        temp_dict[win_type] = win_type_dict
+                except: pass
 
     return output_list if len(output_list) > 0 else None
 
