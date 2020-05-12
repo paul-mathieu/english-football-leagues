@@ -11,7 +11,7 @@ import urllib3
 
 class Players(object):
     """
-
+    We find in this class all functions about players data
     """
 
     # ===============================================================
@@ -126,6 +126,51 @@ class Players(object):
     def functionProcessing2(self, firstName = '', lastName = ''):
         '''
         This function search the data for one players gived in parameters_dicitonary or in param.
+
+        We can have three type of data:
+            - All matchs for the players, we have the next information
+                    - player
+                    - Date
+                    - Ligue
+                    - winerTeam
+                    - Score
+                    - loserTeam
+                    - G
+                    - C
+
+            - Player passport, we have the next information
+                    - firstName
+                    - lastName
+                    - ationality
+                    - DateOfBirth
+                    - Age
+                    - CountryOfbirth
+                    - position
+                    - height
+                    - weight
+                    - foot
+
+            - Player career, we have the next information
+                    - player
+                    - season
+                    - teams
+                    - competition
+                    - game_minutes
+                    - appearances
+                    - lineups
+                    - subs_in
+                    - subs_out
+                    - subs_on_bench
+                    - goals
+                    - yellow_cards
+                    - nd_yellow_cards
+                    - red_cards
+
+
+        This can data can be searched separately or grouped
+
+        This function is only used in the "processing" function.
+
         :param firstName: Not compulsory, used for a player different than the starter
         :param lastName: Not compulsory, used for a player different than the starter
         :return: liste of dict
@@ -306,6 +351,22 @@ class Players(object):
     def functionProcessing1(self):
         '''
         Function used for serch all players (and players data) of a team
+        For each player in team we have to the maximum the next information :
+            - shirtnumber
+            - name
+            - age
+            - position
+            - game_minutes
+            - appearances
+            - lineups
+            - subs_in
+            - subs_out
+            - subs_on_bench
+            - number_statistic_goals
+            - number_statistic_assists
+            - yellow_cards
+            - nd_yellow_cards
+            - red_cards
         '''
 
         html = requests.get(self.URL, headers=self.request_headers)
@@ -424,6 +485,22 @@ class Players(object):
     def functionProcessing1b(self, u):
         '''
         This function is used in match.py
+            For each player in team we have to the maximum the next information :
+            - shirtnumber
+            - name
+            - age
+            - position
+            - game_minutes
+            - appearances
+            - lineups
+            - subs_in
+            - subs_out
+            - subs_on_bench
+            - number_statistic_goals
+            - number_statistic_assists
+            - yellow_cards
+            - nd_yellow_cards
+            - red_cards
         :param u: Team URL
         :return: Dict
         '''
