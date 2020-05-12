@@ -277,17 +277,19 @@ class Players(object):
                     try:
                         data = {
                             "player": [{"PlayerID": numPlayerL, "PlayerName": pnam, }],
-                            "competition": cells[0].text,
-                            "game_minutes ": cells[1].text,
-                            "appearances ": cells[2].text,
-                            "lineups ": cells[3].text,
-                            "subs_in": cells[4].text,
-                            "subs_out": cells[5].text,
-                            "subs_on_bench": cells[6].text,
-                            "goals ": cells[7].text,
-                            "yellow_cards": cells[8].text,
-                            "nd_yellow_cards": cells[9].text,
-                            "red_cards": cells[10].text
+                            "season": cells[0].text,
+                            "teams": cells[1].text,
+                            "competition": cells[2].text,
+                            "game_minutes ": cells[3].text,
+                            "appearances ": cells[4].text,
+                            "lineups ": cells[5].text,
+                            "subs_in": cells[6].text,
+                            "subs_out": cells[7].text,
+                            "subs_on_bench": cells[8].text,
+                            "goals ": cells[9].text,
+                            "yellow_cards": cells[10].text,
+                            "nd_yellow_cards": cells[11].text,
+                            "red_cards": cells[12].text
                         }
                         retrourner.append(data)
 
