@@ -2,6 +2,7 @@
 from .core import *
 from bs4 import BeautifulSoup
 
+
 # ===============================================================
 #   Main functions
 # ===============================================================
@@ -225,21 +226,53 @@ def get_team_data_trophies(trophies_url):
         :rtype output_dictionary: dict or None
     """
     # variables
-    output_dictionary = dict()
+    output_list = list()
+    temp_list = list()
+    temp_dict = dict()
+    league_dict = dict()
+    league_node = None
+    win_type = ""
+    season_dict = dict()
+    season_name = ""
+    season_link = ""
+
+
     bf_html_content = get_beautiful_soup(trophies_url)
     tbl = bf_html_content.find_all("table", {"class": "trophies-table"})
+
     if len(tbl) > 0:
         # column name
-        column_name = ""
+        is_national = None
         tbl = tbl[0].find_all("tr")
+        # print(tbl)
         for row in tbl:
-            if "class" in row:
-                column_name = row.find("th").text
-            elif column_name != "":
-                output_dictionary[column_name] = row.find("th")
+            # if the row is the precision national/international
+            if row.has_attr("class"):
+                # print(row.find("th").text)
+                is_national = 'omestic' in row.find("th").text
+            elif is_national is not None:
+                # by league
+                if league_node is None or len(row.find_all("td", {"class": "competition"})) > 0:
+                    league_node = row.find_all("td", {"class": "competition"})[0]
+
+                    print(row.find_all("td", {"class": "competition"}))
+                    print("~~~~~~")
+
+                    # league
+                    if len(league_node.find_all("a")) > 0:
+                        if not len(temp_dict.keys()) == 0:
+                            output_list.append(temp_dict)
+                        temp_dict = dict()
+                        league_dict = dict()
+                        league_dict["name"] = league_node.find_all("a")[0].text.replace("  ", "").replace("\n", "")
+                        league_dict["link"] = "https://int.soccerway.com" + league_node.find_all("a")[0]["href"]
+                        league_dict["is_national"] = is_national
+                        temp_dict["league"] = league_dict
+
+                    # statut
 
 
-    return output_dictionary if len(output_dictionary.keys()) > 0 else None
+    return output_list if len(output_list) > 0 else None
 
 
 def get_team_data_matches(matches_url):
@@ -352,4 +385,3 @@ def get_beautiful_soup(base_url):
     html_search = requests.get(base_url, headers=HEADERS).text
     soup_search = BeautifulSoup(html_search, features="lxml")
     return soup_search
-
