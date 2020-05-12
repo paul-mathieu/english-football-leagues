@@ -22,10 +22,8 @@ class TransferMarkt(object):
     def json_transferMarkt(self, parameters_dictionary):
         self.set_parameters_dictionary(parameters_dictionary)
         # self.set_URL_leagues()
-        # self.process()
-#        data_visualization_general(self.process())
-        #return self.get_player_with_market_value_of_a_team("manchester united", 2019)
-        self.data_visualization_transfermarkt(self.get_player_with_market_value_of_a_team("arsenal", 2019))
+        return self.get_player_with_market_value_of_a_team(parameters_dictionary['team'], parameters_dictionary['year'])
+        #self.data_visualization_transfermarkt(self.get_player_with_market_value_of_a_team("arsenal", 2019))
 
     # ===============================================================
     #   Setters
