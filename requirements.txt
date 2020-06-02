@@ -1,0 +1,10 @@
+flask
+bs4
+requests
+pandas
+urllib3
+numpy
+statistics
+pathlib
+datetime
+
