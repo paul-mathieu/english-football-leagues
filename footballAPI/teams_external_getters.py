@@ -36,8 +36,7 @@ def get_team_id(team_name):
 def get_team_data(team_id,
                   info=True, venue=True,
                   trophies=True, matches=True,
-                  squad=True, statistics=True,
-                  fan_sites=True):
+                  squad=True, fan_sites=True):
     """
     Get wanted data for a team
         :param info: can be specify
@@ -61,25 +60,25 @@ def get_team_data(team_id,
     """
     output_dictionary = dict()
 
-    # === INFO ===
+    # v === INFO ===
     if info:
         info_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
         info_data = get_team_data_info(info_url)
         output_dictionary["info"] = info_data
 
-    # === VENUE ===
+    # v === VENUE ===
     if venue:
         venue_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/venue/"
         venue_data = get_team_data_venue(venue_url)
         output_dictionary["venue"] = venue_data
 
-    # === TROPHIES ===
+    # v === TROPHIES ===
     if trophies:
         trophies_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/trophies/"
         trophies_data = get_team_data_trophies(trophies_url)
         output_dictionary["trophies"] = trophies_data
 
-    # === MATCHES ===
+    # v === MATCHES ===
     if matches:
         matches_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/matches/"
         matches_data = get_team_data_matches(matches_url)
@@ -91,13 +90,7 @@ def get_team_data(team_id,
         squad_data = get_team_data_squad(team_id, squad_url)
         output_dictionary["squad"] = squad_data
 
-    # === STATISTICS ===
-    if statistics:
-        statistics_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/statistics/"
-        statistics_data = get_team_data_statistics(team_id, statistics_url)
-        output_dictionary["statistics"] = statistics_data
-
-    # === FAN SITES ===
+    # v === FAN SITES ===
     if fan_sites:
         fan_sites_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
         fan_sites_data = get_team_data_fan_sites(team_id, fan_sites_url)
@@ -227,13 +220,8 @@ def get_team_data_trophies(trophies_url):
     """
     # variables
     output_list = list()
-    temp_list = list()
     temp_dict = dict()
-    league_dict = dict()
     league_node = None
-    season_dict = dict()
-    season_name = ""
-    season_link = ""
 
     bf_html_content = get_beautiful_soup(trophies_url)
     tbl = bf_html_content.find_all("table", {"class": "trophies-table"})
@@ -305,14 +293,49 @@ def get_team_data_matches(matches_url):
             the link to have additional information on the match
         :param matches_url: url for get matches
         :type matches_url: str
-        :return output_dictionary: dictionary data with all matches of the team
-        :rtype output_dictionary: dict or None
+        :return output_list: list data with all matches of the team
+        :rtype output_list: list or None
     """
     # variables
-    output_dictionary = dict()
     bf_html_content = get_beautiful_soup(matches_url)
+    tbl = bf_html_content.find_all("div", {"class": "table-container"})[0]
+    tbl = tbl.find_all("table", {"class": "matches"})[0]
+    tbl_head = tbl.find_all("thead")[0]
+    tbl_body = tbl.find_all("tbody")[0]
 
-    return output_dictionary if len(output_dictionary.keys()) > 0 else None
+    output_list = []
+    temp_dictionary = dict()
+
+    for tr in tbl_body.find_all("tr"):
+        try:
+            tds = tr.find_all("td")
+            temp_dictionary['day'] = tds[0].text
+            temp_dictionary['date'] = tds[1].text
+            # competition
+            a_element = tds[2].find_all('a')[0]
+            temp_dictionary['competition'] = {'title': a_element['title'], 'acronym': a_element.text}
+            # team a
+            a_element = tds[3].find_all('a')[0]
+            code = a_element['href'][::-1][1:]
+            code = code[:code.index('/')]
+            temp_dictionary['team-a'] = {'code': code, 'name': a_element.text.replace("\n", "").lstrip().rstrip()}
+            # result match
+            a_element = tds[4].find_all('a')[0]
+            statut = a_element['class'][0]
+            score = a_element.text.replace("\n", "").replace("E", "").replace("P", "").lstrip().rstrip()
+            temp_dictionary['result'] = {'statut': statut, 'score-a': score[0], 'score-b': score[len(score)-1]}
+            # team b
+            a_element = tds[5].find_all('a')[0]
+            code = a_element['href'][::-1][1:]
+            code = code[:code.index('/')]
+            temp_dictionary['team-b'] = {'code': code, 'name': a_element.text.replace("\n", "").lstrip().rstrip()}
+            # mor infos
+            temp_dictionary['more'] = 'https://int.soccerway.com/' + tds[5].find_all('a')[0]['href']
+
+            output_list.append(temp_dictionary)
+        except:pass
+
+    return output_list if len(output_list) > 0 else None
 
 
 def get_team_data_squad(team_id, squad_url):

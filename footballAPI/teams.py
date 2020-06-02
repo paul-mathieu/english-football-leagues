@@ -83,9 +83,8 @@ class Teams(object):
         print("team name: " + get_team_id("liverpool FC"))
         # print("team data: " + str(get_team_data('663')))
         print("team data: " + str(get_team_data('663', info=False, venue=False,
-                                                trophies=True, matches=False,
-                                                squad=False, statistics=False,
-                                                fan_sites=False)))
+                                                trophies=False, matches=True,
+                                                squad=False, fan_sites=False)))
 
     # ===============================================================
     #   Prints and debugs
