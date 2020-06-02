@@ -7,7 +7,7 @@ import footballAPI
 #   Players
 # ===============================================================
 
-# parameters_dictionary = {"API type": "players", "lastName": "Majka", "firstName": "Matej"}
+# parameters_dictionary = {"API-type": "players", "lastName": "Majka", "firstName": "Matej"}
 # dataBase = ""
 # dataBase = psycopg2.connect(host="localhost",database="Foot", user="postgres", password="")
 
@@ -24,7 +24,7 @@ import footballAPI
 #   Teams
 # ===============================================================
 
-parameters_dictionary = {"API type": "teams", "country": "england", "league": "league-one", "end year": 2019}
+parameters_dictionary = {"API-type": "teams", "country": "england", "league": "league-one", "end year": 2019}
 
 client = footballAPI.FootballAPI()
 client.set_parameters(parameters_dictionary)
@@ -43,16 +43,16 @@ print("===============")
 # "tables" : True (shows the rankings) PAUL va le faire
 
 # pour avoir l'équipe gagnante d'une competition sur plusieurs annees
-# parameters_dictionary = {"API type": "leagues", "country": "england", "league": "league-one", "winner":True, "end year":"all"}
+# parameters_dictionary = {"API-type": "leagues", "country": "england", "league": "league-one", "winner":True, "end year":"all"}
 
 # pour avoir l'équipe gagnante pour une année
-# parameters_dictionary = {"API type": "leagues", "country": "england", "league": "u21-premier-league-division-2", "winner":True, "end year":"all"}
+# parameters_dictionary = {"API-type": "leagues", "country": "england", "league": "u21-premier-league-division-2", "winner":True, "end year":"all"}
 
 # test gagnant avec la france
-# parameters_dictionary = {"API type": "leagues", "country": "france", "league": "ligue-2", "winner":True, "end year":"all"}
+# parameters_dictionary = {"API-type": "leagues", "country": "france", "league": "ligue-2", "winner":True, "end year":"all"}
 
 # test gagnant en autriche
-#parameters_dictionary = {"API type": "leagues", "country": "austria", "league": "bundesliga", "winner":True, "end year":"all"}
+#parameters_dictionary = {"API-type": "leagues", "country": "austria", "league": "bundesliga", "winner":True, "end year":"all"}
 
 # dans certains pays ca marche pas pour la recherche selon une saison particulière car c'est' pas le même format de season Annee/Annee ( des fois juste Annee et des fois les deux)
 # par exemple au burkina faso
@@ -61,13 +61,13 @@ print("===============")
 
 
 #pour avoir les competitions
-#parameters_dictionary = {"API type": "leagues", "country": "england"}
+#parameters_dictionary = {"API-type": "leagues", "country": "england"}
 
 #pour avoir les competitions et leurs types
-#parameters_dictionary = {"API type": "leagues", "country": "england", "type": True}
+#parameters_dictionary = {"API-type": "leagues", "country": "england", "type": True}
 
 #pour avoir les competitions et leurs sous-competitions (ex: phase de poule ou autre)
-#parameters_dictionary = {"API type": "leagues", "country": "england", "all": True}
+#parameters_dictionary = {"API-type": "leagues", "country": "england", "all": True}
 
 
 
@@ -104,7 +104,7 @@ print("===============")
 # ===============================================================
 
 #pour avoir la valeur marchande des joueurs d'une équipe dans une année
-# parameters_dictionary = {"API type": "transfer", "team": "arsenal", "year": 2019}
+# parameters_dictionary = {"API-type": "transfer", "team": "arsenal", "year": 2019}
 
 # client = footballAPI.FootballAPI()
 # client.set_parameters(parameters_dictionary)

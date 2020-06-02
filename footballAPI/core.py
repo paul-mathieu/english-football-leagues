@@ -33,31 +33,31 @@ def get_HTML(url, convert_to_json=False):
 
 
 def is_players_request(parameters_dictionary):
-    if "API type" not in parameters_dictionary.keys():
+    if "API-type" not in parameters_dictionary.keys():
         return False
-    return parameters_dictionary["API type"] in ["players", "Players", "PLAYERS"]
+    return parameters_dictionary["API-type"] in ["players", "Players", "PLAYERS"]
 
 
 def is_teams_request(parameters_dictionary):
-    if "API type" not in parameters_dictionary.keys():
+    if "API-type" not in parameters_dictionary.keys():
         return False
-    return parameters_dictionary["API type"] in ["teams", "Teams", "TEAMS"]
+    return parameters_dictionary["API-type"] in ["teams", "Teams", "TEAMS"]
 
 
 def is_leagues_request(parameters_dictionary):
-    if "API type" not in parameters_dictionary.keys():
+    if "API-type" not in parameters_dictionary.keys():
         return False
-    return parameters_dictionary["API type"] in ["leagues", "Leagues", "LEAGUES"]
+    return parameters_dictionary["API-type"] in ["leagues", "Leagues", "LEAGUES"]
 
 def is_match_request(parameters_dictionary):
     if "API type" not in parameters_dictionary.keys():
         return False
-    return parameters_dictionary["API type"] in ["match", "Match", "MATCH"]
+    return parameters_dictionary["API-type"] in ["match", "Match", "MATCH"]
 
 def is_transferMarkt_request(parameters_dictionary):
-    if "API type" not in parameters_dictionary.keys():
+    if "API-type" not in parameters_dictionary.keys():
         return False
-    return parameters_dictionary["API type"] in ["transfer", "Transfer", "TRANSFER"]
+    return parameters_dictionary["API-type"] in ["transfer", "Transfer", "TRANSFER"]
 
 
 def get_year(parameters_dictionary):
@@ -66,11 +66,11 @@ def get_year(parameters_dictionary):
         :return: two years pasted (ex: 20192020)
         :rtype: str
     """
-    if "start year" in parameters_dictionary.keys():
-        year = int(parameters_dictionary["start year"])
+    if "start-year" in parameters_dictionary.keys():
+        year = int(parameters_dictionary["start-year"])
         return str(year) + str(year + 1)
-    elif "end year" in parameters_dictionary.keys():
-        year = int(parameters_dictionary["end year"])
+    elif "end-year" in parameters_dictionary.keys():
+        year = int(parameters_dictionary["end-year"])
         return str(year - 1) + str(year)
     else:
         return str(THIS_YEAR - 1) + str(THIS_YEAR)

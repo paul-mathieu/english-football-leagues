@@ -44,7 +44,7 @@ class Leagues(object):
         list_parameter_key = self.parameters_dictionary.keys()
         if "country" in list_parameter_key:
             if "league" in list_parameter_key:
-                if "winner" in list_parameter_key and "end year" in list_parameter_key:
+                if "winner" in list_parameter_key and "end-year" in list_parameter_key:
                     self.URL = BASE_URL + LEAGUES_START_URL + \
                                "/" + self.parameters_dictionary["country"] + \
                                "/" + self.parameters_dictionary["league"] + \
