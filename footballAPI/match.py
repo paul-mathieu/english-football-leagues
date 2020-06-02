@@ -1,5 +1,4 @@
 import time
-
 from .core import *
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -60,12 +59,12 @@ class Match(object):
         """
         self.set_parameters_dictionaryM(parameters_dictionary)
         if self.parameters_dictionary["all"] is not None and self.parameters_dictionary["d"] is None and self.parameters_dictionary["y"] is None and self.parameters_dictionary["m"] is None:
-            print("a")
             return self.matchWeek()
+
         elif self.parameters_dictionary["all"] is not None and self.parameters_dictionary["d"] is not None and self.parameters_dictionary["y"] is not None and self.parameters_dictionary["m"] is not None:
             return self.matchWeek(self.parameters_dictionary["m"],self.parameters_dictionary["d"],self.parameters_dictionary["y"])
+
         elif self.parameters_dictionary["clubA"] is not None and self.parameters_dictionary["clubB"] is not None and self.parameters_dictionary["countryB"] is not None and self.parameters_dictionary["countryA"] is not None:
-            print("b")
             return self.proc()
 
         else:
@@ -74,12 +73,30 @@ class Match(object):
 
 
     def proc(self, team1 = '', team2 = '', n1 = '', n2 = ''):
+        '''
+
+        :param team1: first team
+        :param team2: sec team
+        :param n1: name of first team
+        :param n2: name of sec team
+        :return: quick analysis and first statistique about the match
+        the informations are :
+            - club (Name of the team)
+            - gameMinutes (begin the start of season)
+            - meanGameMinutes (mean game time begin the start of season)
+            - Goal (number goals begin the start of season)
+            - Assists (number assists begin the start of season)
+            - Red (number goals red the start of season)
+            - Yellow (number goals yellow the start of season)
+            - Date (The date of the data)
+        '''
+
+        #If they are no teams on parameters, we use team in dictionary
         if team1 == '' and team2 == '' and n1 == '' and n2 == '':
             a = Players()
             a.set_parameters_dictionary({"API type": "players", "country": self.parameters_dictionary["countryA"], "club": self.parameters_dictionary["clubA"]})
             clubA = a.parameters_dictionary["club"]
             teamA = a.json_players(a.parameters_dictionary)
-            # print(teamA)
 
 
             b = Players()
@@ -94,8 +111,8 @@ class Match(object):
             teamB = Players().functionProcessing1b(team2)
             clubB = n2
 
-            # print("L'équipe a est : ", teamA)
 
+        #Var for team A
         totalGM_teamA = 0
         totalAge_teamA = 0
         totalGoalA = 0
@@ -104,17 +121,19 @@ class Match(object):
         totalRedA = 0
         i = 0
         v = 0
-        for aaa in teamA[0]["TeamPlayer"]:
-            totalGM_teamA += int(aaa["game_minutes"])
-            if aaa["age"] == '':
-                aaa["age"] = 0
+
+        # for the fist team
+        for ta in teamA[0]["TeamPlayer"]:
+            totalGM_teamA += int(ta["game_minutes"])
+            if ta["age"] == '':
+                ta["age"] = 0
                 v = 1
             else:
-                totalAge_teamA+= int(aaa["age"])
-            totalGoalA += int(aaa["number_statistic_goals"])
-            totalAssistsA += int(aaa["number_statistic_assists"])
-            totalRedA += int(aaa["red_cards"])
-            totalYellowA += int(aaa["yellow_cards"])
+                totalAge_teamA+= int(ta["age"])
+            totalGoalA += int(ta["number_statistic_goals"])
+            totalAssistsA += int(ta["number_statistic_assists"])
+            totalRedA += int(ta["red_cards"])
+            totalYellowA += int(ta["yellow_cards"])
             i+=1
             # print(i)
         if v == 1:
@@ -133,6 +152,7 @@ class Match(object):
             'Date':  str(time.localtime().tm_mon) +'/'+ str(time.localtime().tm_mday) + '/' +  str(time.localtime().tm_year)
         }
 
+        #Var for team B
         totalGM_teamB = 0
         totalAge_teamB = 0
         totalGoalB = 0
@@ -142,18 +162,19 @@ class Match(object):
         j = 0
         v = 0
 
-        for a in teamB[0]["TeamPlayer"]:
-            totalGM_teamB += int(a["game_minutes"])
+        # for the sec team
+        for tb in teamB[0]["TeamPlayer"]:
+            totalGM_teamB += int(tb["game_minutes"])
 
-            if a["age"] == '':
-                a["age"] = 0
+            if tb["age"] == '':
+                tb["age"] = 0
                 v = 1
             else:
-                totalAge_teamB += int(a["age"])
-            totalGoalB += int(a["number_statistic_goals"])
-            totalAssistsB += int(a["number_statistic_assists"])
-            totalRedB += int(a["red_cards"])
-            totalYellowB += int(a["yellow_cards"])
+                totalAge_teamB += int(tb["age"])
+            totalGoalB += int(tb["number_statistic_goals"])
+            totalAssistsB += int(tb["number_statistic_assists"])
+            totalRedB += int(tb["red_cards"])
+            totalYellowB += int(tb["yellow_cards"])
             j += 1
 
 
@@ -173,6 +194,8 @@ class Match(object):
             'Date': str(time.localtime().tm_mon) + '/' + str(time.localtime().tm_mday) + '/' + str(time.localtime().tm_year)
 
         }
+
+        # Return disctionnary
         return {"match": [dataTeamA, dataTeamB]}
 
 
@@ -196,7 +219,6 @@ class Match(object):
                 j = "0"+j
 
         URL = BASE_URL+"/matches/"+a+"/"+m+"/"+j
-        print(URL)
         html = requests.get(URL, headers=self.request_headers)
         html_soup = BeautifulSoup(html.text, 'html.parser')
         rows = html_soup.find_all('table', {"class":"matches date_matches grouped"})

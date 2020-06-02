@@ -47,6 +47,11 @@ class Players(object):
     def set_URL_Players(self):
         """
         Add the attribute URL - We use site search system
+            choice 1 - country and club, return information about team players
+            choice 2 - firstName, lastName and matches(1), return information about matchs player
+            choice 3 - firstName, lastName and dataPlayer(1), return information about player
+            choice 4 - firstName, lastName and career(1), return information about player career
+            choice 5 - firstName, lastName and all(1), retrun all informations about player
         """
 
         if self.parameters_dictionary["country"] is not None and self.parameters_dictionary["club"] is not None:
@@ -72,6 +77,8 @@ class Players(object):
         else:
             raise ValueError("Parameter's configuration not found")
         print(self.URL)
+
+
 
     # ===============================================================
     #   Methods

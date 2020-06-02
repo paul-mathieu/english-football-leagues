@@ -88,12 +88,17 @@ class FootballAPI(Players, Teams, Leagues, Match, TransferMarkt):
                     a = dataBase(self.db, data)
                     a.processing()
 
-    def jsonExit(self, e):
+    def jsonExit(self, path):
+        '''
+
+        :param path: the path to your file
+        :return: json file
+        '''
         if type(self.json_data) is dict:
-            with open(e, 'w') as fp:
+            with open(path, 'w') as fp:
                 json.dump(self.json_data, fp)
         elif type(self.json_data) is list:
-            with open(e, 'w') as fp:
+            with open(path, 'w') as fp:
                 json.dump(self.json_data, fp)
         else:
             raise ValueError("Json_data type not found")
