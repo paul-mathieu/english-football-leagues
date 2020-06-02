@@ -4,14 +4,20 @@ import footballAPI
 
 app = Flask(__name__)
 
+
 @app.route("/")
-def hello():
-    parameters_dictionary={}
+def user_request():
+    parameters_dictionary = {}
     for arg in request.args:
         parameters_dictionary[arg] = request.args[arg]
 
     client = footballAPI.FootballAPI()
-    return (client.set_parameters(parameters_dictionary))
+    result = client.set_parameters(parameters_dictionary)
+    if result is not None:
+        return result
+    else:
+        return {"Error ": "No data"}
+
 
 if __name__ == '__main__':
-    app.run(debug=True) #debug mode
+    app.run(debug=True)  # debug mode

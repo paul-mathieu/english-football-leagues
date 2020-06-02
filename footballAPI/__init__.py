@@ -56,7 +56,7 @@ class FootballAPI(Players, Teams, Leagues, Match, TransferMarkt):
         """
         self.parameters_dictionary = parameters_dictionary
         self.db = db
-        self.set_json_data()
+        return self.set_json_data()
 
     def set_json_data(self):
         """
@@ -65,14 +65,19 @@ class FootballAPI(Players, Teams, Leagues, Match, TransferMarkt):
         """
         if is_players_request(self.parameters_dictionary):
             self.json_data = self.json_players(self.parameters_dictionary)
+            return self.json_data
         elif is_teams_request(self.parameters_dictionary):
             self.json_data = self.json_teams(self.parameters_dictionary)
+            return self.json_data
         elif is_leagues_request(self.parameters_dictionary):
             self.json_data = self.json_leagues(self.parameters_dictionary)
+            return self.json_data
         elif is_match_request(self.parameters_dictionary):
             self.json_data = self.json_match(self.parameters_dictionary)
+            return self.json_data
         elif is_transferMarkt_request(self.parameters_dictionary):
             self.json_data = self.json_transferMarkt(self.parameters_dictionary)
+            return self.json_data
 
         if type(self.db) is psycopg2.extensions.connection:
             if type(self.json_data) is list:
