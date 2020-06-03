@@ -90,7 +90,7 @@ class Leagues(object):
         # 'Championship'},{'league name ': 'League Cup'}]}
 
         # https://int.soccerway.com/competitions/
-        country = "england"
+        country = self.parameters_dictionary["country"]
 
         # we set a header so that the website will know we are a real user otherwise it will block the program
         html = requests.get(self.URL, headers=HEADERS)
