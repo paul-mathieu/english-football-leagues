@@ -21,7 +21,6 @@ class Leagues(object):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
         result = self.process()
-        data_visualization_general(self.process())
         return result
         # data_visualization_general(self.process())
         # self.get_player_with_market_value_of_a_team("manchester united", 2019)
@@ -60,7 +59,7 @@ class Leagues(object):
             elif "type" in list_parameter_key and self.parameters_dictionary['type'].upper() == "TRUE":
                 self.URL = BASE_URL + "/competitions/"
                 self.request = 3
-            elif len(list_parameter_key) == 1: # if there is only "country" in list_parameter_key
+            elif len(list_parameter_key) == 2: # if there is only "API-type""country" in list_parameter_key
                 self.URL = BASE_URL + "/competitions/"
                 self.request = 4
 
