@@ -2,11 +2,8 @@
 import psycopg2 as psycopg2
 
 from .core import *
-from urllib.request import *
 from bs4 import BeautifulSoup
-import pandas as pd
 import requests
-import urllib3
 
 
 class Players(object):
@@ -34,7 +31,7 @@ class Players(object):
             :type parameters_dictionary: dict
         """
         self.parameters_dictionary = {"API type": None, "country": None, "league": None, "end year": None, "club": None,
-                                      "firstName": None, "lastName": None, "matches": None, "dataPlayer": None, "career": None, "all": None}
+                                      "firstName": None, "lastName": None, "matches": None, "dataPlayer": None, "career": None, "all": None, "idP": None}
         self.fill_parameters_dictionary(parameters_dictionary)
 
     # ===============================================================
@@ -58,25 +55,24 @@ class Players(object):
             param = str(self.parameters_dictionary["club"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 1
-        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary["lastName"] is not None and self.parameters_dictionary["matches"] is not None:
+        elif (self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary["lastName"] is not None and self.parameters_dictionary["matches"] is not None) or (self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["matches"] is not None):
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 2
-        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["dataPlayer"] is not None:
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["dataPlayer"] is not None  or (self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["dataPlayer"] is not None):
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 3
-        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["career"] is not None:
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["career"] is not None or (self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["career"] is not None):
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 4
-        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["all"] is not None:
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["all"] is not None or (self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["all"] is not None):
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 5
         else:
             raise ValueError("Parameter's configuration not found")
-        print(self.URL)
 
 
 
@@ -182,42 +178,52 @@ class Players(object):
         :param lastName: Not compulsory, used for a player different than the starter
         :return: liste of dict
         '''
-        if firstName != '' and lastName != '':
-            param = str(lastName).replace(" ", "+")
-            self.URL = BASE_URL + "/search/?q=" + param
-            self.parameters_dictionary["firstName"] = str(firstName)
         finalreturn = {}
-        # For search one players we use the query option of the web site
-        # The query parameter is the last name of the player
-        # After we look for when the first name give in parameter is the same
+        if(self.parameters_dictionary["idP"] is not None):
+            numPlayerL = self.parameters_dictionary["idP"]
+            playerUrl = BASE_URL + "/players/a/" + str(numPlayerL)
+            print(playerUrl)
+            pnam = "None"
+            html = requests.get(playerUrl, headers=self.request_headers)
+            html_soup = BeautifulSoup(html.text, 'html.parser')
+        else:
+            if firstName != '' and lastName != '':
+                param = str(lastName).replace(" ", "+")
+                self.URL = BASE_URL + "/search/?q=" + param
+                self.parameters_dictionary["firstName"] = str(firstName)
 
-        html = requests.get(self.URL, headers=self.request_headers)
-        # html = urlopen(request)
-        html_soup = BeautifulSoup(html.text, 'html.parser')
-        rows = html_soup.findAll("tr")
-        del html, html_soup
-        find = False
+            # For search one players we use the query option of the web site
+            # The query parameter is the last name of the player
+            # After we look for when the first name give in parameter is the same
 
-        for row in rows:
-            cells = row.findAll("td")
-            try:
-                if str(self.parameters_dictionary["firstName"]).upper() in str(cells[0].text).upper():
-                    print("Player name is ", cells[0].text)
-                    pnam = cells[0].text
-                    playerUrl = BASE_URL + "/" + str(cells[0].a.get('href'))
-                    find = True
-                    break;
-            except:
-                pass
+            html = requests.get(self.URL, headers=self.request_headers)
+            # html = urlopen(request)
+            html_soup = BeautifulSoup(html.text, 'html.parser')
+            rows = html_soup.findAll("tr")
+            del html, html_soup
+            find = False
 
-        if not find: raise ValueError("Player name not found")
+            for row in rows:
+                cells = row.findAll("td")
+                try:
+                    if str(self.parameters_dictionary["firstName"]).upper() in str(cells[0].text).upper():
+                        print("Player name is ", cells[0].text)
+                        pnam = cells[0].text
+                        playerUrl = BASE_URL + "/" + str(cells[0].a.get('href'))
+                        find = True
+                        break;
+                except:
+                    pass
 
-        # When the player was found, we recover the specific URL of this player
+            if not find: raise ValueError("Player name not found")
 
-        html = requests.get(playerUrl, headers=self.request_headers)
-        html_soup = BeautifulSoup(html.text, 'html.parser')
 
-        numPlayerL = playerUrl.split("/")[-2]
+            # When the player was found, we recover the specific URL of this player
+
+            html = requests.get(playerUrl, headers=self.request_headers)
+            html_soup = BeautifulSoup(html.text, 'html.parser')
+
+            numPlayerL = playerUrl.split("/")[-2]
 
         if self.choix == 2 or self.choix == 5:
             matchs = []
@@ -318,9 +324,9 @@ class Players(object):
             finalreturn['passport'] = returns
 
         if self.choix == 4 or self.choix == 5:
+
             rows = html_soup.findAll("table", {"class": 'playerstats career sortable table'})
             retrourner = []
-
             for row in rows:
                 cellss = row.findAll("tr")
 
@@ -473,9 +479,9 @@ class Players(object):
 
         # If we search a team squad. This part of the function return all players of team choose
         # This part is run if : parameters_dictionary["country"] != None and self.parameters_dictionary["club"] != None
-        finalreturn = []
+
         if self.choix == 1:
-            finalreturn.append(self.functionProcessing1())
+            finalreturn = self.functionProcessing1()
         # ----------------------------------------------------------------------------------------------------------
 
         # This part of the function return all matches plays by one player
