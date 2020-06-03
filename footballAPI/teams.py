@@ -54,7 +54,7 @@ class Teams(object):
             :return: name of the team
             :rtype: str
         """
-        return self.parameters_dictionary["name-team"]
+        return self.parameters_dictionary["name-team"] if "name-team" in self.parameters_dictionary.keys() else False
 
     def get_max_result(self):
         """
@@ -62,7 +62,7 @@ class Teams(object):
             :return: max number of results
             :rtype: int
         """
-        return self.parameters_dictionary["max-result"]
+        return self.parameters_dictionary["max-result"] if "max-result" in self.parameters_dictionary.keys() else False
 
     def get_info(self):
         """
@@ -70,7 +70,7 @@ class Teams(object):
             :return: is the team infos wanted
             :rtype: bool
         """
-        return self.parameters_dictionary["info"]
+        return self.parameters_dictionary["info"] if "info" in self.parameters_dictionary.keys() else False
 
     def get_venue(self):
         """
@@ -78,7 +78,7 @@ class Teams(object):
             :return: is the team venue infos wanted
             :rtype: bool
         """
-        return self.parameters_dictionary["venue"]
+        return self.parameters_dictionary["venue"] if "venue" in self.parameters_dictionary.keys() else False
 
     def get_trophies(self):
         """
@@ -86,7 +86,7 @@ class Teams(object):
             :return: is the team trophies infos wanted
             :rtype: bool
         """
-        return self.parameters_dictionary["trophies"]
+        return self.parameters_dictionary["trophies"] if "trophies" in self.parameters_dictionary.keys() else False
 
     def get_matches(self):
         """
@@ -94,7 +94,7 @@ class Teams(object):
             :return: is the team matches wanted
             :rtype: bool
         """
-        return self.parameters_dictionary["matches"]
+        return self.parameters_dictionary["matches"] if "matches" in self.parameters_dictionary.keys() else False
 
     def get_squad(self):
         """
@@ -102,7 +102,7 @@ class Teams(object):
             :return: is the team squad wanted
             :rtype: bool
         """
-        return self.parameters_dictionary["squad"]
+        return self.parameters_dictionary["squad"] if "squad" in self.parameters_dictionary.keys() else False
 
     def get_squad_info(self):
         """
@@ -110,7 +110,7 @@ class Teams(object):
             :return: parameters dictionary of a player
             :rtype: dict
         """
-        return self.parameters_dictionary["squad-info"]
+        return self.parameters_dictionary["squad-info"] if "squad-info" in self.parameters_dictionary.keys() else None
 
     def get_fan_sites(self):
         """
@@ -118,7 +118,7 @@ class Teams(object):
             :return: is the fan sites infos wanted
             :rtype: bool
         """
-        return self.parameters_dictionary["fan-sites"]
+        return self.parameters_dictionary["fan-sites"] if "fan-sites" in self.parameters_dictionary.keys() else False
 
 
     # ===============================================================
