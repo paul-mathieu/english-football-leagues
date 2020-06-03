@@ -1,3 +1,7 @@
+<?php
+ob_start()
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -200,7 +204,7 @@
 if(isset($_POST["typeL"])){
 	if($_POST["typeL"] == 0){?>
 		<br/> <hr color="black">
-		<form method="POST" action="Recherche.php?choixAPI=1">
+		<form method="POST">
 		<div class="container">
 
 			<div class="text-center">
@@ -219,7 +223,7 @@ if(isset($_POST["typeL"])){
 	}
 	if($_POST["typeL"] == 1){?>
 			<br/> <hr color="black">
-			<form method="POST" action="Recherche.php?choixAPI=1">
+			<form method="POST">
 			<div class="container">
 
 			<div class="text-center">
@@ -239,7 +243,7 @@ if(isset($_POST["typeL"])){
 	}
 	if($_POST["typeL"] == 2){?>
 			<br/> <hr color="black">
-			<form method="POST" action="Recherche.php?choixAPI=1">
+			<form method="POST">
 			<div class="container">
 
 			<div class="text-center">
@@ -260,7 +264,7 @@ if(isset($_POST["typeL"])){
 	if($_POST["typeL"] == 3){
 ?>
 <br/> <hr color="black">
-			<form method="POST" action="Recherche.php?choixAPI=1">
+			<form method="POST">
 			<div class="container">
 
 			<div class="text-center">
@@ -289,25 +293,218 @@ if(isset($_POST["typeL"])){
 	//fin league
 	}
 
-	if($_GET["choixAPI"] == 2){
+	if($_GET["choixAPI"] == 2){?>
+			<br/>
+			<hr color="black">
+			<form method="POST">
+				<div class="text-center">
 
-		echo "string";
+				<div class="form-check form-check-inline">
+				  <input type="radio" class="form-check-input" id="Joueur" name="typeM" value="0" onchange="this.form.submit()">
+				  <label class="form-check-label" for="materialInline1">Ensemble des matchs d'une journée</label>
+				</div>
+
+				<div class="form-check form-check-inline">
+				  <input type="radio" class="form-check-input" id="League" name="typeM" value="1" onchange="this.form.submit()">
+				  <label class="form-check-label" for="materialInline2">Votre match</label>
+				</div>
+			</div>
+		
+
+		<?php
+		
+		if(isset($_POST["typeM"])){
+		if($_POST["typeM"] == 0){?>
+		<br/> <hr color="black">
+			<form method="POST">
+			<div class="container">
+
+			<div class="text-center">
+				<label for='fn'>Jours :</label></br>
+				<input class='form-control' type='text' name='j' id='j' placeholder='Veuillez entrer le jour (format dd)'/></br>
+			</div>
+
+
+			<div class="text-center">
+				<label for='fn'>Mois :</label></br>
+				<input class='form-control' type='text' name='m' id='m' placeholder='Veuillez entrer le mois (format mm)'/></br>
+			</div>
+
+
+			<div class="text-center">
+				<label for='fn'>Année :</label></br>
+				<input class='form-control' type='text' name='a' id='a' placeholder="Veuillez entrer l'année (format yyyy)"/></br>
+			</div>
+
+			<br/><br/>
+				 <div class="modal-footer">
+					<button class="btn btn-primary" name="match1" type="submit" value="Valider">Valider</button>
+			</div>
+		</div>
+	</form>
+
+
+
+
+<?php
 	}
+			if($_POST["typeM"] == 1){?>
+			<br/> <hr color="black">
+			<form method="POST">
+			<div class="container">
+
+			<div class="text-center">
+				<label for='fn'>Equipe A</label></br>
+				<input class='form-control' type='text' name='clA' id='clA' placeholder="Nom de l'équipe A"/></br>
+			</div>
 
 
+			<div class="text-center">
+				<label for='fn'>Pays A</label></br>
+				<input class='form-control' type='text' name='pA' id='pA' placeholder="Pays de l'équipe A"/></br>
+			</div>
 
 
+			<div class="text-center">
+				<label for='fn'>Equipe B</label></br>
+				<input class='form-control' type='text' name='clB' id='clB' placeholder="Nom de l'équipe B"/></br>
+			</div>
 
 
+			<div class="text-center">
+				<label for='fn'>Pays B</label></br>
+				<input class='form-control' type='text' name='pB' id='pB' placeholder="Pays de l'équipe B"/></br>
+			</div>
 
-
-
-
-
-
-//fin
+			<br/><br/>
+				 <div class="modal-footer">
+					<button class="btn btn-primary" name="match2" type="submit" value="Valider">Valider</button>
+			</div>
+		</div>
+	</form>
+<?php
 }
-		 ?>
+}
+}
+
+
+if($_GET["choixAPI"] == 4){?>
+
+<br/> <hr color="black">
+<form method="POST">
+			<div class="container">
+
+			<div class="text-center">
+				<label for='fn'>Equipe</label></br>
+				<input class='form-control' type='text' name='trC' id='trC' placeholder="Nom de l'équipe"/></br>
+			</div>
+
+
+			<div class="text-center">
+				<label for='fn'>Année</label></br>
+				<input class='form-control' type='text' name='ye' id='ye' placeholder="Année format (yyyy)"/></br>
+			</div>
+			<br/><br/>
+				 <div class="modal-footer">
+					<button class="btn btn-primary" name="transfer" type="submit" value="Valider">Valider</button>
+			</div>
+		</div>
+	</form>
+
+
+
+
+<?php
+}
+if($_GET["choixAPI"] == 3){?>
+	<br/> <hr color="black">
+<form method="POST">
+	<div class="container">
+		<div class="text-center">
+			<label for='fn'>Equipe</label></br>
+			<input class='form-control' type='text' name='t' id='t' placeholder="Nom de l'équipe"/></br>
+		</div>
+
+		<div class="text-center">
+			<label for='fn'>Nombre de résultat</label></br>
+			<input class='form-control' type='text' name='nb' id='nb' placeholder="Nombre de résultat (entier)"/></br>
+		</div>
+<br/>
+
+		<div class="text-center">Retourne les infos d’une équipe  :
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="a" value="True">
+			<label class="form-check-label" for="materialInline2">Oui</label>
+		</div>
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="a" value="False">
+			<label class="form-check-label" for="materialInline2">Non</label>
+		</div></div><br/><br/>
+
+		<div class="text-center">Retourne les informations sur le stade de l’équipe  :
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="b" value="True">
+			<label class="form-check-label" for="materialInline2">Oui</label>
+		</div>
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="b" value="False">
+			<label class="form-check-label" for="materialInline2">Non</label>
+		</div></div><br/><br/>
+
+		<div class="text-center">Retourne la liste des trophées obtenus depuis la création de l’équipe  :
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="c" value="True">
+			<label class="form-check-label" for="materialInline2">Oui</label>
+		</div>
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="c" value="False">
+			<label class="form-check-label" for="materialInline2">Non</label>
+		</div></div><br/><br/>
+
+		<div class="text-center">Retourne les 50 derniers matchs  :
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="d" value="True">
+			<label class="form-check-label" for="materialInline2">Oui</label>
+		</div>
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="d" value="False">
+			<label class="form-check-label" for="materialInline2">Non</label>
+		</div></div><br/><br/>
+	
+
+		<div class="text-center">Retourne la composition de l’équipe  :
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="e" value="True">
+			<label class="form-check-label" for="materialInline2">Oui</label>
+		</div>
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League"name="e" value="False">
+			<label class="form-check-label" for="materialInline2">Non</label>
+		</div></div><br/><br/>
+	x
+
+		<div class="text-center">Retourne la liste de tous les sites de fans  :
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="f" value="True">
+			<label class="form-check-label" for="materialInline2">Oui</label>
+		</div>
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" id="League" name="f" value="False">
+			<label class="form-check-label" for="materialInline2">Non</label>
+		</div></div><br/>
+	
+
+	<br/><br/>
+		<div class="modal-footer">
+			<button class="btn btn-primary" name="mat" type="submit" value="Valider">Valider</button>
+		</div>
+
+	</div>
+</form>
+<?php	
+}
+}
+?>
 
 
 
@@ -354,11 +551,11 @@ if(isset($_POST["league1"])){
 }
 
 if(isset($_POST["league2"])){
-	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays2"]."&type=1");
+	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays2"]."&type=True");
 }
 
 if(isset($_POST["league3"])){
-	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays3"]."&all=1");
+	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays3"]."&all=True");
 }
 
 if(isset($_POST["league4"])){
@@ -366,4 +563,24 @@ if(isset($_POST["league4"])){
 }
 
 
+if(isset($_POST["match1"])){
+	header("Location: http://127.0.0.1:5000/?API-type=match&all=True&m=".$_POST["m"]."&d=".$_POST["j"]."&y=".$_POST["a"]);
+}
+
+if(isset($_POST["match2"])){
+	header("Location: http://127.0.0.1:5000/?API-type=match&clubA=".$_POST["clA"]."&clubB=".$_POST["clB"]."&countryA=".$_POST["pA"]."&countryB=".$_POST["pB"]);
+}
+
+if(isset($_GET["choixAPI"]) AND $_GET["choixAPI"] == 4 and isset($_POST["transfer"])){
+	header("Location: http://127.0.0.1:5000/?API-type=transfer&team=".$_POST["trC"]."&year=".$_POST["ye"]);
+}
+
+if(isset($_GET["choixAPI"]) AND $_GET["choixAPI"] == 3 and isset($_POST["mat"])){
+	//echo "Location: http://127.0.0.1:5000/?API-type=teams&name-team=".$_POST["t"]."&max-result=".$_POST["nb"]."&info=".$_POST["a"]."&venue=".$_POST["b"]."&trophies=".$_POST["c"]."&squad=".$_POST["d"]."&squad-info=".$_POST["e"]."&fan-sites=".$_POST["f"];
+	header("Location: http://127.0.0.1:5000/?API-type=teams&name-team=".$_POST["t"]."&max-result=".$_POST["nb"]."&info=".$_POST["a"]."&venue=".$_POST["b"]."&trophies=".$_POST["c"]."&matches=".$_POST["d"]."&squad=".$_POST["e"]."&squad-info=".$_POST["e"]."&fan-sites=".$_POST["f"]);
+}
+//Location: http://127.0.0.1:5000/?API-type=teams&name-team=Liverpool&max-result=1&info=True&venue=False&trophies=False&squad=False&squad-info=False&fan-sites=False
+ob_end_flush();
 ?>
+
+ 
