@@ -42,6 +42,7 @@ class Teams(object):
                    "/" + self.parameters_dictionary["league"] + \
                    "/" + get_year(self.parameters_dictionary) + \
                    TEAMS_END_URL
+        print(self.URL)
 
     # ===============================================================
     #   Getters
@@ -74,17 +75,19 @@ class Teams(object):
             :param parameters_dictionary: dictionary of query parameters
             :type parameters_dictionary: dict
             :return json_data: json data
-            :rtype json_data: dict
+            :rtype json_data: list
         """
         self.set_parameters_dictionary(parameters_dictionary)
         self.fill_parameters_dictionary(self.parameters_dictionary)
         self.set_url_teams()
-        # return BeautifulSoup(urlopen(self.URL), "html.parser").findAll("form")[2]
-        print("team name: " + get_team_id("liverpool FC"))
+
+        id_list = get_team_id("liverpool FC")
+        print("team name: " + id_list[0])
         # print("team data: " + str(get_team_data('663')))
-        print("team data: " + str(get_team_data('663', info=False, venue=False,
-                                                trophies=False, matches=True,
-                                                squad=False, fan_sites=False)))
+        print("team data: " + str(get_team_data(id_list[0], info=False, venue=False,
+                                                trophies=False, matches=False,
+                                                squad=True, fan_sites=False)))
+
 
     # ===============================================================
     #   Prints and debugs

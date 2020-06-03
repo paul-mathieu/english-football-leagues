@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 from .core import *
 from bs4 import BeautifulSoup
-
+import footballAPI
 
 # ===============================================================
 #   Main functions
