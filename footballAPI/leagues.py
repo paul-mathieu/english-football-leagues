@@ -44,21 +44,21 @@ class Leagues(object):
         list_parameter_key = self.parameters_dictionary.keys()
         if "country" in list_parameter_key:
             if "league" in list_parameter_key:
-                if "winner" in list_parameter_key and "end-year" in list_parameter_key:
+                if ("winner" in list_parameter_key) and (self.parameters_dictionary['winner'].upper() == "TRUE")and ("end-year" in list_parameter_key):
                     self.URL = BASE_URL + LEAGUES_START_URL + \
                                "/" + self.parameters_dictionary["country"] + \
                                "/" + self.parameters_dictionary["league"] + \
                                "/archive/"
                     self.request = 1
-            elif "all" in list_parameter_key:
+            elif "all" in list_parameter_key and self.parameters_dictionary['all'].upper() == "TRUE":
                 self.URL = BASE_URL + LEAGUES_START_URL + \
                            "/" + self.parameters_dictionary["country"] + \
-                           "/premier-league/"
+                           "/"
                 self.request = 2
-            elif "type" in list_parameter_key:
+            elif "type" in list_parameter_key and self.parameters_dictionary['type'].upper() == "TRUE":
                 self.URL = BASE_URL + "/competitions/"
                 self.request = 3
-            else:
+            elif len(list_parameter_key) == 1: # if there is only "country" in list_parameter_key
                 self.URL = BASE_URL + "/competitions/"
                 self.request = 4
 
@@ -139,16 +139,17 @@ class Leagues(object):
     #     print(html_soup)
     #
     #     team_table = html_soup.find('table', {"id":"page_competition_1_block_competition_tables_7_block_competition_league_table_1_table"})
-        #print("team table :", team_table)
-        #team_rows = team_table.select("tbody > tr.team_rank ")
-        # #print("team_rows:", team_rows)
-        # for row in team_rows:
-        #     team_id = row['data-team_id']
-        #     team_name = row.find('a').text
-        #     print(team_id)
-        #     print(team_name)
+    # print("team table :", team_table)
+    # team_rows = team_table.select("tbody > tr.team_rank ")
+    # #print("team_rows:", team_rows)
+    # for row in team_rows:
+    #     team_id = row['data-team_id']
+    #     team_name = row.find('a').text
+    #     print(team_id)
+    #     print(team_name)
 
-    def get_all_leagues(self):  # marche la conversion json vers csv mais la colonne des sous leagues est mal representée
+    def get_all_leagues(
+            self):  # marche la conversion json vers csv mais la colonne des sous leagues est mal representée
         # marche pas trop, j'ai l'impression y'a un cota
         """
         Return all the english football leagues, even sub leagues
@@ -241,7 +242,10 @@ class Leagues(object):
         competition through years with end_year="all"
         :return: json object
         """
-        end_year = int(self.parameters_dictionary['end-year'])
+        if self.parameters_dictionary['end-year'].isdigit():
+            end_year = int(self.parameters_dictionary['end-year'])
+        else:
+            end_year = self.parameters_dictionary['end-year']
 
         # we set a header so that the website will know we are a real user otherwise it will block the program
         html = requests.get(self.URL, headers=HEADERS)
@@ -289,4 +293,3 @@ class Leagues(object):
         json_dump = json.dumps(data_set)
         json_object = json.loads(json_dump)
         return json_object
-
