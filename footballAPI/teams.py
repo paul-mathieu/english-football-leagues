@@ -150,9 +150,13 @@ class Teams(object):
         # self.set_url_teams()
 
         id_list = get_team_id("liverpool FC")
+        if type(self.get_max_result()) == str:
+            max_number_results = int(self.get_max_result())
+        else:
+            max_number_results = self.get_max_result()
 
         # if there no max result value, only the first result
-        if self.get_max_result() is None:
+        if max_number_results is None:
             return [get_team_data(id_list[0],
                                   self.get_info(),
                                   self.get_venue(),
@@ -163,7 +167,7 @@ class Teams(object):
                                   self.get_fan_sites())]
 
         # if max result value is too big, return all results
-        if len(id_list) <= self.get_max_result():
+        if len(id_list) <= max_number_results:
             return [get_team_data(id,
                                   self.get_info(),
                                   self.get_venue(),
@@ -183,7 +187,7 @@ class Teams(object):
                               self.get_squad(),
                               self.get_squad_info(),
                               self.get_fan_sites())
-                for index in range(self.get_max_result())]
+                for index in range(max_number_results)]
 
     # ===============================================================
     #   Prints and debugs
