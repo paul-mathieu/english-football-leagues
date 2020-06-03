@@ -45,7 +45,12 @@ ob_start()
 		<!-- Material inline 5 -->
 		<div class="form-check form-check-inline">
 		  <input type="radio" class="form-check-input" id="Transfer" name="choixAPI" value="4"  onchange="this.form.submit()">
-		  <label class="form-check-label" for="materialInline5">Transfer</label>
+		  <label class="form-check-label" for="materialInline5">Transfer &nbsp &nbsp &nbsp</label>
+		</div>
+		<div class="form-check form-check-inline">
+		<div class="checkbox">
+  			<label><input type="checkbox" id ="csv" name="csv" value="1">Sauvegarde CSV</label>
+		</div>
 		</div>
 		</div>
 		
@@ -87,7 +92,7 @@ ob_start()
 			<br/>
 			<div class="container">
 			<div class="basic_form">
-				<form method="POST" action="Recherche.php">
+				<form method="POST">
 			
 					<div class="text-center">
 						<label  for='pays'>Pays :</label></br>
@@ -118,7 +123,7 @@ ob_start()
 			<br/>
 			<div class="container">
 			<div class="basic_form">
-				<form method="POST" action="Recherche.php">
+				<form method="POST">
 				  	<div class="text-center">
 						<label for='fn'>Prénom :</label></br>
 						<input class='form-control' type='text' name='fn' id='fn' placeholder='Veuillez entrer le prénom du joueur'/></br>
@@ -481,7 +486,6 @@ if($_GET["choixAPI"] == 3){?>
 			<input type="radio" class="form-check-input" id="League"name="e" value="False">
 			<label class="form-check-label" for="materialInline2">Non</label>
 		</div></div><br/><br/>
-	x
 
 		<div class="text-center">Retourne la liste de tous les sites de fans  :
 		<div class="form-check form-check-inline">
@@ -517,24 +521,30 @@ if($_GET["choixAPI"] == 3){?>
 
 
 <?php 
+$csvV = "";
+if(isset($_GET["csv"])){
+	$csvV = "&import=csv";
+}
+
 //	Renvoie pour les recherche des joueur
 if (isset($_POST["valPlayerJ"])) {
 
 	if(isset($_POST["dataP"])){
 	if($_POST["dataP"] == 0){
-		header("Location: http://127.0.0.1:5000/?API-type=players&lastName=".$_POST["ln"]."&firstName=".$_POST["fn"]."&matches=1");
+		header("Location: http://127.0.0.1:5000/?API-type=players&lastName=".$_POST["ln"]."&firstName=".$_POST["fn"]."&matches=1".$csvV);
 	}
 
 	if($_POST["dataP"] == 1){
-		header("Location: http://127.0.0.1:5000/?API-type=players&lastName=".$_POST["ln"]."&firstName=".$_POST["fn"]."&dataPlayer=1");
+
+		header("Location: http://127.0.0.1:5000/?API-type=players&lastName=".$_POST["ln"]."&firstName=".$_POST["fn"]."&dataPlayer=1".$csvV);
 	}
 
 	if($_POST["dataP"] == 2){
-		header("Location: http://127.0.0.1:5000/?API-type=players&lastName=".$_POST["ln"]."&firstName=".$_POST["fn"]."&career=1");
+		header("Location: http://127.0.0.1:5000/?API-type=players&lastName=".$_POST["ln"]."&firstName=".$_POST["fn"]."&career=1".$csvV);
 	}
 
 	if($_POST["dataP"] == 3){
-		header("Location: http://127.0.0.1:5000/?API-type=players&lastName=".$_POST["ln"]."&firstName=".$_POST["fn"]."&all=1");
+		header("Location: http://127.0.0.1:5000/?API-type=players&lastName=".$_POST["ln"]."&firstName=".$_POST["fn"]."&all=1".$csvV);
 	}
 
 }
@@ -542,37 +552,37 @@ if (isset($_POST["valPlayerJ"])) {
 
 
 if(isset($_POST["valPlayer"])){
-	header("Location: http://127.0.0.1:5000/?API-type=players&country=".$_POST["pays"]."&club=".$_POST["club"]);
+	header("Location: http://127.0.0.1:5000/?API-type=players&country=".$_POST["pays"]."&club=".$_POST["club"].$csvV);
 }
 
 
 if(isset($_POST["league1"])){
-	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays1"]);
+	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays1"].$csvV);
 }
 
 if(isset($_POST["league2"])){
-	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays2"]."&type=True");
+	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays2"]."&type=True".$csvV);
 }
 
 if(isset($_POST["league3"])){
-	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays3"]."&all=True");
+	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays3"]."&all=True".$csvV);
 }
 
 if(isset($_POST["league4"])){
-	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays4"]."&league=".$_POST["Ll"]."&winner=True&end-year=".$_POST["Lanne"]);
+	header("Location: http://127.0.0.1:5000/?API-type=leagues&country=".$_POST["Lpays4"]."&league=".$_POST["Ll"]."&winner=True&end-year=".$_POST["Lanne"].$csvV);
 }
 
 
 if(isset($_POST["match1"])){
-	header("Location: http://127.0.0.1:5000/?API-type=match&all=True&m=".$_POST["m"]."&d=".$_POST["j"]."&y=".$_POST["a"]);
+	header("Location: http://127.0.0.1:5000/?API-type=match&all=True&m=".$_POST["m"]."&d=".$_POST["j"]."&y=".$_POST["a"].$csvV);
 }
 
 if(isset($_POST["match2"])){
-	header("Location: http://127.0.0.1:5000/?API-type=match&clubA=".$_POST["clA"]."&clubB=".$_POST["clB"]."&countryA=".$_POST["pA"]."&countryB=".$_POST["pB"]);
+	header("Location: http://127.0.0.1:5000/?API-type=match&clubA=".$_POST["clA"]."&clubB=".$_POST["clB"]."&countryA=".$_POST["pA"]."&countryB=".$_POST["pB"].$csvV);
 }
 
 if(isset($_GET["choixAPI"]) AND $_GET["choixAPI"] == 4 and isset($_POST["transfer"])){
-	header("Location: http://127.0.0.1:5000/?API-type=transfer&team=".$_POST["trC"]."&year=".$_POST["ye"]);
+	header("Location: http://127.0.0.1:5000/?API-type=transfer&team=".$_POST["trC"]."&year=".$_POST["ye"].$csvV);
 }
 
 if(isset($_GET["choixAPI"]) AND $_GET["choixAPI"] == 3 and isset($_POST["mat"])){
