@@ -122,6 +122,14 @@ class FootballAPI(Players, Teams, Leagues, Match, TransferMarkt):
             file_name = key + ".csv"
             df.to_csv(os.path.join(path_to_save, file_name))
 
+    def data_visualization_general(self, result):
+        """
+
+        transform the data (json object) to csv file and save it in the jupyter_notebook folder
+        :param data: json object
+        """
+        data_visualization_general(result)
+
 # ===============================================================
 #   Links
 # ===============================================================

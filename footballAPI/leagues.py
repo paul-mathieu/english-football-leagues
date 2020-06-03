@@ -4,7 +4,7 @@ import time
 from .core import *
 from bs4 import BeautifulSoup
 import numpy as np
-
+import sys
 
 class Leagues(object):
 
@@ -20,7 +20,9 @@ class Leagues(object):
     def json_leagues(self, parameters_dictionary):
         self.set_parameters_dictionary_leagues(parameters_dictionary)
         self.set_URL_leagues()
-        return self.process()
+        result = self.process()
+        data_visualization_general(self.process())
+        return result
         # data_visualization_general(self.process())
         # self.get_player_with_market_value_of_a_team("manchester united", 2019)
         # self.data_visualization_transfermarkt(self.get_player_with_market_value_of_a_team("arsenal", 2019))
