@@ -1,8 +1,5 @@
 # -*- coding: UTF-8 -*-
-from .core import *
 from .teams_external_getters import *
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
 
 
 class Teams(object):
@@ -30,7 +27,10 @@ class Teams(object):
             :param parameters_dictionary: dictionary of values
             :type parameters_dictionary: dict
         """
-        self.parameters_dictionary = {"API type": None, "country": None, "league": None, "end year": None}
+        self.parameters_dictionary = {"name-team": None, "max-result": None,
+                                      "info": False, "venue": False, "trophies": False,
+                                      "matches": False, "squad": False, "fan-sites": False,
+                                      "info-squad": {"API-type": "players"}}
         # print("test")
 
     def set_url_teams(self):
@@ -43,15 +43,83 @@ class Teams(object):
                    "/" + get_year(self.parameters_dictionary) + \
                    TEAMS_END_URL
         print(self.URL)
-
+        
     # ===============================================================
     #   Getters
     # ===============================================================
 
-    def get_table_teams(self):
-        my_html = BeautifulSoup(urlopen(self.URL), "html.parser").findAll("form")
-        # my_html = BeautifulSoup(str(my_html[2]), "html.parser").findAll("tr")
-        return my_html
+    def get_name_team(self):
+        """
+        Get the name of the team in the parameter dictionary
+            :return: name of the team
+            :rtype: str
+        """
+        return self.parameters_dictionary["name-team"]
+
+    def get_max_result(self):
+        """
+        Get the number of results wanted in the parameter dictionary
+            :return: max number of results
+            :rtype: int
+        """
+        return self.parameters_dictionary["max-result"]
+
+    def get_info(self):
+        """
+        Get the value of info (wanted or not) in the parameter dictionary
+            :return: is the team infos wanted
+            :rtype: bool
+        """
+        return self.parameters_dictionary["info"]
+
+    def get_venue(self):
+        """
+        Get the value of info (wanted or not) in the parameter dictionary
+            :return: is the team venue infos wanted
+            :rtype: bool
+        """
+        return self.parameters_dictionary["venue"]
+
+    def get_trophies(self):
+        """
+        Get the value of info (wanted or not) in the parameter dictionary
+            :return: is the team trophies infos wanted
+            :rtype: bool
+        """
+        return self.parameters_dictionary["trophies"]
+
+    def get_matches(self):
+        """
+        Get the value of info (wanted or not) in the parameter dictionary
+            :return: is the team matches wanted
+            :rtype: bool
+        """
+        return self.parameters_dictionary["matches"]
+
+    def get_squad(self):
+        """
+        Get the value of info (wanted or not) in the parameter dictionary
+            :return: is the team squad wanted
+            :rtype: bool
+        """
+        return self.parameters_dictionary["squad"]
+
+    def get_squad_info(self):
+        """
+        Get the name of th team in the parameter dictionary
+            :return: parameters dictionary of a player
+            :rtype: dict
+        """
+        return self.parameters_dictionary["squad-info"]
+
+    def get_fan_sites(self):
+        """
+        Get the value of info (wanted or not) in the parameter dictionary
+            :return: is the fan sites infos wanted
+            :rtype: bool
+        """
+        return self.parameters_dictionary["fan-sites"]
+
 
     # ===============================================================
     #   Methods
@@ -79,15 +147,43 @@ class Teams(object):
         """
         self.set_parameters_dictionary(parameters_dictionary)
         self.fill_parameters_dictionary(self.parameters_dictionary)
-        self.set_url_teams()
+        # self.set_url_teams()
 
         id_list = get_team_id("liverpool FC")
-        print("team name: " + id_list[0])
-        # print("team data: " + str(get_team_data('663')))
-        print("team data: " + str(get_team_data(id_list[0], info=False, venue=False,
-                                                trophies=False, matches=False,
-                                                squad=True, fan_sites=False)))
 
+        # if there no max result value, only the first result
+        if self.get_max_result() is None:
+            return [get_team_data(id_list[0],
+                                  self.get_info(),
+                                  self.get_venue(),
+                                  self.get_trophies(),
+                                  self.get_matches(),
+                                  self.get_squad(),
+                                  self.get_squad_info(),
+                                  self.get_fan_sites())]
+
+        # if max result value is too big, return all results
+        if len(id_list) <= self.get_max_result():
+            return [get_team_data(id,
+                                  self.get_info(),
+                                  self.get_venue(),
+                                  self.get_trophies(),
+                                  self.get_matches(),
+                                  self.get_squad(),
+                                  self.get_squad_info(),
+                                  self.get_fan_sites())
+                    for id in id_list]
+
+        # else return requested max result
+        return [get_team_data(id_list[index],
+                              self.get_info(),
+                              self.get_venue(),
+                              self.get_trophies(),
+                              self.get_matches(),
+                              self.get_squad(),
+                              self.get_squad_info(),
+                              self.get_fan_sites())
+                for index in range(self.get_max_result())]
 
     # ===============================================================
     #   Prints and debugs
@@ -119,8 +215,3 @@ class Teams(object):
     def tests(self, parameters_dictionary):
         self.set_parameters_dictionary(parameters_dictionary)
         self.display_teams()
-
-
-
-
-
