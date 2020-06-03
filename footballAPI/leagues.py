@@ -241,7 +241,7 @@ class Leagues(object):
         competition through years with end_year="all"
         :return: json object
         """
-        end_year = self.parameters_dictionary['end-year']
+        end_year = int(self.parameters_dictionary['end-year'])
 
         # we set a header so that the website will know we are a real user otherwise it will block the program
         html = requests.get(self.URL, headers=HEADERS)
