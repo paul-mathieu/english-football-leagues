@@ -7,7 +7,6 @@ import datetime
 import pandas as pd
 from pathlib import Path
 
-
 BASE_URL = "https://uk.soccerway.com"
 
 PLAYERS_URL = None
@@ -32,32 +31,31 @@ def get_HTML(url, convert_to_json=False):
         return json.loads(json.dumps(html_content))
 
 
-def is_players_request(parameters_dictionary):
+def is_x_request(value, parameters_dictionary):
+    value = value.upper()
     if "API-type" not in parameters_dictionary.keys():
         return False
-    return parameters_dictionary["API-type"] in ["players", "Players", "PLAYERS"]
+    return parameters_dictionary["API-type"].upper() == value
+
+
+def is_players_request(parameters_dictionary):
+    return is_x_request("PLAYERS", parameters_dictionary)
 
 
 def is_teams_request(parameters_dictionary):
-    if "API-type" not in parameters_dictionary.keys():
-        return False
-    return parameters_dictionary["API-type"] in ["teams", "Teams", "TEAMS"]
+    return is_x_request("TEAMS", parameters_dictionary)
 
 
 def is_leagues_request(parameters_dictionary):
-    if "API-type" not in parameters_dictionary.keys():
-        return False
-    return parameters_dictionary["API-type"] in ["leagues", "Leagues", "LEAGUES"]
+    return is_x_request("LEAGUES", parameters_dictionary)
+
 
 def is_match_request(parameters_dictionary):
-    if "API type" not in parameters_dictionary.keys():
-        return False
-    return parameters_dictionary["API-type"] in ["match", "Match", "MATCH"]
+    return is_x_request("MATCH", parameters_dictionary)
+
 
 def is_transferMarkt_request(parameters_dictionary):
-    if "API-type" not in parameters_dictionary.keys():
-        return False
-    return parameters_dictionary["API-type"] in ["transfer", "Transfer", "TRANSFER"]
+    return is_x_request("TRANSFER", parameters_dictionary)
 
 
 def get_year(parameters_dictionary):
@@ -102,6 +100,6 @@ def data_visualization_general(data):
     path_to_save = str(Path(__file__).parent.parent) + '/jupyter_notebook/'
     key = list(data.keys())[0]  # we do this way because keys() return a dict-keys which is not subscriptable
     df = pd.DataFrame(data[key])
-    file_name = key+".csv"
+    file_name = key + ".csv"
     df.to_csv(os.path.join(path_to_save, file_name))
     # we save it in the jupyter_notebook folder so that it will be easier to show data on jupyter notebook
