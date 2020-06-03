@@ -18,11 +18,9 @@ class Players(object):
         self.parameters_dictionary = None
         self.URL = None
         self.choix = 0
-        self.request_headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
-                                 'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
-
-
-
+        self.request_headers = {
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, '
+                          'like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
 
     def set_parameters_dictionary(self, parameters_dictionary):
         """
@@ -31,15 +29,13 @@ class Players(object):
             :type parameters_dictionary: dict
         """
         self.parameters_dictionary = {"API type": None, "country": None, "league": None, "end year": None, "club": None,
-                                      "firstName": None, "lastName": None, "matches": None, "dataPlayer": None, "career": None, "all": None, "idP": None}
+                                      "firstName": None, "lastName": None, "matches": None, "dataPlayer": None,
+                                      "career": None, "all": None, "idP": None}
         self.fill_parameters_dictionary(parameters_dictionary)
 
     # ===============================================================
     #   Setters
     # ===============================================================
-
-
-
 
     def set_URL_Players(self):
         """
@@ -55,33 +51,36 @@ class Players(object):
             param = str(self.parameters_dictionary["club"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 1
-        elif (self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary["lastName"] is not None and self.parameters_dictionary["matches"] is not None) or (self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["matches"] is not None):
+        elif (self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[
+            "lastName"] is not None and self.parameters_dictionary["matches"] is not None) or (
+                self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["matches"] is not None):
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 2
-        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["dataPlayer"] is not None  or (self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["dataPlayer"] is not None):
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[
+            "lastName"] is not None and self.parameters_dictionary["dataPlayer"] is not None or (
+                self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["dataPlayer"] is not None):
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 3
-        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["career"] is not None or (self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["career"] is not None):
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[
+            "lastName"] is not None and self.parameters_dictionary["career"] is not None or (
+                self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["career"] is not None):
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 4
-        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[ "lastName"] is not None and self.parameters_dictionary["all"] is not None or (self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["all"] is not None):
+        elif self.parameters_dictionary["firstName"] is not None and self.parameters_dictionary[
+            "lastName"] is not None and self.parameters_dictionary["all"] is not None or (
+                self.parameters_dictionary["idP"] is not None and self.parameters_dictionary["all"] is not None):
             param = str(self.parameters_dictionary["lastName"]).replace(" ", "+")
             self.URL = BASE_URL + "/search/?q=" + param
             self.choix = 5
         else:
             raise ValueError("Parameter's configuration not found")
 
-
-
     # ===============================================================
     #   Methods
     # ===============================================================
-
-
-
 
     def fill_parameters_dictionary(self, parameters_dictionary):
         """
@@ -90,10 +89,7 @@ class Players(object):
             :type parameters_dictionary: dict
         """
         for key in parameters_dictionary.keys():
-                self.parameters_dictionary[key] = parameters_dictionary[key]
-
-
-
+            self.parameters_dictionary[key] = parameters_dictionary[key]
 
     def display(self):
         """
@@ -101,9 +97,6 @@ class Players(object):
         """
         print(get_HTML(self.URL))
         print("\n\n\n" + self.URL)
-
-
-
 
     def json_players(self, parameters_dictionary):
         """
@@ -118,16 +111,12 @@ class Players(object):
         return self.processing()
         # self.display()
 
-
     # ===============================================================
     #   Core
     # ===============================================================
 
-
-
-
-    def functionProcessing2(self, firstName = '', lastName = ''):
-        '''
+    def functionProcessing2(self, firstName='', lastName=''):
+        """
         This function search the data for one players gived in parameters_dicitonary or in param.
 
         We can have three type of data:
@@ -177,15 +166,20 @@ class Players(object):
         :param firstName: Not compulsory, used for a player different than the starter
         :param lastName: Not compulsory, used for a player different than the starter
         :return: liste of dict
-        '''
+        """
         finalreturn = {}
-        if(self.parameters_dictionary["idP"] is not None):
+        if self.parameters_dictionary["idP"] is not None:
             numPlayerL = self.parameters_dictionary["idP"]
             playerUrl = BASE_URL + "/players/a/" + str(numPlayerL)
-            print(playerUrl)
-            pnam = "None"
+            # print(playerUrl)
+
             html = requests.get(playerUrl, headers=self.request_headers)
             html_soup = BeautifulSoup(html.text, 'html.parser')
+            try:
+                pnam = html_soup.find_all("div", {"id": "subheading"})[0].find_all("h1")[0].text
+            except:
+                # print(html_soup.find_all("div", {"id": "subheading"})[0]).find_all("h1")
+                pnam = "None"
         else:
             if firstName != '' and lastName != '':
                 param = str(lastName).replace(" ", "+")
@@ -211,12 +205,11 @@ class Players(object):
                         pnam = cells[0].text
                         playerUrl = BASE_URL + "/" + str(cells[0].a.get('href'))
                         find = True
-                        break;
+                        break
                 except:
                     pass
 
             if not find: raise ValueError("Player name not found")
-
 
             # When the player was found, we recover the specific URL of this player
 
@@ -241,7 +234,8 @@ class Players(object):
                 # print(listGetMeth)
 
                 # recover html code
-                htmlMatchs = requests.get(getMeth,headers = self.request_headers).json()["commands"][0]["parameters"]["content"]
+                htmlMatchs = requests.get(getMeth, headers=self.request_headers).json()["commands"][0]["parameters"][
+                    "content"]
 
                 # Processing for recover all matches
                 if len(str(htmlMatchs)) < 100:
@@ -358,9 +352,6 @@ class Players(object):
 
         return finalreturn
 
-
-
-
     def functionProcessing1(self):
         '''
         Function used for serch all players (and players data) of a team
@@ -384,7 +375,7 @@ class Players(object):
 
         html = requests.get(self.URL, headers=self.request_headers)
         html_soup = BeautifulSoup(html.text, 'html.parser')
-        rows = html_soup.findAll("div", {"class":"block_search_results_teams real-content clearfix"})
+        rows = html_soup.findAll("div", {"class": "block_search_results_teams real-content clearfix"})
         for row in rows:
             row = row.findAll("li")
 
@@ -397,7 +388,7 @@ class Players(object):
         # html = urlopen(request)
         html_soup = BeautifulSoup(html.text, 'html.parser')
 
-        rows = html_soup.findAll("table",{"class":"table squad sortable"})
+        rows = html_soup.findAll("table", {"class": "table squad sortable"})
         players = []
 
         for row in rows:
@@ -407,21 +398,21 @@ class Players(object):
                 if len(cells) == 17:
                     try:
                         players_entry = {
-                                "shirtnumber": cells[0].text,
-                                "name": cells[2].text,
-                                "age": cells[4].text,
-                                "position": cells[5].text,
-                                "game_minutes": cells[6].text,
-                                "appearances": cells[7].text,
-                                "lineups": cells[8].text,
-                                "subs_in": cells[9].text,
-                                "subs_out": cells[10].text,
-                                "subs_on_bench": cells[11].text,
-                                "number_statistic_goals": cells[12].text,
-                                "number_statistic_assists": cells[13].text,
-                                "yellow_cards": cells[14].text,
-                                "nd_yellow_cards": cells[15].text,
-                                "red_cards": cells[16].text
+                            "shirtnumber": cells[0].text,
+                            "name": cells[2].text,
+                            "age": cells[4].text,
+                            "position": cells[5].text,
+                            "game_minutes": cells[6].text,
+                            "appearances": cells[7].text,
+                            "lineups": cells[8].text,
+                            "subs_in": cells[9].text,
+                            "subs_out": cells[10].text,
+                            "subs_on_bench": cells[11].text,
+                            "number_statistic_goals": cells[12].text,
+                            "number_statistic_assists": cells[13].text,
+                            "yellow_cards": cells[14].text,
+                            "nd_yellow_cards": cells[15].text,
+                            "red_cards": cells[16].text
                         }
                         players.append(players_entry)
 
@@ -464,11 +455,7 @@ class Players(object):
                     except:
                         pass
 
-
         return {'TeamPlayer': players}
-
-
-
 
     def processing(self):
         """
@@ -490,10 +477,6 @@ class Players(object):
             finalreturn = self.functionProcessing2()
 
         return finalreturn
-
-
-
-
 
     def functionProcessing1b(self, u):
         '''
@@ -520,7 +503,7 @@ class Players(object):
         html = requests.get(u, headers=self.request_headers)
         html_soup = BeautifulSoup(html.text, 'html.parser')
 
-        rows = html_soup.findAll("table",{"class":"table squad sortable"})
+        rows = html_soup.findAll("table", {"class": "table squad sortable"})
         players = []
 
         for row in rows:
@@ -530,21 +513,21 @@ class Players(object):
                 if len(cells) == 17:
                     try:
                         players_entry = {
-                                "shirtnumber": cells[0].text,
-                                "name": cells[2].text,
-                                "age": cells[4].text,
-                                "position": cells[5].text,
-                                "game_minutes": cells[6].text,
-                                "appearances": cells[7].text,
-                                "lineups": cells[8].text,
-                                "subs_in": cells[9].text,
-                                "subs_out": cells[10].text,
-                                "subs_on_bench": cells[11].text,
-                                "number_statistic_goals": cells[12].text,
-                                "number_statistic_assists": cells[13].text,
-                                "yellow_cards": cells[14].text,
-                                "nd_yellow_cards": cells[15].text,
-                                "red_cards": cells[16].text
+                            "shirtnumber": cells[0].text,
+                            "name": cells[2].text,
+                            "age": cells[4].text,
+                            "position": cells[5].text,
+                            "game_minutes": cells[6].text,
+                            "appearances": cells[7].text,
+                            "lineups": cells[8].text,
+                            "subs_in": cells[9].text,
+                            "subs_out": cells[10].text,
+                            "subs_on_bench": cells[11].text,
+                            "number_statistic_goals": cells[12].text,
+                            "number_statistic_assists": cells[13].text,
+                            "yellow_cards": cells[14].text,
+                            "nd_yellow_cards": cells[15].text,
+                            "red_cards": cells[16].text
                         }
                         players.append(players_entry)
 
@@ -586,6 +569,5 @@ class Players(object):
                         players.append(players_entry)
                     except:
                         pass
-
 
         return [{'TeamPlayer': players}]

@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 from .core import *
 from bs4 import BeautifulSoup
-import footballAPI
+from .players import Players
 
 # ===============================================================
 #   Main functions
@@ -15,22 +15,35 @@ def get_team_id(team_name):
         :return result: id number of the team
         :rtype result: str
     """
+    output_list = []
     team_name.replace(" ", "%20")
     url_search = "https://int.soccerway.com/search/teams/?q=" + team_name
     html_search = requests.get(url_search, headers=HEADERS).text
     soup_search = BeautifulSoup(html_search, features="lxml")
 
-    tbl = soup_search.find_all("ul", {"class": "tree"})
+    tbl = soup_search.find_all("div", {"class": "block_search_results_teams-wrapper"})[0]
+    # print(tbl['class'])
+    tbl = tbl.find_all("div", {"class": "block_search_results_teams"})[0]
+    # print(tbl['class'])
+    tbl = tbl.find_all("ul", {"class": "tree"})[0]
+    # print(tbl['class'])
+
     if len(tbl) == 0:
         return None
 
-    result = tbl[0].find_all("li")[0].find_all("a")[0]["href"]
-    for part in range(3):
-        result = result[result.index("/", 1):]
-    result = result[1:len(result) - 1]
-    # print(result)
+    lis = tbl.find_all("li")
+    for li in lis:
+        try:
+            result = li.find_all("a")[0]["href"]
+            for part in range(3):
+                result = result[result.index("/", 1):]
+            result = result[1:len(result) - 1]
+            output_list.append(result)
 
-    return result
+        except:
+            pass
+
+    return [e for e in output_list if int(e) < 20000]
 
 
 def get_team_data(team_id,
@@ -62,41 +75,59 @@ def get_team_data(team_id,
 
     # v === INFO ===
     if info:
-        info_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
-        info_data = get_team_data_info(info_url)
-        output_dictionary["info"] = info_data
+        try:
+            info_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
+            info_data = get_team_data_info(info_url)
+            output_dictionary["info"] = info_data
+        except:
+            output_dictionary["info"] = None
 
     # v === VENUE ===
     if venue:
-        venue_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/venue/"
-        venue_data = get_team_data_venue(venue_url)
-        output_dictionary["venue"] = venue_data
+        try:
+            venue_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/venue/"
+            venue_data = get_team_data_venue(venue_url)
+            output_dictionary["venue"] = venue_data
+        except:
+            output_dictionary["info"] = None
 
     # v === TROPHIES ===
     if trophies:
-        trophies_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/trophies/"
-        trophies_data = get_team_data_trophies(trophies_url)
-        output_dictionary["trophies"] = trophies_data
+        try:
+            trophies_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/trophies/"
+            trophies_data = get_team_data_trophies(trophies_url)
+            output_dictionary["trophies"] = trophies_data
+        except:
+            output_dictionary["info"] = None
 
     # v === MATCHES ===
     if matches:
-        matches_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/matches/"
-        matches_data = get_team_data_matches(matches_url)
-        output_dictionary["matches"] = matches_data
+        try:
+            matches_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/matches/"
+            matches_data = get_team_data_matches(matches_url)
+            output_dictionary["matches"] = matches_data
+        except:
+            output_dictionary["info"] = None
 
     # === SQUAD ===
     if squad:
-        if squad_info is None:
-            squad_info = {}
-        squad_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/squad/"
-        squad_data = get_team_data_squad(team_id, squad_url, squad_info)
-        output_dictionary["squad"] = squad_data
+        try:
+            if squad_info is None:
+                squad_info = {}
+            squad_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/squad/"
+            squad_data = get_team_data_squad(team_id, squad_url, squad_info)
+            output_dictionary["squad"] = squad_data
+        except:
+            output_dictionary["info"] = None
 
     # v === FAN SITES ===
     if fan_sites:
-        fan_sites_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
-        fan_sites_data = get_team_data_fan_sites(team_id, fan_sites_url)
-        output_dictionary["fan_sites"] = fan_sites_data
+        try:
+            fan_sites_url = "https://int.soccerway.com/teams/england/x/" + str(team_id) + "/"
+            fan_sites_data = get_team_data_fan_sites(team_id, fan_sites_url)
+            output_dictionary["fan_sites"] = fan_sites_data
+        except:
+            output_dictionary["info"] = None
 
     return output_dictionary
 
@@ -269,14 +300,17 @@ def get_team_data_trophies(trophies_url):
                         try:
                             for season in row.find_all("td", {"class": "seasons"})[0].find_all("a"):
                                 win_type_dict["seasons"].append(season.text)
-                        except: pass
+                        except:
+                            pass
                         try:
                             for season in row.find_all("td", {"class": "seasons"})[0].find_all("span"):
                                 win_type_dict["seasons"].append(season.text)
-                        except: pass
+                        except:
+                            pass
 
                         temp_dict[win_type] = win_type_dict
-                except: pass
+                except:
+                    pass
 
     return output_list if len(output_list) > 0 else None
 
@@ -324,7 +358,7 @@ def get_team_data_matches(matches_url):
             a_element = tds[4].find_all('a')[0]
             statut = a_element['class'][0]
             score = a_element.text.replace("\n", "").replace("E", "").replace("P", "").lstrip().rstrip()
-            temp_dictionary['result'] = {'statut': statut, 'score-a': score[0], 'score-b': score[len(score)-1]}
+            temp_dictionary['result'] = {'statut': statut, 'score-a': score[0], 'score-b': score[len(score) - 1]}
             # team b
             a_element = tds[5].find_all('a')[0]
             code = a_element['href'][::-1][1:]
@@ -334,7 +368,8 @@ def get_team_data_matches(matches_url):
             temp_dictionary['more'] = 'https://int.soccerway.com/' + tds[5].find_all('a')[0]['href']
 
             output_list.append(temp_dictionary)
-        except:pass
+        except:
+            pass
 
     return output_list if len(output_list) > 0 else None
 
@@ -358,10 +393,36 @@ def get_team_data_squad(team_id, squad_url, squad_info):
         :rtype output_dictionary: dict or None
     """
     # variables
-    output_dictionary = dict()
-    bf_html_content = get_beautiful_soup(squad_url)
+    output_list = []
+    temp_dictionary = dict()
 
-    return output_dictionary if len(output_dictionary.keys()) > 0 else None
+    bf_html_content = get_beautiful_soup(squad_url)
+    # print(squad_url)
+    tbl = bf_html_content.find_all("div", {"class": "squad-container"})[0]
+    tbl = tbl.find_all("tbody")[0]
+
+    tds = tbl.find_all("td", {"class": "photo"})
+
+    for td in tds:
+        try:
+            code = td.find_all("a")[0]['href']
+            code = code[::-1][1:]
+            code = code[:code.index('/')]
+            temp_dictionary = {'code': code}
+
+            player_parameters_dictionary = squad_info
+            player_parameters_dictionary['idP'] = code
+            player = Players()
+            # player.set_parameters_dictionary()
+
+            temp_dictionary['player'] = player.json_players(player_parameters_dictionary)
+
+            output_list.append(temp_dictionary)
+
+        except:
+            pass
+
+    return output_list if len(output_list) > 0 else None
 
 
 def get_team_data_statistics(team_id, statistics_url):
