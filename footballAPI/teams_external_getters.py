@@ -186,6 +186,13 @@ def get_team_data_info(info_url):
         for index in range(len(dd_content_list)):
             output_dictionary[dt_content_list[index]] = dd_content_list[index]
 
+        try:
+            a = output_dictionary['E-mail']
+            b = "\">"
+            c = "</a>"
+            output_dictionary['E-mail'] = a[a.index(b)+len(b):a.index(c)]
+        except:pass
+
     return output_dictionary if len(output_dictionary.keys()) > 0 else None
 
 
@@ -274,8 +281,8 @@ def get_team_data_trophies(trophies_url):
                 if league_node is None or len(row.find_all("td", {"class": "competition"})) > 0:
                     league_node = row.find_all("td", {"class": "competition"})[0]
 
-                    print(row.find_all("td", {"class": "competition"}))
-                    print("~~~~~~")
+                    # print(row.find_all("td", {"class": "competition"}))
+                    # print("~~~~~~")
 
                     # league
                     if len(league_node.find_all("a")) > 0:
