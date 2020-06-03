@@ -1,10 +1,5 @@
 import time
-from .core import *
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
-import pandas as pd
-import requests
-import datetime
+
 from .players import *
 
 class Match(object):
@@ -57,8 +52,10 @@ class Match(object):
             :return json_data: json data
             :rtype json_data: dict
         """
+
         self.set_parameters_dictionaryM(parameters_dictionary)
         if self.parameters_dictionary["all"] is not None and self.parameters_dictionary["d"] is None and self.parameters_dictionary["y"] is None and self.parameters_dictionary["m"] is None:
+            print("aa")
             return self.matchWeek()
 
         elif self.parameters_dictionary["all"] is not None and self.parameters_dictionary["d"] is not None and self.parameters_dictionary["y"] is not None and self.parameters_dictionary["m"] is not None:
@@ -208,7 +205,7 @@ class Match(object):
         '''
         aRetourner = []
         if m== '' and j == '' and a == '':
-            a= str(time.localtime().tm_year)
+            aa= str(time.localtime().tm_year)
 
             m= str(time.localtime().tm_mon)
             if len(m) == 1:
@@ -218,9 +215,12 @@ class Match(object):
             if len(j) == 1:
                 j = "0"+j
 
-        URL = BASE_URL+"/matches/"+a+"/"+m+"/"+j
+        URL = BASE_URL+"/matches/"+aa+"/"+m+"/"+j
+        print(URL)
         html = requests.get(URL, headers=self.request_headers)
         html_soup = BeautifulSoup(html.text, 'html.parser')
+
+
         rows = html_soup.find_all('table', {"class":"matches date_matches grouped"})
         for row in rows:
             a = row.find_all("tr")
@@ -232,20 +232,37 @@ class Match(object):
 
                        if id[-i] == "-":
                            id = id[-i+1:]
-                           getM = "https://uk.soccerway.com/a/block_date_matches?block_id=page_matches_1_block_date_matches_1&callback_params={%22block_service_id%22%3A%22matches_index_block_datematches%22%2C%22date%22%3A%222020-04-28%22%2C%22stage-value%22%3A%" \
+
+                           getM = "https://uk.soccerway.com/a/block_date_matches?block_id=page_matches_1_block_date_matches_1&callback_params={%22block_service_id%22%3A%22matches_index_block_datematches%22%2C%22date%22%3A%22"+aa+"-"+m+"-"+j+"%22%2C%22stage-value%22%3A%" \
                                   "221%22}&action=showMatches&params={%22competition_id%22%3A"+id+"}"
+
                            req = requests.get(getM, headers = self.request_headers).json()["commands"][0]["parameters"]["content"]
+
                            html_soup1 = BeautifulSoup(req, 'html.parser')
                            rows = html_soup1.findAll("tr")
                            for row in rows:
                                cells = row.find_all('td')
+
                                try:
                                    teamAurl = BASE_URL+cells[1].a.get('href')+'squad/'
                                    teamBurl = BASE_URL+cells[3].a.get('href')+'squad/'
+                                   print(teamAurl + " et " + teamBurl)
                                    aRetourner.append(self.proc(teamAurl,teamBurl, cells[1].text, cells[3].text))
                                except:
                                    pass
                except:
                    pass
         return {"Match":aRetourner}
+
+    def jointMatch(self):
+        '''
+
+        :return:
+        '''
+        pass
+        '''
+        Dans un premier temps je dois récupérer toutes les matchs des deux équipe
+        Par la suite je regarde les matchs qu'ils ont jouée ensemble les 5 dernières années
+        Les matchs qu'il on jouée contre les meme équipe
+        '''
 

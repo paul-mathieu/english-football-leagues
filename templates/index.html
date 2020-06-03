@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Récupération de données</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+	<h1 class="text-center">Récupération de données footbalistique</h1>
+	<br/><br/>
+	<h4 class="text-center">Veuillez choisir le type de données que vous voulez</h4>
+	<form method="GET" action="/response">
+
+		<div class="text-center">
+		<!-- Material inline 1 -->
+		<div class="form-check form-check-inline">
+		  <input type="radio" class="form-check-input" id="Joueur" name="choixAPI" value="0" onchange="this.form.submit()">
+		  <label class="form-check-label" for="materialInline1">Joueur</label>
+		</div>
+
+		<!-- Material inline 2 -->
+		<div class="form-check form-check-inline">
+		  <input type="radio" class="form-check-input" id="League" name="choixAPI" value="1" onchange="this.form.submit()">
+		  <label class="form-check-label" for="materialInline2">League</label>
+		</div>
+
+		<!-- Material inline 3 -->
+		<div class="form-check form-check-inline">
+		  <input type="radio" class="form-check-input" id="Match" name="choixAPI" value="2" onchange="this.form.submit()">
+		  <label class="form-check-label" for="materialInline3">Match</label>
+		</div>
+
+		<!-- Material inline 4 -->
+		<div class="form-check form-check-inline">
+		  <input type="radio" class="form-check-input" id="Equipe" name="choixAPI" value="3" onchange="this.form.submit()">
+		  <label class="form-check-label" for="materialInline4">Equipe</label>
+		</div>
+
+		<!-- Material inline 5 -->
+		<div class="form-check form-check-inline">
+		  <input type="radio" class="form-check-input" id="Transfer" name="choixAPI" value="4"  onchange="this.form.submit()">
+		  <label class="form-check-label" for="materialInline5">Transfer</label>
+		</div>
+		</div>
+	</form>
+
+{% if 'choixAPI' in parameters.keys() %}
+    {% if (parameters.choixAPI|int() == 0) %}
+
+        <br/>
+        <hr color="black">
+        <form method="GET"  action="/response">
+			<input type="hidden" name="choixAPI" value="0"> <!-- on remet pour toujours avoir la valeur de choix type-->
+            <div class="text-center">
+            <!-- Material inline 1 -->
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" id="Joueur" name="typeP" value="0" onchange="this.form.submit()">
+              <label class="form-check-label" for="materialInline1">Recheche de l'ensemble des joueurs d'une équipe</label>
+            </div>
+
+            <!-- Material inline 2 -->
+            <div class="form-check form-check-inline">
+              <input type="radio" class="form-check-input" id="League" name="typeP" value="1" onchange="this.form.submit()">
+              <label class="form-check-label" for="materialInline2">Recherche de données sur un joueur</label>
+            </div>
+            </div>
+
+        </form>
+		{% if 'typeP' in parameters.keys() %}
+			{% if (parameters.typeP|int() == 0) %}
+				<hr color="black">
+				<br/>
+				<div class="container">
+					<div class="basic_form">
+						<form method="GET" action="/">
+
+							<div class="text-center">
+								<label  for='pays'>Pays :</label></br>
+								<input class='form-control' type='text' name='pays' id='pays' placeholder='Veuillez entrer le nom du pays'/></br>
+							</div>
+
+							<div class="text-center">
+								<label for='club'>Nom du club :</label></br>
+								<input class='form-control' type='text' name='club' id='club' placeholder="Veuillez entrer le nom de l'équipe" /></br>
+							</div>
+
+
+							<div class="modal-footer">
+								<button class="btn btn-primary" name="valPlayer" type="submit" value="Valider">Valider</button>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			{% endif %}
+			{% if (parameters.typeP|int() == 1) %}
+				<hr color="black">
+				<br/>
+				<div class="container">
+					<div class="basic_form">
+						<form method="GET" action="/">
+
+							<div class="text-center">
+								<label for='fn'>Prénom :</label></br>
+								<input class='form-control' type='text' name='fn' id='fn' placeholder='Veuillez entrer le prénom du joueur'/></br>
+							</div>
+							<div class="text-center">
+								<label for='ln'>Nom :</label></br>
+								<input class='form-control' type='text' name='ln' id='ln' placeholder='Veuillez entrer le nom du joueur'/></br>
+							</div>
+
+							<div class="text-center">
+								<div class="form-check form-check-inline">
+								  <input type="radio" class="form-check-input" id="pm" name="dataP" value="0">
+								  <label class="form-check-label" for="0">Tous les matchs du joueur</label>
+								</div>
+
+								<div class="form-check form-check-inline">
+								  <input type="radio" class="form-check-input" id="pi" name="dataP" value="1" >
+								  <label class="form-check-label" for="1">Inforamtion sur le joueur</label>
+								</div>
+
+
+								<div class="form-check form-check-inline">
+								  <input type="radio" class="form-check-input" id="pc" name="dataP" value="2">
+								  <label class="form-check-label" for="2">La carière du joueur</label>
+								</div>
+
+
+								<div class="form-check form-check-inline">
+								  <input type="radio" class="form-check-input" id="all" name="dataP" value="3" >
+								  <label class="form-check-label" for="3">Toutes les informations disponibles</label>
+								</div>
+							</div>
+
+							<br/><br/>
+							<div class="modal-footer">
+								<button class="btn btn-primary" name="valPlayerJ" type="submit" value="Valider">Valider</button>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			{% endif %}
+		{% endif %}
+	{% endif %}
+{% endif %}
+</body>
+</html>
