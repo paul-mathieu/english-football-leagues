@@ -93,13 +93,13 @@ class Match(object):
             a = Players()
             a.set_parameters_dictionary({"API type": "players", "country": self.parameters_dictionary["countryA"], "club": self.parameters_dictionary["clubA"]})
             clubA = a.parameters_dictionary["club"]
-            teamA = a.json_players(a.parameters_dictionary)
+            teamA = [a.json_players(a.parameters_dictionary)]
 
 
             b = Players()
             b.set_parameters_dictionary({"API type": "players", "country": self.parameters_dictionary["countryB"], "club": self.parameters_dictionary["clubB"]})
             clubB = b.parameters_dictionary["club"]
-            teamB = b.json_players(b.parameters_dictionary)
+            teamB = [b.json_players(b.parameters_dictionary)]
 
         else:
             teamA = Players().functionProcessing1b(team1)
@@ -198,13 +198,13 @@ class Match(object):
 
 
 
-    def matchWeek(self, m ='',j='',a=''):
+    def matchWeek(self, m ='',j='',aa=''):
         '''
         This function searches for the matches of the day
         :return: list[dict]
         '''
         aRetourner = []
-        if m== '' and j == '' and a == '':
+        if m== '' and j == '' and aa == '':
             aa= str(time.localtime().tm_year)
 
             m= str(time.localtime().tm_mon)
