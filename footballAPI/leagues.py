@@ -226,14 +226,16 @@ class Leagues(object):
         """
         if self.parameters_dictionary['end-year'].isdigit():
             end_year = int(self.parameters_dictionary['end-year'])
+            end_year_name = "_in_" + str(end_year)
         else:
             end_year = self.parameters_dictionary['end-year']
+            end_year_name = "_through_years"
 
         # we set a header so that the website will know we are a real user otherwise it will block the program
         html = requests.get(self.URL, headers=HEADERS)
 
         html_soup = BeautifulSoup(html.text, 'html.parser')
-        data_set_names = "winner_of_" + self.parameters_dictionary['league']
+        data_set_names = "winner_of_" + self.parameters_dictionary['league'] + end_year_name
         data_set = {data_set_names: []}
         table_content = html_soup.find(id="page_competition_1_block_competition_archive_6-wrapper").find('table')
         # table which contains all the result
