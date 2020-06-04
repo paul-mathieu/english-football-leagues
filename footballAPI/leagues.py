@@ -59,7 +59,9 @@ class Leagues(object):
             elif "type" in list_parameter_key and self.parameters_dictionary['type'].upper() == "TRUE":
                 self.URL = BASE_URL + "/competitions/"
                 self.request = 3
-            elif len(list_parameter_key) == 2: # if there is only "API-type""country" in list_parameter_key
+            elif len(list_parameter_key) == 2 or ((len(list_parameter_key) == 3) and ("import" in list_parameter_key)):
+            # if there are only "API-type" & "country" in list_parameter_key or "API-type", "country" & "import" in
+            # list_parameter_key
                 self.URL = BASE_URL + "/competitions/"
                 self.request = 4
 
@@ -98,7 +100,7 @@ class Leagues(object):
 
         html_soup = BeautifulSoup(html.text, 'html.parser')
         country_soup = None
-        data_set_names = "leagues in " + country
+        data_set_names = "leagues_in_" + country
         data_set = {data_set_names: []}
         for list_element in html_soup.find_all('li', class_='expandable'):
             link = list_element.find('a')['href']
@@ -126,29 +128,6 @@ class Leagues(object):
         json_object = json.loads(json_dump)
         return json_object
 
-    # def get_team_id_in_league(self): #marche pas
-    #     """
-    #     return a json object of all the team ids in league
-    #     :param league:
-    #     :return:
-    #     """
-    #     url = "https://uk.soccerway.com/national/england/premier-league/20192020/regular-season/r53145/"
-    #
-    #     html = requests.get(url, headers=HEADERS)
-    #
-    #     html_soup = BeautifulSoup(html.text, 'html.parser')
-    #     print(html_soup)
-    #
-    #     team_table = html_soup.find('table', {"id":"page_competition_1_block_competition_tables_7_block_competition_league_table_1_table"})
-    # print("team table :", team_table)
-    # team_rows = team_table.select("tbody > tr.team_rank ")
-    # #print("team_rows:", team_rows)
-    # for row in team_rows:
-    #     team_id = row['data-team_id']
-    #     team_name = row.find('a').text
-    #     print(team_id)
-    #     print(team_name)
-
     def get_all_leagues(
             self):  # marche la conversion json vers csv mais la colonne des sous leagues est mal representée
         # marche pas trop, j'ai l'impression y'a un cota
@@ -160,11 +139,13 @@ class Leagues(object):
         delays = [7, 11, 6, 2, 9, 15]
         print(self.URL)
 
+        country = self.parameters_dictionary["country"]
+
         # we set a header so that the website will know we are a real user otherwise it will block the program
         html = requests.get(self.URL, headers=HEADERS)
         html_soup = BeautifulSoup(html.text, 'html.parser')
         liste = html_soup.find('ul', class_='left-tree')
-        data_set_name = "leagues and sub leagues"
+        data_set_name = "leagues_and_sub_leagues_in_" + country
         data_set = {data_set_name: []}
         for url in liste.find_all('li'):
             main_league = url.a.string
@@ -205,7 +186,7 @@ class Leagues(object):
 
         html_soup = BeautifulSoup(html.text, 'html.parser')
         country_soup = None
-        data_set_names = "leagues in " + country + " plus type"
+        data_set_names = "leagues_in_" + country + "_plus_type"
         data_set = {data_set_names: []}
         for list_element in html_soup.find_all('li', class_='expandable'):
             link = list_element.find('a')['href']
@@ -245,14 +226,16 @@ class Leagues(object):
         """
         if self.parameters_dictionary['end-year'].isdigit():
             end_year = int(self.parameters_dictionary['end-year'])
+            end_year_name = "_in_" + str(end_year)
         else:
             end_year = self.parameters_dictionary['end-year']
+            end_year_name = "_through_years"
 
         # we set a header so that the website will know we are a real user otherwise it will block the program
         html = requests.get(self.URL, headers=HEADERS)
 
         html_soup = BeautifulSoup(html.text, 'html.parser')
-        data_set_names = "winner of " + self.parameters_dictionary['league']
+        data_set_names = "winner_of_" + self.parameters_dictionary['league'] + end_year_name
         data_set = {data_set_names: []}
         table_content = html_soup.find(id="page_competition_1_block_competition_archive_6-wrapper").find('table')
         # table which contains all the result

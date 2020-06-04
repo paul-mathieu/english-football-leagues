@@ -11,9 +11,11 @@ ob_start()
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 <body>
-	<h1 class="text-center">Récupération de données footbalistique</h1>
+	<a href="Recherche.php">
+	<h1 class="text-center" style="color: black">Récupération de données footbalistique</h1></a>
 	<br/><br/>
 	</body>
+	
 	<h4 class="text-center">Veuillez choisir le type de données que vous voulez</h4>
 	<form method="GET">
 
