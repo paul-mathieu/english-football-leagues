@@ -10,7 +10,7 @@ pip3 install -r requirements.txt
 ```
 ### To run the project
 
-Run first the file **flask-api.py** and then run the file **recherche.php** on a php server.
+Run first the file **flask-api.py** and then run the file **recherche.php** on a php server. All the requests will be made from the file **recherche.php** .
 
 ### Context
 
