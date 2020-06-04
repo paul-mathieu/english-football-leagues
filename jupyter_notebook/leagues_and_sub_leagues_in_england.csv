@@ -1,0 +1,80 @@
+,league_name,sub leagues
+0,Championship,"['Regular Season', 'Final Stages']"
+1,League One,"['Regular Season', 'Final Stages']"
+2,League Two,"['Regular Season', 'Final Stages']"
+3,National League,"['Regular Season', 'Promotion Play-offs - Qualifying Round', 'Final Stages']"
+4,National League N / S,"['North', 'South', 'North Promotion Play-offs - Qualifying Round', 'South Promotion Play-offs - Qualifying Round', 'Final Stages']"
+5,Non League Premier,"['Isthmian', 'Southern Central', 'Southern South', 'Northern']"
+6,Non League Div One,"['Isthmian North', 'Isthmian South Central', 'Isthmian South East', 'Northern North West', 'Northern South East', 'Southern Central', 'Southern South']"
+7,North West Counties League Premier,[]
+8,FA Cup,"['Extra Preliminary Round', 'Extra Preliminary Round Replays', 'Preliminary Round', 'Preliminary Round Replays', '1st Round Qualifying', '1st Round Qualifying Replays', '2nd Round Qualifying', '2nd Round Qualifying Replays', '3rd Round Qualifying', '3rd Round Qualifying Replays', '4th Round Qualifying', '4th Round Qualifying Replays', '1st Round', '1st Round Replays', '2nd Round', '2nd Round Replays', '3rd Round', '3rd Round Replays', '4th Round', '4th Round Replays', '5th Round', 'Final Stages']"
+9,League Cup,"['1st Round', '2nd Round', '3rd Round', 'Final Stages']"
+10,Community Shield,[]
+11,EFL Trophy,"['Group Stage', '2nd Round', '3rd Round', 'Final Stages']"
+12,FA Trophy,"['Extra Preliminary Round', 'Extra Preliminary Round Replays', 'Preliminary Round', 'Preliminary Round Replays', '1st Round Qualifying', '1st Round Qualifying Replays', '2nd Round Qualifying', '2nd Round Qualifying Replays', '3rd Round Qualifying', '3rd Round Qualifying Replays', '1st Round', '1st Round Replays', '2nd Round', '2nd Round Replays', '3rd Round', '4th Round', 'Final Stages']"
+13,FA Vase,"['1st Round', '1st Round Replays', '2nd Round', '2nd Round Replays', '3rd Round', '3rd Round Replays', '4th Round', '4th Round Replays', '5th Round', '5th Round Replays', '6th Round', 'Final Stages']"
+14,Alan Turvey Trophy,"['Group Stage', '1st Round', '2nd Round', 'Final Stages']"
+15,Southern League Cup,"['Preliminary Round', '1st Round', '2nd Round', '3rd Round', 'Final Stages']"
+16,Northern Premier League Challenge Cup,"['1st Round', '2nd Round', '3rd Round', 'Final Stages']"
+17,BBFA Senior Cup,"['1st Round', '2nd Round', 'Final Stages']"
+18,Bedfordshire Senior Challenge Cup,"['1st Round', 'Final Stages']"
+19,Birmingham Senior Cup,"['1st Round', '2nd Round', 'Final Stages']"
+20,Cheshire Senior Cup,"['1st Round', '2nd Round', 'Final Stages']"
+21,Cumberland Senior Cup,['Final Stages']
+22,Derbyshire Senior Cup,"['3rd Round', 'Final Stages']"
+23,Durham County Challenge Cup,"['2nd Round', 'Final Stages']"
+24,Gloucester Senior Challenge Cup,"['1st Round', 'Final Stages']"
+25,Essex Senior Cup,"['3rd Round', '4th Round', 'Final Stages']"
+26,Huntingdonshire Senior Cup,['Final Stages']
+27,East Riding Senior Cup,['Final Stages']
+28,Hertfordshire Senior Challenge Cup,"['1st Round', '2nd Round', 'Final Stages']"
+29,Kent Senior Cup,"['1st Round', '2nd Round', 'Final Stages']"
+30,Lancashire FA Challenge Trophy,"['2nd Round', 'Final Stages']"
+31,Lancashire Senior Cup,"['1st Round', 'Final Stages']"
+32,Lincolnshire Senior Cup,"['1st Round', 'Final Stages']"
+33,Liverpool Senior Cup,"['1st Round', '2nd Round', 'Final Stages']"
+34,Leicestershire and Rutland Challenge Cup,['Final Stages']
+35,London Senior Cup,"['1st Round', '2nd Round', 'Final Stages']"
+36,Manchester Premier Cup,"['1st Round', 'Final Stages']"
+37,Manchester Senior Cup,['Final Stages']
+38,Middlesex Senior Cup,"['2nd Round', 'Final Stages']"
+39,Norfolk Senior Cup,['Final Stages']
+40,North Riding Senior Cup,"['1st Round', 'Final Stages']"
+41,Northamptonshire Senior Cup,"['1st Round', 'Final Stages']"
+42,Northumberland Senior Cup,"['1st Round', 'Final Stages']"
+43,Nottinghamshire Saturday Senior Cup,"['4th Round', 'Final Stages']"
+44,Oxfordshire Senior Cup,"['3rd Round', 'Final Stages']"
+45,Staffordshire Senior Cup,"['1st Round', '2nd Round', 'Final Stages']"
+46,Sheffield and Hallamshire Senior Cup,"['2nd Round', '3rd Round', 'Final Stages']"
+47,Somerset Premier Cup,"['2nd Round', 'Final Stages']"
+48,Suffolk FA Premier Cup,['Final Stages']
+49,Surrey Senior Cup,"['1st Round', 'Preliminary Round', '2nd Round', 'Final Stages']"
+50,Sussex Senior Challenge Cup,"['2nd Round', '3rd Round', 'Final Stages']"
+51,Walsall Senior Cup,"['2nd Round', 'Final Stages']"
+52,West Riding County Cup,"['2nd Round', 'Final Stages']"
+53,Central League,"['South', 'North West', 'North East']"
+54,Central League Cup,"['Northern', 'Southern', 'Final Stages']"
+55,Premier League 2 Division One,[]
+56,Premier League 2 Division Two,"['Regular Season', 'Final Stages']"
+57,Professional Development League,"['Regular Season', 'North', 'South', 'Final Stages']"
+58,Premier League Cup,"['1st Qualifying Round', '2nd Qualifying Round', 'Group Stage', 'Final Stages']"
+59,FA Youth Cup,"['3rd Round', '4th Round', '5th Round', '6th Round', 'Final Stages']"
+60,U18 Premier League,"['North', 'South', 'Final Stages']"
+61,U18 Professional Development League,"['Regular Season', 'North', 'South', 'Final Stages']"
+62,U18 Premier League Cup,"['Group Stage', 'Final Stages']"
+63,Youth Alliance,"['Regular Season', 'Merit League 1', 'Merit League 2']"
+64,Youth Alliance Cup,"['Northern - Group Stage', 'Southern - 1st Round', 'Southern - 2nd Round', 'Final Stages']"
+65,Women's Super League,[]
+66,Women's Championship,[]
+67,Women's National League - Premier Division,"['North', 'South']"
+68,Women's National League - Division One,"['Midlands', 'North', 'South-East', 'South-West']"
+69,FA Women's Cup,"['1st Round', '2nd Round', '3rd Round', '4th Round', '5th Round', 'Final Stages']"
+70,WSL Cup,"['Group Stage', 'Final Stages']"
+71,U21 Premier League Division 1,[]
+72,U21 Premier League Division 2 ,"['Regular Season', 'Final Stages']"
+73,Premier Reserve League,"['Regular Season', 'North', 'South', 'Final Stages']"
+74,Conference League Cup,"['1st Round', '2nd Round', '3rd Round', '4th Round', '5th Round', 'Final Stages']"
+75,Women's Premier League,[]
+76,Women's League Cup,"['Group Stage', '1st Round', 'Final Stages']"
+77,Women's Play-offs 3/4,"['Promotion Play-offs - 1st Round', 'Promotion Play-offs']"
+78,Club Friendlies,[]
