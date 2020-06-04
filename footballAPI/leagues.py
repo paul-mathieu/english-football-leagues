@@ -59,7 +59,9 @@ class Leagues(object):
             elif "type" in list_parameter_key and self.parameters_dictionary['type'].upper() == "TRUE":
                 self.URL = BASE_URL + "/competitions/"
                 self.request = 3
-            elif len(list_parameter_key) == 2: # if there is only "API-type""country" in list_parameter_key
+            elif len(list_parameter_key) == 2 or ((len(list_parameter_key) == 3) and ("import" in list_parameter_key)):
+            # if there are only "API-type" & "country" in list_parameter_key or "API-type", "country" & "import" in
+            # list_parameter_key
                 self.URL = BASE_URL + "/competitions/"
                 self.request = 4
 
