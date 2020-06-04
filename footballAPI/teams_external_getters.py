@@ -3,6 +3,7 @@ from .core import *
 from bs4 import BeautifulSoup
 from .players import Players
 
+
 # ===============================================================
 #   Main functions
 # ===============================================================
@@ -190,8 +191,9 @@ def get_team_data_info(info_url):
             a = output_dictionary['E-mail']
             b = "\">"
             c = "</a>"
-            output_dictionary['E-mail'] = a[a.index(b)+len(b):a.index(c)]
-        except:pass
+            output_dictionary['E-mail'] = a[a.index(b) + len(b):a.index(c)]
+        except:
+            pass
 
     return output_dictionary if len(output_dictionary.keys()) > 0 else None
 
@@ -405,6 +407,7 @@ def get_team_data_squad(team_id, squad_url, squad_info):
 
     bf_html_content = get_beautiful_soup(squad_url)
     # print(squad_url)
+    # print(squad_url)
     tbl = bf_html_content.find_all("div", {"class": "squad-container"})[0]
     tbl = tbl.find_all("tbody")[0]
 
@@ -414,14 +417,14 @@ def get_team_data_squad(team_id, squad_url, squad_info):
         try:
             code = td.find_all("a")[0]['href']
             code = code[::-1][1:]
-            code = code[:code.index('/')]
+            code = code[:code.index('/')][::-1]
             temp_dictionary = {'code': code}
 
             player_parameters_dictionary = squad_info
             player_parameters_dictionary['idP'] = code
+            # print(code, end=' ')
             player = Players()
             # player.set_parameters_dictionary()
-
             temp_dictionary['player'] = player.json_players(player_parameters_dictionary)
 
             output_list.append(temp_dictionary)
