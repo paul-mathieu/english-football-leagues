@@ -1,5 +1,5 @@
 # English-football-leagues-API
- Unofficial updated English leagues and players API
+ Unofficial updated football API
 
 ### Prerequisites
 
